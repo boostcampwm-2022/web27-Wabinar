@@ -6,7 +6,9 @@
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/typescript",
+    "plugin:import/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -16,7 +18,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": ["react", "@typescript-eslint", "import"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
@@ -25,6 +27,24 @@
     "no-unused-vars": "off",
     "no-nested-ternary": "error",
     "eqeqeq": "error",
-    "no-console": "warn"
+    "no-console": "warn",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", ["parent", "sibling"], "index"],
+        "pathGroups": [
+          {
+            "pattern": "angular",
+            "group": "external",
+            "position": "before"
+          }
+        ],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        },
+        "newlines-between": "always"
+      }
+    ]
   }
 }

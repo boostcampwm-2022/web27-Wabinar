@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+  build:
+    name: Build and test
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        node-version: [ 16, 18 ]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - name: For client directory
+      run: |
+        cd client
+        npm run build --if-present
+        npm test --if-present
+    - name: For server directory
+      run: |
+        cd server
+        npm run build --if-present
+        npm test --if-present
