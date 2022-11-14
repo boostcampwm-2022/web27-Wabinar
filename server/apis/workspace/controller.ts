@@ -15,4 +15,15 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+router.post(
+  "/join",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { code } = req.body;
+
+    const joinResult = await workspaceService.join(1, code);
+
+    res.status(200).send(joinResult);
+  }
+);
+
 export default router;
