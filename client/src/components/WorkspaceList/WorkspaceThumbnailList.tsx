@@ -9,7 +9,7 @@ const workspaces = [
   { id: 4, name: "토스" },
 ];
 
-function WorkspaceThumbnaliList() {
+function WorkspaceThumbnailList() {
   return (
     <ul className={style.thumbnail__list}>
       {workspaces.map((workspace) => (
@@ -19,4 +19,4 @@ function WorkspaceThumbnaliList() {
   );
 }
 
-export default WorkspaceThumbnaliList;
+export default WorkspaceThumbnailList;
