@@ -1,12 +1,9 @@
-import express from 'express';
-import userModel from './db/connection';
-
-(async () => {
-  console.log(await userModel.findOne({ id: 1 }).exec());
-})();
+import express, { Request, Response } from "express";
+import authRouter from "@apis/auth/controller";
 
 const app = express();
 
-app.get('/', (req: any, res) => res.send('Express'));
+app.get("/", (req: Request, res: Response) => res.send("Express"));
+app.use("/auth", authRouter);
 
 app.listen(8080);

@@ -4,15 +4,17 @@ import mongoose from "@db";
 interface User {
   id: number;
   name: string;
-  created_at: Date;
+  avatarUrl: string;
+  createdAt: Date;
   workspaces: number[];
 }
 
 const userSchema = new Schema<User>({
-  id: Number,
-  name: String,
-  created_at: Date,
-  workspaces: Array<Number>,
+  id: { type: Number, required: true },
+  name: { type: String, required: true },
+  avatarUrl: { type: String, required: true },
+  createdAt: { type: Date, default: new Date() },
+  workspaces: { type: [Number], default: [] },
 });
 
 const userModel = mongoose.model("User", userSchema);

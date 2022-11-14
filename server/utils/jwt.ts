@@ -4,7 +4,7 @@ import env from "@config";
 interface JwtPayload {
   id: number;
   name: string;
-  avatar_url: string;
+  avatarUrl: string;
 }
 
 export const generateToken = (payload: JwtPayload) => {
