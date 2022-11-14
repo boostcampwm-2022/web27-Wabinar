@@ -86,7 +86,7 @@ video {
   font: inherit;
   vertical-align: baseline;
 }
-/* HTML5 display-role reset for older browsers */
+
 article,
 aside,
 details,
@@ -100,8 +100,11 @@ nav,
 section {
   display: block;
 }
+
 body {
-  line-height: 1;
+  line-height: normal;
+  font-family: "Noto Sans KR", sans-serif;
+  font-weight: 400;
 }
 ol,
 ul {
