@@ -1,13 +1,13 @@
 import React from "react";
-import WorkspaceThumbnaliList from "./WorkspaceThumbnaliList";
-import 스타일 from "./style.module.scss";
-import Button from "./Button";
+import WorkspaceThumbnaliList from "./WorkspaceThumbnailList";
+import style from "./style.module.scss";
+import AddButton from "./AddButton";
 
 function WorkspaceList() {
   return (
-    <div className={스타일.워크스페이스_컨테이너}>
+    <div className={style.workspace__container}>
       <WorkspaceThumbnaliList />
-      <Button />
+      <AddButton />
     </div>
   );
 }
