@@ -1,7 +1,8 @@
 import React from "react";
-import WorkspaceThumbnaliList from "./WorkspaceThumbnailList";
-import style from "./style.module.scss";
+
 import AddButton from "./AddButton";
+import style from "./style.module.scss";
+import WorkspaceThumbnaliList from "./WorkspaceThumbnailList";
 
 function WorkspaceList() {
   return (
