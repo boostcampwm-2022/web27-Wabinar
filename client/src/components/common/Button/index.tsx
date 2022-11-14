@@ -1,4 +1,4 @@
-import $ from "./style.module.scss";
+import style from "./style.module.scss";
 import cx from "classnames";
 
 interface ButtonProps {
@@ -9,7 +9,7 @@ interface ButtonProps {
 
 function Button({ text, icon, className }: ButtonProps) {
   return (
-    <div className={cx($.button, className)}>
+    <div className={cx(style.button, className)}>
       {icon}
       <button>{text}</button>
     </div>
