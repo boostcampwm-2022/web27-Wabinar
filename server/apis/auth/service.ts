@@ -2,6 +2,7 @@ import axios from "axios";
 import env from "@config";
 import userModel from "@apis/user/model";
 import * as jwt from "@utils/jwt";
+import AuthorizationError from "@exceptions/authorization-error";
 
 interface TokenResponse {
   access_token: string;
@@ -28,7 +29,7 @@ const getAccessToken = async (code: string) => {
   );
 
   if (accessTokenResponse.error) {
-    throw new Error("access token 생성 요청 실패");
+    throw new AuthorizationError("access token 생성 요청 실패");
   }
 
   return accessTokenResponse;
@@ -42,7 +43,7 @@ const getGithubUser = async (accessToken: string, tokenType: string) => {
   });
 
   if (user.error) {
-    throw new Error("OAuth 유저 정보 요청 실패");
+    throw new AuthorizationError("OAuth 유저 정보 요청 실패");
   }
 
   return user;

@@ -5,6 +5,7 @@
       "@apis/*": ["apis/*"],
       "@config": ["config"],
       "@constants/*": ["constants/*"],
+      "@exceptions/*": ["exceptions/*"],
       "@db": ["db"],
       "@middlewares/*": ["middlewares/*"],
       "@utils/*": ["utils/*"]
