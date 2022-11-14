@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-icons/all-files": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.4.3",
-    "sass": "^1.56.1"
+    "react-router-dom": "^6.4.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -21,10 +21,13 @@
     "@types/react-dom": "^18.0.8",
     "@types/testing-library__jest-dom": "^5",
     "@typescript-eslint/eslint-plugin": "latest",
-    "@typescript-eslint/parser": "latest",
+    "@typescript-eslint/parser": "^5.42.1",
     "@vitejs/plugin-react": "^2.2.0",
     "eslint": "latest",
+    "eslint-import-resolver-typescript": "^3.5.2",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "latest",
+    "sass": "^1.56.1",
     "typescript": "^4.6.4",
     "vite": "^3.2.3"
   }
