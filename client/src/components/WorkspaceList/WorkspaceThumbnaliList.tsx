@@ -1,5 +1,6 @@
 import React from "react";
 import style from "./style.module.scss";
+import WorkspaceThumbnailItem from "./WorkspaceThumbnailItem";
 
 const workspaces = [
   { id: 1, name: "왭" },
@@ -12,9 +13,7 @@ function WorkspaceThumbnaliList() {
   return (
     <ul className={style.thumbnail__list}>
       {workspaces.map((workspace) => (
-        <li key={workspace.id} className={style.thumbnail}>
-          <div className={style.thumbnail__content}>{workspace.name[0]}</div>
-        </li>
+        <WorkspaceThumbnailItem key={workspace.id} name={workspace.name} />
       ))}
     </ul>
   );
