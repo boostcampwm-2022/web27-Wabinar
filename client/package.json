@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "classnames": "^2.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.3",
@@ -17,6 +18,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@types/eslint": "^8",
+    "@types/node": "^18.11.9",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@types/testing-library__jest-dom": "^5",
@@ -26,6 +28,7 @@
     "eslint": "latest",
     "eslint-plugin-react": "latest",
     "typescript": "^4.6.4",
-    "vite": "^3.2.3"
+    "vite": "^3.2.3",
+    "vite-tsconfig-paths": "^3.5.2"
   }
 }
