@@ -26,6 +26,8 @@ router.post(
 );
 
 router.get("/logout", (req: Request, res: Response) => {
+  authService.logout(req.cookies.accessToken);
+
   res.clearCookie("accessToken");
   res.status(200).send();
 });

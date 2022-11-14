@@ -7,10 +7,16 @@ interface JwtPayload {
   avatarUrl: string;
 }
 
-export const generateToken = (payload: JwtPayload) => {
-  return jwt.sign(payload, env.JWT_SECRET_KEY);
+export const generateAccessToken = (payload: JwtPayload) => {
+  return jwt.sign(payload, env.JWT_SECRET_KEY, { expiresIn: 60 * 60 * 24 });
+};
+
+export const generateRefreshToken = (payload: JwtPayload) => {
+  return jwt.sign(payload, env.JWT_SECRET_KEY, {
+    expiresIn: 60 * 60 * 24 * 1000,
+  });
 };
 
 export const verifyToken = (token: string) => {
-  return jwt.verify(token, env.JWT_SECRET_KEY);
+  return jwt.verify(token, env.JWT_SECRET_KEY) as JwtPayload;
 };

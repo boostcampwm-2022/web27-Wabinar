@@ -30,7 +30,6 @@ const getAccessToken = async (code: string) => {
 
   return accessTokenResponse;
 };
-
 const getGithubUser = async (accessToken: string, tokenType: string) => {
   const { data: user } = await axios.get(USER_REQUEST_URL, {
     headers: {
@@ -55,6 +54,11 @@ export const login = async (code: string) => {
     avatar_url: avatarUrl,
   } = await getGithubUser(accessToken, tokenType);
 
+  const payload = { id, name, avatarUrl };
+
+  const loginToken = jwt.generateAccessToken(payload);
+  const refreshToken = jwt.generateRefreshToken(payload);
+
   const isSignedUp = userModel.exists({ id });
 
   if (!isSignedUp) {
@@ -62,9 +66,32 @@ export const login = async (code: string) => {
       id,
       name,
       avatarUrl,
+      refreshToken,
     });
+  } else {
+    userModel.updateOne({ id }, { refreshToken });
   }
 
-  const loginToken = jwt.generateToken({ id, name, avatarUrl });
   return loginToken;
+};
+
+export const logout = async (accessToken: string) => {
+  try {
+    const { id } = jwt.verifyToken(accessToken);
+
+    userModel.updateOne({ id }, { refreshToken: null });
+    return;
+  } catch (err) {
+    /* 
+      https://github.com/auth0/node-jsonwebtoken
+
+      err = {
+        name: 'TokenExpiredError',
+        message: 'jwt expired',
+        expiredAt: 1408621000
+      }
+
+      throw err;
+    */
+  }
 };
