@@ -1,5 +1,13 @@
 {
-  "ts-node": { "files": true },
+  "extends": "./tsconfig.path.json",
+  "ts-node": {
+    "files": true,
+    "transpileOnly": true,
+    "require": [
+      "typescript-transform-paths/register",
+      "tsconfig-paths/register"
+    ]
+  },
   "compilerOptions": {
     "target": "ESNext",
     "module": "CommonJS",
@@ -12,6 +20,11 @@
     "downlevelIteration": true,
     "typeRoots": ["../node_modules/@types", "./@types"],
     "rootDir": ".",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      }
+    ]
   }
 }
