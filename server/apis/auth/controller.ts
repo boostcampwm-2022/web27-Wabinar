@@ -15,6 +15,7 @@ router.post(
         httpOnly: true,
         sameSite: "lax",
         maxAge: 1000 * 60 * 60 * 24,
+        signed: true,
       };
       res.cookie("accessToken", loginToken, cookieOptions);
 
@@ -25,8 +26,8 @@ router.post(
   }
 );
 
-router.get("/logout", (req: Request, res: Response) => {
-  authService.logout(req.cookies.accessToken);
+router.delete("/logout", (req: Request, res: Response) => {
+  authService.logout(req.signedCookies.accessToken);
 
   res.clearCookie("accessToken");
   res.status(200).send();
