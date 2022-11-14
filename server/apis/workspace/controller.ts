@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import asyncWrapper from "@utils/async-wrapper";
+import jwtAuthenticator from "@middlewares/jwt-authenticator";
 import * as workspaceService from "./service";
 
 const router = express.Router();
@@ -17,10 +18,11 @@ router.post(
 
 router.post(
   "/join",
+  jwtAuthenticator,
   asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
     const { code } = req.body;
 
-    const joinResult = await workspaceService.join(1, code);
+    const joinResult = await workspaceService.join(req.user.id, code);
 
     res.status(200).send(joinResult);
   })
