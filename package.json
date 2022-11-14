@@ -1,0 +1,26 @@
+{
+  "name": "wabinar",
+  "version": "0.0.0",
+  "private": true,
+  "repository": "https://github.com/boostcampwm-2022/web27-Wabinar.git",
+  "packageManager": "yarn@3.2.4",
+  "scripts": {
+    "postinstall": "husky install",
+    "lint-staged": "lint-staged"
+  },
+  "lint-staged": {
+    "client/**/*.{ts,tsx}": [
+      "eslint --config ./client/.eslintrc --fix"
+    ],
+    "server/**/*.ts": [
+      "eslint --config ./server/.eslintrc --fix"
+    ]
+  },
+  "workspaces": [
+    "./*"
+  ],
+  "devDependencies": {
+    "husky": "^8.0.2",
+    "lint-staged": "^13.0.3"
+  }
+}
