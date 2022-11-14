@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import asyncWrapper from "@utils/async-wrapper";
 import jwtAuthenticator from "@middlewares/jwt-authenticator";
 import * as workspaceService from "./service";
+import { OK } from "@constants/http-status";
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ router.post(
 
     const workspace = await workspaceService.create(name);
 
-    res.status(200).send({ ...workspace });
+    res.status(OK).send({ ...workspace });
   })
 );
 
@@ -24,7 +25,7 @@ router.post(
 
     const joinResult = await workspaceService.join(req.user.id, code);
 
-    res.status(200).send(joinResult);
+    res.status(OK).send(joinResult);
   })
 );
 

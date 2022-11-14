@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import asyncWrapper from "@utils/async-wrapper";
 import * as authService from "./service";
+import { OK } from "@constants/http-status";
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ router.post(
     };
     res.cookie("accessToken", loginToken, cookieOptions);
 
-    res.status(200).send();
+    res.status(OK).send();
   })
 );
 
@@ -29,7 +30,7 @@ router.delete(
     await authService.logout(req.signedCookies.accessToken);
 
     res.clearCookie("accessToken");
-    res.status(200).send();
+    res.status(OK).send();
   })
 );
 
