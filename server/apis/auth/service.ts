@@ -18,7 +18,10 @@ const getAccessToken = async (code: string) => {
       client_id: env.GITHUB_CLIENT_ID,
       client_secret: env.GITHUB_CLIENT_SECRET,
       code,
+    },
+    {
       headers: {
+        "Content-Type": "application/json",
         Accept: "application/json",
       },
     }
@@ -30,6 +33,7 @@ const getAccessToken = async (code: string) => {
 
   return accessTokenResponse;
 };
+
 const getGithubUser = async (accessToken: string, tokenType: string) => {
   const { data: user } = await axios.get(USER_REQUEST_URL, {
     headers: {
