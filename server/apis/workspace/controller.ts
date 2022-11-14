@@ -10,9 +10,9 @@ router.post(
   asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
     const { name } = req.body;
 
-    const workspace = workspaceService.create(name);
+    const workspace = await workspaceService.create(name);
 
-    res.status(200).send({ workspace });
+    res.status(200).send({ ...workspace });
   })
 );
 

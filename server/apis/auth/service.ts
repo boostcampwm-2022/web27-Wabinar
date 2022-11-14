@@ -63,17 +63,17 @@ export const login = async (code: string) => {
   const loginToken = jwt.generateAccessToken(payload);
   const refreshToken = jwt.generateRefreshToken(payload);
 
-  const isSignedUp = userModel.exists({ id });
+  const isSignedUp = await userModel.exists({ id });
 
   if (!isSignedUp) {
-    userModel.create({
+    await userModel.create({
       id,
       name,
       avatarUrl,
       refreshToken,
     });
   } else {
-    userModel.updateOne({ id }, { refreshToken });
+    await userModel.updateOne({ id }, { refreshToken });
   }
 
   return loginToken;
