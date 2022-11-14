@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "repository": "https://github.com/boostcampwm-2022/web27-Wabinar.git",
-  "packageManager": "yarn@3.2.4",
   "scripts": {
     "postinstall": "husky install",
     "lint-staged": "lint-staged"
