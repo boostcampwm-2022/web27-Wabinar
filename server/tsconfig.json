@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.path.json",
   "ts-node": { "files": true },
   "compilerOptions": {
     "target": "ESNext",
@@ -11,6 +10,8 @@
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "downlevelIteration": true,
-    "typeRoots": ["../node_modules/@types", "./@types"]
+    "typeRoots": ["../node_modules/@types", "./@types"],
+    "rootDir": ".",
+    "outDir": "./dist"
   }
 }
