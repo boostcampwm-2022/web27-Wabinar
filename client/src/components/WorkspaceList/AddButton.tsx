@@ -1,11 +1,11 @@
 import React from "react";
-import PlusIcon from "/plus.png";
 import style from "./style.module.scss";
+import { MdAdd } from "@react-icons/all-files/md/MdAdd";
 
 function AddButton() {
   return (
     <div className={style.button}>
-      <img className={style.button__add} src={PlusIcon} />
+      <MdAdd color="white" size={15} />
     </div>
   );
 }
