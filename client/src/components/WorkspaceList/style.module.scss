@@ -20,6 +20,7 @@
 
   border: 1px solid $white;
   border-radius: 50%;
+  cursor: pointer;
 
   & + & {
     margin-top: 12px;
@@ -46,4 +47,5 @@
   align-items: center;
 
   padding: 12px;
+  cursor: pointer;
 }
