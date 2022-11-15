@@ -7,10 +7,12 @@ const router = express.Router();
 
 router.get(
   '/:id/workspace',
+  jwtAuthenticator,
   asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
+    const { id: userId } = req.user;
+    const { id: targetUserId } = req.params;
 
-    const workspaces = await userService.getWorksapces(Number(id));
+    const workspaces = await userService.getWorksapces(targetUserId, userId);
 
     res.send({ workspaces });
   }),
