@@ -1,19 +1,20 @@
+const workspaceModel = require('./model');
+const workspaceService = require('./service');
+const { default: InvalidJoinError } = require('@errors/invalid-join-error');
+
 jest.mock('./model', () => {
   return {
-    repository: {},
     create: jest.fn(),
     findOne: jest.fn(),
     updateOne: jest.fn(),
   };
 });
-const workspaceModel = require('./model');
 
 jest.mock('@apis/user/model', () => {
   return {
     updateOne: jest.fn(),
   };
 });
-const userModel = require('@apis/user/model');
 
 const VALID_CODE = 'wab-0000-0000-0000';
 
@@ -22,8 +23,6 @@ jest.mock('uuid', () => {
     v4: jest.fn(() => VALID_CODE),
   };
 });
-
-const workspaceService = require('./service');
 
 describe('create', () => {
   it('워크스페이스 이름이 주어진 경우 생성에 성공한다.', async () => {
@@ -71,7 +70,7 @@ describe('join', () => {
 
   it('참여코드가 없는 경우 실패한다.', async () => {
     expect(() => workspaceService.join(USER_ID)).rejects.toThrow(
-      '참여코드를 입력하세요 ^^',
+      InvalidJoinError,
     );
   });
 
@@ -80,7 +79,7 @@ describe('join', () => {
 
     expect(() =>
       workspaceService.join(USER_ID, 'invalid-code'),
-    ).rejects.toThrow('잘못된 참여코드에요 ^^');
+    ).rejects.toThrow(InvalidJoinError);
   });
 
   it('db 업데이트 중 에러가 발생하면 실패한다.', async () => {
@@ -91,3 +90,5 @@ describe('join', () => {
     expect(() => workspaceService.join(USER_ID, VALID_CODE)).rejects.toThrow();
   });
 });
+
+export {};
