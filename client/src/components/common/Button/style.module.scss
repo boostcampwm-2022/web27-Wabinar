@@ -1,15 +1,16 @@
-@import "style/color.scss";
+@import 'style/color.scss';
 
 .button {
   width: fit-content;
-  height: 30px;
   display: flex;
   align-items: center;
   background-color: $primary-100;
+  border: none;
   border-radius: 40px;
   padding: 10px 40px;
+  text-decoration: none;
 
-  button {
+  span {
     color: $white;
     padding: 10px;
     font-weight: 700;
