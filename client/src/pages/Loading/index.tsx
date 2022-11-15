@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import { Comment } from 'react-loader-spinner';
+import color from 'styles/color.module.scss';
 
 import style from './style.module.scss';
 
@@ -12,8 +13,8 @@ function LoadingPage() {
         width="100"
         ariaLabel="loader-spinner"
         wrapperClass="loader-wrapper"
-        color="#fff"
-        backgroundColor="#59c3ff"
+        color={color.white}
+        backgroundColor={color.highlight100}
       />
     </div>
   );
