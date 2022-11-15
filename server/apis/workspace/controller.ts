@@ -23,9 +23,9 @@ router.post(
   asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
     const { code } = req.body;
 
-    const joinResult = await workspaceService.join(req.user.id, code);
+    const joinedWorkspace = await workspaceService.join(req.user.id, code);
 
-    res.status(OK).send(joinResult);
+    res.status(OK).send(joinedWorkspace);
   })
 );
 
