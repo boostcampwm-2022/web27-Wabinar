@@ -7,6 +7,7 @@ import { MENUS, MODAL_MENUS } from 'src/constants/workspace';
 import style from './style.module.scss';
 
 function WorkspacePage() {
+  const [isOpenSelectModal, setIsOpenSelectModal] = useState(false);
   const [clickedMenuId, setClickedMenuId] = useState(0);
   const [inputValue, setInputValue] = useState('');
 
@@ -20,16 +21,21 @@ function WorkspacePage() {
 
   return (
     <div className={style.container}>
-      <WorkspaceList />
-      <SelcetModal className={style['select-modal']}>
-        <ul className={style['menu-list']}>
-          {MENUS.map(({ id, text }) => (
-            <li key={id} onClick={() => onClickMenu(id)}>
-              {text}
-            </li>
-          ))}
-        </ul>
-      </SelcetModal>
+      <WorkspaceList onSelectModalOpen={() => setIsOpenSelectModal(true)} />
+      {isOpenSelectModal && (
+        <SelcetModal
+          className={style['select-modal']}
+          onClose={() => setIsOpenSelectModal(false)}
+        >
+          <ul className={style['menu-list']}>
+            {MENUS.map(({ id, text }) => (
+              <li key={id} onClick={() => onClickMenu(id)}>
+                {text}
+              </li>
+            ))}
+          </ul>
+        </SelcetModal>
+      )}
 
       {MODAL_MENUS.map(({ id, props: { title, text, btnText } }) => {
         if (id === clickedMenuId)
