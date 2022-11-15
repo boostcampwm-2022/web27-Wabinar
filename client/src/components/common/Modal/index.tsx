@@ -5,14 +5,13 @@ import style from './style.module.scss';
 
 interface ModalProps {
   title?: string;
-  isHaveCloseBtn?: boolean;
   children: JSX.Element;
-  className?: string;
+  onClose: () => void;
 }
 
-function Modal({ title, children }: ModalProps) {
-  const onClose = () => {
-    //
+function Modal({ title, children, onClose }: ModalProps) {
+  const onClickCloseBtn = () => {
+    onClose();
   };
 
   return (
@@ -23,11 +22,11 @@ function Modal({ title, children }: ModalProps) {
         aria-modal
         aria-labelledby="modal"
       >
-        <div className={style.dimmer} onClick={onClose} tabIndex={0} />
+        <div className={style.dimmer} onClick={onClickCloseBtn} tabIndex={0} />
         <div className={style['out-container']}>
           <div className={style.header} id="modal-heading">
             <h2 className={style.title}>{title}</h2>
-            <button className={style['close-modal']}>
+            <button className={style['close-modal']} onClick={onClickCloseBtn}>
               <MdClose size={20} color={'white'} />
             </button>
           </div>

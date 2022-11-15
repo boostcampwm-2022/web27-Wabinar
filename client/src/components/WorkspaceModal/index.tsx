@@ -8,6 +8,7 @@ interface WorkspaceModalProps {
   btnText: string;
   inputValue: string;
   onChange?: (value: string) => void;
+  onClose: () => void;
 }
 
 function WorkspaceModal({
@@ -16,13 +17,14 @@ function WorkspaceModal({
   btnText,
   inputValue,
   onChange,
+  onClose,
 }: WorkspaceModalProps) {
   const onInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) onChange(e.target.value);
   };
 
   return (
-    <Modal title={title}>
+    <Modal title={title} onClose={onClose}>
       <>
         <span className={style.text}>{text}</span>
         <input className={style.input} type="text" onChange={onInput} />

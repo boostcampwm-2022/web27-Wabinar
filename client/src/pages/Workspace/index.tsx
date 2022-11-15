@@ -39,6 +39,7 @@ function WorkspacePage() {
               {...{ title, text, btnText }}
               inputValue={inputValue}
               onChange={onInput}
+              onClose={() => setClickedMenuId(0)}
             />
           );
       })}
