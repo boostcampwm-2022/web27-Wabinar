@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import asyncWrapper from '@utils/async-wrapper';
+import jwtAuthenticator from '@middlewares/jwt-authenticator';
 import * as authService from './service';
 import { OK, CREATED } from '@constants/http-status';
 
@@ -11,6 +12,14 @@ interface CookieOptions {
 }
 
 const router = express.Router();
+
+router.get(
+  '/',
+  jwtAuthenticator,
+  asyncWrapper(async (req: Request, res: Response) => {
+    res.status(OK).send(req.user);
+  }),
+);
 
 router.post(
   '/login',
