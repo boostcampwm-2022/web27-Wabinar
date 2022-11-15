@@ -9,7 +9,7 @@ router.post(
     try {
       const { code } = req.body;
 
-      const loginToken = await authService.login(code);
+      const { loginToken, refreshToken } = await authService.login(code);
 
       const cookieOptions = {
         httpOnly: true,
@@ -18,6 +18,7 @@ router.post(
         signed: true,
       };
       res.cookie("accessToken", loginToken, cookieOptions);
+      res.cookie("refreshToken", refreshToken, cookieOptions);
 
       res.status(200).send();
     } catch (e) {

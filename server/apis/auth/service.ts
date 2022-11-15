@@ -61,11 +61,6 @@ export const login = async (code: string) => {
     avatar_url: avatarUrl,
   } = await getGithubUser(accessToken, tokenType);
 
-  const payload = { id, name, avatarUrl };
-
-  const loginToken = jwt.generateAccessToken(payload);
-  const refreshToken = jwt.generateRefreshToken(payload);
-
   const isSignedUp = userModel.exists({ id });
 
   if (!isSignedUp) {
@@ -73,13 +68,15 @@ export const login = async (code: string) => {
       id,
       name,
       avatarUrl,
-      refreshToken,
     });
-  } else {
-    userModel.updateOne({ id }, { refreshToken });
   }
 
-  return loginToken;
+  const payload = { id, name, avatarUrl };
+
+  const loginToken = jwt.generateAccessToken(payload);
+  const refreshToken = jwt.generateRefreshToken(payload);
+
+  return { loginToken, refreshToken };
 };
 
 export const logout = async (accessToken: string) => {
