@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "node-dev index.ts"
+    "dev": "node-dev index.ts",
+    "test": "jest"
   },
   "packageManager": "yarn@3.2.4",
   "devDependencies": {
