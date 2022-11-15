@@ -86,7 +86,7 @@ video {
   font: inherit;
   vertical-align: baseline;
 }
-/* HTML5 display-role reset for older browsers */
+
 article,
 aside,
 details,
@@ -100,8 +100,11 @@ nav,
 section {
   display: block;
 }
+
 body {
-  line-height: 1;
+  line-height: normal;
+  font-family: "Noto Sans KR", sans-serif;
+  font-weight: 400;
 }
 ol,
 ul {
@@ -121,4 +124,30 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+input,
+select,
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+  font-family: inherit;
+  font-weight: inherit;
+}
+
+input,
+textarea {
+  padding: 0;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+button {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }

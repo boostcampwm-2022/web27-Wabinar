@@ -1,0 +1,26 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .icons {
+    position: relative;
+
+    .bubbles {
+      position: absolute;
+      top: -6rem;
+      right: -8rem;
+      z-index: -1;
+    }
+  }
+  .copy {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  .login-btn {
+    margin-top: 8rem;
+  }
+}
