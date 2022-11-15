@@ -1,0 +1,27 @@
+@import "style/color.scss";
+
+.container {
+  position: relative;
+}
+
+.select-modal {
+  position: absolute;
+  top: 20em;
+  left: 50px;
+
+  .menu-list {
+    li {
+      padding: 8px 15px;
+      cursor: pointer;
+      &:not(:last-of-type) {
+        border-bottom: 1px solid $gray-200;
+      }
+      &:first-child {
+        padding-top: 0;
+      }
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
