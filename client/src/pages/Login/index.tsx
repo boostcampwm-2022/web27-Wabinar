@@ -1,8 +1,9 @@
+import BubblesIcon from "src/components/common/Icon/Bubbles";
+import LogoIcon from "src/components/common/Icon/Logo";
+
 import Button from "../../components/common/Button";
 import GithubIcon from "../../components/common/Icon/Github";
 import style from "./style.module.scss";
-import BubblesIcon from "src/components/common/Icon/Bubbles";
-import LogoIcon from "src/components/common/Icon/Logo";
 
 function LoginPage() {
   return (

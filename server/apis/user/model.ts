@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import mongoose from "@db";
+import { Schema } from 'mongoose';
+import mongoose from '@db';
 
 interface User {
   id: number;
@@ -17,6 +17,6 @@ const userSchema = new Schema<User>({
   workspaces: { type: [Number], default: [] },
 });
 
-const userModel = mongoose.model("User", userSchema);
+const userModel = mongoose.model('User', userSchema);
 
 export default userModel;

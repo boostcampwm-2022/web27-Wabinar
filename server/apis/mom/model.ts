@@ -1,5 +1,5 @@
-import { Schema } from "mongoose";
-import mongoose from "@db";
+import { Schema } from 'mongoose';
+import mongoose from '@db';
 
 interface Block {
   type: String;
@@ -18,6 +18,6 @@ const momSchema = new Schema<Mom>({
   blocks: Array<Block>,
 });
 
-const momModel = mongoose.model("Mom", momSchema);
+const momModel = mongoose.model('Mom', momSchema);
 
 export default momModel;
