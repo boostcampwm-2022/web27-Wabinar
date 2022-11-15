@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import asyncWrapper from '@utils/async-wrapper';
 import * as authService from './service';
 import { OK, CREATED } from '@constants/http-status';
@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.post(
   '/login',
-  asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
+  asyncWrapper(async (req: Request, res: Response) => {
     const { code } = req.body;
 
     const { user, loginToken, refreshToken } = await authService.login(code);
