@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import asyncWrapper from '@utils/async-wrapper';
 import * as authService from './service';
-import { OK } from '@constants/http-status';
+import { OK, CREATED } from '@constants/http-status';
 
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.post(
   asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
     const { code } = req.body;
 
-    const { loginToken, refreshToken } = await authService.login(code);
+    const { user, loginToken, refreshToken } = await authService.login(code);
 
     const cookieOptions = {
       httpOnly: true,
@@ -21,7 +21,7 @@ router.post(
     res.cookie('accessToken', loginToken, cookieOptions);
     res.cookie('refreshToken', refreshToken, cookieOptions);
 
-    res.status(OK).send();
+    res.status(CREATED).send(user);
   }),
 );
 
