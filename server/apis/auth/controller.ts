@@ -3,6 +3,13 @@ import asyncWrapper from '@utils/async-wrapper';
 import * as authService from './service';
 import { OK, CREATED } from '@constants/http-status';
 
+interface CookieOptions {
+  httpOnly: boolean;
+  sameSite: boolean | 'lax' | 'strict' | 'none';
+  maxAge: number;
+  signed: boolean;
+}
+
 const router = express.Router();
 
 router.post(
@@ -12,7 +19,7 @@ router.post(
 
     const { user, loginToken, refreshToken } = await authService.login(code);
 
-    const cookieOptions = {
+    const cookieOptions: CookieOptions = {
       httpOnly: true,
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24,
