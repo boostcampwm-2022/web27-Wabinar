@@ -3,11 +3,13 @@ export const MENU = {
   JOIN_ID: 2,
   JOIN_SUCCESS_ID: 3,
 };
+Object.freeze(MENU);
 
 export const MENUS = [
   { id: 1, text: '생성하기' },
   { id: 2, text: '참여하기' },
 ];
+Object.freeze(MENUS);
 
 export const MODAL_MENUS = [
   {
@@ -38,3 +40,4 @@ export const MODAL_MENUS = [
     },
   },
 ];
+Object.freeze(MODAL_MENUS);
