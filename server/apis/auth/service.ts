@@ -1,56 +1,11 @@
-import axios from 'axios';
-import env from '@config';
 import userModel from '@apis/user/model';
 import * as jwt from '@utils/jwt';
-import AuthorizationError from '@errors/authorization-error';
+import { getAccessToken, getGithubUser } from './service.github';
 
 interface TokenResponse {
   access_token: string;
   token_type: string;
 }
-
-const ACCESS_TOKEN_REQUEST_URL = 'https://github.com/login/oauth/access_token';
-const USER_REQUEST_URL = 'https://api.github.com/user';
-
-const getAccessToken = async (code: string) => {
-  const body = {
-    client_id: env.GITHUB_CLIENT_ID,
-    client_secret: env.GITHUB_CLIENT_SECRET,
-    code,
-  };
-  const headers = {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  };
-
-  const { data: accessTokenResponse } = await axios.post(
-    ACCESS_TOKEN_REQUEST_URL,
-    body,
-    {
-      headers,
-    },
-  );
-
-  if (accessTokenResponse.error) {
-    throw new AuthorizationError('access token 생성 요청 실패');
-  }
-
-  return accessTokenResponse;
-};
-
-const getGithubUser = async (accessToken: string, tokenType: string) => {
-  const { data: user } = await axios.get(USER_REQUEST_URL, {
-    headers: {
-      Authorization: `${tokenType} ${accessToken}`,
-    },
-  });
-
-  if (user.error) {
-    throw new AuthorizationError('OAuth 유저 정보 요청 실패');
-  }
-
-  return user;
-};
 
 export const login = async (code: string) => {
   const { access_token: accessToken, token_type: tokenType }: TokenResponse =
