@@ -1,5 +1,6 @@
-import style from "./style.module.scss";
 import cx from "classnames";
+
+import style from "./style.module.scss";
 
 interface ButtonProps {
   text: string;

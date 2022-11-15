@@ -1,8 +1,8 @@
-import CustomError from ".";
-import { UNAUTHORIZED } from "@constants/http-status";
+import CustomError from '.';
+import { UNAUTHORIZED } from '@constants/http-status';
 
 export default class AuthorizationError extends CustomError {
-  constructor(message: string = "Unauthorized") {
+  constructor(message = 'Unauthorized') {
     super(message, UNAUTHORIZED);
   }
 }

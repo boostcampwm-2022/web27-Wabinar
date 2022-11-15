@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
-import autoIncrement from "mongoose-auto-increment";
-import env from "../config";
+import mongoose from 'mongoose';
+import autoIncrement from 'mongoose-auto-increment';
+import env from '../config';
 
 const options = {
   maxPoolSize: 10,
