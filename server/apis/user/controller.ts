@@ -17,8 +17,6 @@ router.get(
       userId,
     );
 
-    res.setHeader('Access-Control-Allow-origin', '*');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.send({ workspaces });
   }),
 );
