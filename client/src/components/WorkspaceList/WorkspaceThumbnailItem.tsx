@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import style from './style.module.scss';
 
 interface WorkspaceThumbnailItemProps {
@@ -19,4 +21,4 @@ function WorkspaceThumbnailItem({ name }: WorkspaceThumbnailItemProps) {
   );
 }
 
-export default WorkspaceThumbnailItem;
+export default memo(WorkspaceThumbnailItem);
