@@ -2,7 +2,7 @@ import axios from "axios";
 import env from "@config";
 import userModel from "@apis/user/model";
 import * as jwt from "@utils/jwt";
-import AuthorizationError from "@exceptions/authorization-error";
+import AuthorizationError from "@errors/authorization-error";
 
 interface TokenResponse {
   access_token: string;
