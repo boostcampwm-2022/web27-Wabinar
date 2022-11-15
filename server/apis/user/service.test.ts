@@ -1,16 +1,8 @@
-/**
- * success -> userId === targetUserId
- * fail -> userId !== targetUserId
- */
-
-// userId 들을 넘기면 워크스페이스를 받는 것
-// userId를 넘겼을 때 성공적으로 워크스페이스를 받는 경우
-// 뭔가 userId가 이상해서 워크스페이스 못받는 경우
 const { getWorkspaces } = require('./service');
 const userModel = require('@apis/user/model');
 const workspaceModel = require('@apis/workspace/model');
-const { default: AuthorizationError } = require('@errors/authorization-error');
-const { default: CustomError } = require('@errors/index');
+const AuthorizationError = require('@errors/authorization-error');
+const CustomError = require('@errors/index');
 
 jest.mock('@apis/user/model', () => {
   return { findOne: jest.fn() };
