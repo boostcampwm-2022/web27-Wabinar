@@ -1,13 +1,11 @@
-import React from "react";
-
-import style from "./style.module.scss";
-import WorkspaceThumbnailItem from "./WorkspaceThumbnailItem";
+import style from './style.module.scss';
+import WorkspaceThumbnailItem from './WorkspaceThumbnailItem';
 
 const workspaces = [
-  { id: 1, name: "왭" },
-  { id: 2, name: "네이버" },
-  { id: 3, name: "카카오" },
-  { id: 4, name: "토스" },
+  { id: 1, name: '왭' },
+  { id: 2, name: '네이버' },
+  { id: 3, name: '카카오' },
+  { id: 4, name: '토스' },
 ];
 
 function WorkspaceThumbnailList() {

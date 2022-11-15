@@ -1,8 +1,8 @@
-import React from "react";
+import { memo } from 'react';
 
-import AddButton from "./AddButton";
-import style from "./style.module.scss";
-import WorkspaceThumbnaliList from "./WorkspaceThumbnailList";
+import AddButton from './AddButton';
+import style from './style.module.scss';
+import WorkspaceThumbnaliList from './WorkspaceThumbnailList';
 
 function WorkspaceList() {
   return (
@@ -13,4 +13,4 @@ function WorkspaceList() {
   );
 }
 
-export default WorkspaceList;
+export default memo(WorkspaceList);
