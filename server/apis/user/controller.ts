@@ -12,7 +12,10 @@ router.get(
     const { id: userId } = req.user;
     const { id: targetUserId } = req.params;
 
-    const workspaces = await userService.getWorksapces(targetUserId, userId);
+    const workspaces = await userService.getWorksapces(
+      Number(targetUserId),
+      userId,
+    );
 
     res.send({ workspaces });
   }),
