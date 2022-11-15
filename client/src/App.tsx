@@ -1,6 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LoginPage, WorkspacePage } from "./pages";
-import "style/reset.scss";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import { LoginPage, WorkspacePage } from './pages';
+import 'style/reset.scss';
 
 function App() {
   return (
