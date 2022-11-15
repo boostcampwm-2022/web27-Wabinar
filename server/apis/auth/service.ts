@@ -13,18 +13,21 @@ const ACCESS_TOKEN_REQUEST_URL = "https://github.com/login/oauth/access_token";
 const USER_REQUEST_URL = "https://api.github.com/user";
 
 const getAccessToken = async (code: string) => {
+  const body = {
+    client_id: env.GITHUB_CLIENT_ID,
+    client_secret: env.GITHUB_CLIENT_SECRET,
+    code,
+  };
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
+
   const { data: accessTokenResponse } = await axios.post(
     ACCESS_TOKEN_REQUEST_URL,
+    body,
     {
-      client_id: env.GITHUB_CLIENT_ID,
-      client_secret: env.GITHUB_CLIENT_SECRET,
-      code,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      headers,
     }
   );
 
@@ -59,25 +62,22 @@ export const login = async (code: string) => {
     avatar_url: avatarUrl,
   } = await getGithubUser(accessToken, tokenType);
 
-  const payload = { id, name, avatarUrl };
-
-  const loginToken = jwt.generateAccessToken(payload);
-  const refreshToken = jwt.generateRefreshToken(payload);
-
-  const isSignedUp = await userModel.exists({ id });
+  const isSignedUp = userModel.exists({ id });
 
   if (!isSignedUp) {
     await userModel.create({
       id,
       name,
       avatarUrl,
-      refreshToken,
     });
-  } else {
-    await userModel.updateOne({ id }, { refreshToken });
   }
 
-  return loginToken;
+  const payload = { id, name, avatarUrl };
+
+  const loginToken = jwt.generateAccessToken(payload);
+  const refreshToken = jwt.generateRefreshToken(payload);
+
+  return { loginToken, refreshToken };
 };
 
 export const logout = async (accessToken: string) => {
