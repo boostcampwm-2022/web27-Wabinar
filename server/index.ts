@@ -1,12 +1,13 @@
-import express from 'express';
-import userModel from './db/connection';
-
-(async () => {
-  console.log(await userModel.findOne({ id: 1 }).exec());
-})();
+import express, { Request, Response } from "express";
+import cookieParser from "cookie-parser";
+import env from "@config";
+import authRouter from "@apis/auth/controller";
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser(env.COOKIE_SECRET_KEY));
 
-app.get('/', (req: any, res) => res.send('Express'));
+app.get("/", (req: Request, res: Response) => res.send("Express"));
+app.use("/auth", authRouter);
 
 app.listen(8080);

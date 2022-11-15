@@ -2,7 +2,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@config": ["config"]
+      "@apis/*": ["apis/*"],
+      "@config": ["config"],
+      "@constants/*": ["constants/*"],
+      "@db": ["db"],
+      "@middlewares/*": ["middlewares/*"],
+      "@utils/*": ["utils/*"]
     }
   }
 }
