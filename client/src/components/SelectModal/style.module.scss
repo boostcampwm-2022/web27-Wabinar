@@ -1,0 +1,33 @@
+@import 'style/color.scss';
+
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: fit-content;
+    height: fit-content;
+
+    border-radius: 10px;
+    background-color: $primary-100;
+    padding: 20px;
+    color: $white;
+    font-size: 14px;
+    margin: auto;
+
+    .dimmer {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+}
