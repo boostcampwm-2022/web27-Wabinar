@@ -11,28 +11,23 @@ jest.mock('@apis/workspace/model', () => {
   return { find: jest.fn() };
 });
 
-describe('getWorkspaces()', () => {
+describe('getWorkspaces', () => {
   const successfulUser = '';
   const successfulWorkspaces: Object[] = [];
 
   it('정상적인 유저 아이디를 받아서 성공적으로 워크스페이스를 가져온다.', async () => {
-    // arrange
     userModel.findOne.mockResolvedValueOnce(successfulUser);
     workspaceModel.find.mockResolvedValueOnce(successfulWorkspaces);
 
-    // act
     const workspaces = await getWorkspaces('id', 'id');
 
-    // assert
     expect(workspaces).toEqual(successfulWorkspaces);
   });
 
   it('비정상적인 유저 아이디를 받으면 에러를 던진다.', async () => {
-    // arrange
     const user1 = 1;
     const user2 = 2;
 
-    // act & assert
     expect(() => getWorkspaces(user1, user2)).rejects.toThrow(
       AuthorizationError,
     );

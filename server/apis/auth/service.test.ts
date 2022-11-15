@@ -65,3 +65,5 @@ describe('login', () => {
     expect(() => login()).rejects.toThrow('fail');
   });
 });
+
+export {};
