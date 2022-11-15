@@ -10,6 +10,7 @@ interface ButtonProps {
   className?: string;
   isDisable?: boolean;
   color?: string;
+  onClick?: () => void;
 }
 
 function Button({
@@ -18,14 +19,21 @@ function Button({
   className,
   isDisable = false,
   color,
+  onClick,
 }: ButtonProps) {
+  const onClickBtn = () => {
+    if (onClick) onClick();
+  };
+
   return (
     <div
       className={cx(style.button, className, { disable: isDisable })}
       style={{ backgroundColor: color }}
     >
       {icon}
-      <button disabled={isDisable}>{text}</button>
+      <button disabled={isDisable} onClick={onClickBtn}>
+        {text}
+      </button>
     </div>
   );
 }
