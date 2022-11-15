@@ -1,37 +1,38 @@
 import express, { Request, Response, NextFunction } from "express";
+import asyncWrapper from "@utils/async-wrapper";
 import * as authService from "./service";
+import { OK } from "@constants/http-status";
 
 const router = express.Router();
 
 router.post(
   "/login",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { code } = req.body;
+  asyncWrapper(async (req: Request, res: Response, next: NextFunction) => {
+    const { code } = req.body;
 
-      const { loginToken, refreshToken } = await authService.login(code);
+    const { loginToken, refreshToken } = await authService.login(code);
 
-      const cookieOptions = {
-        httpOnly: true,
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 60 * 24,
-        signed: true,
-      };
-      res.cookie("accessToken", loginToken, cookieOptions);
-      res.cookie("refreshToken", refreshToken, cookieOptions);
+    const cookieOptions = {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24,
+      signed: true,
+    };
+    res.cookie("accessToken", loginToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
-      res.status(200).send();
-    } catch (e) {
-      next(e);
-    }
-  }
+    res.status(OK).send();
+  })
 );
 
-router.delete("/logout", (req: Request, res: Response) => {
-  authService.logout(req.signedCookies.accessToken);
+router.delete(
+  "/logout",
+  asyncWrapper(async (req: Request, res: Response) => {
+    await authService.logout(req.signedCookies.accessToken);
 
-  res.clearCookie("accessToken");
-  res.status(200).send();
-});
+    res.clearCookie("accessToken");
+    res.status(OK).send();
+  })
+);
 
 export default router;
