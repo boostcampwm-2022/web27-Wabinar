@@ -1,0 +1,57 @@
+@import 'style/color.scss';
+
+.modal {
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .dimmer {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: $modalBackground;
+  }
+
+  .out-container {
+    z-index: 100;
+    min-width: 400px;
+    overflow-y: auto;
+    border-radius: 10px;
+    background-color: $white;
+
+    .header {
+      position: sticky;
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background-color: $primary-100;
+      color: $white;
+
+      .title {
+        width: 100%;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .close-modal {
+        position: absolute;
+        right: 10px;
+      }
+    }
+
+    .inner-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+    }
+  }
+}
