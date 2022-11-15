@@ -1,6 +1,6 @@
 import { baseRequest } from './util';
 
-export const getWorkspacesAPI = async (userId: number) => {
+export const getWorkspaces = async (userId: number) => {
   try {
     const { data } = await baseRequest.get(`/user/${userId}/workspace`);
 

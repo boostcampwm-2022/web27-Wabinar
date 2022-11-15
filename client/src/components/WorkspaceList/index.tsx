@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from 'react';
-import { getWorkspacesAPI } from 'src/apis/user';
+import { getWorkspaces } from 'src/apis/user';
 import { Workspace } from 'src/types/workspace';
 
 import AddButton from './AddButton';
@@ -17,13 +17,13 @@ function WorkspaceList({ onSelectModalOpen }: WorkspaceListProps) {
    */
   const userId = 63814960;
 
-  const getWorkspaces = async (userId: number) => {
-    const { workspaces } = await getWorkspacesAPI(userId);
+  const updateWorkspaces = async (userId: number) => {
+    const { workspaces } = await getWorkspaces(userId);
     setWorkspaces(workspaces);
   };
 
   useEffect(() => {
-    getWorkspaces(userId);
+    updateWorkspaces(userId);
   }, []);
 
   return (
