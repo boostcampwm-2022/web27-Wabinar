@@ -12,18 +12,21 @@ const ACCESS_TOKEN_REQUEST_URL = "https://github.com/login/oauth/access_token";
 const USER_REQUEST_URL = "https://api.github.com/user";
 
 const getAccessToken = async (code: string) => {
+  const body = {
+    client_id: env.GITHUB_CLIENT_ID,
+    client_secret: env.GITHUB_CLIENT_SECRET,
+    code,
+  };
+  const headers = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
+
   const { data: accessTokenResponse } = await axios.post(
     ACCESS_TOKEN_REQUEST_URL,
+    body,
     {
-      client_id: env.GITHUB_CLIENT_ID,
-      client_secret: env.GITHUB_CLIENT_SECRET,
-      code,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      headers,
     }
   );
 
