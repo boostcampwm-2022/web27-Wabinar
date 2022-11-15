@@ -1,13 +1,15 @@
-@import "style/color.scss";
+@import 'style/color.scss';
 
 .container {
   position: relative;
 }
 
 .select-modal {
+  z-index: 2;
   position: absolute;
   top: 20em;
   left: 50px;
+  box-shadow: 1px 1px 3px $gray-300;
 
   .menu-list {
     li {

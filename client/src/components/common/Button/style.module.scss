@@ -1,4 +1,4 @@
-@import "style/color.scss";
+@import 'style/color.scss';
 
 .button {
   width: fit-content;
@@ -14,4 +14,8 @@
     padding: 10px;
     font-weight: 700;
   }
+}
+
+.disable {
+  background-color: $gray-300;
 }

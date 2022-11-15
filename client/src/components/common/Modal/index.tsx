@@ -1,22 +1,18 @@
-import Portal from "src/components/Portal";
-import style from "./style.module.scss";
-import { MdClose } from "@react-icons/all-files/md/MdClose";
-import cx from "classnames";
+import { MdClose } from '@react-icons/all-files/md/MdClose';
+import Portal from 'src/components/Portal';
+
+import style from './style.module.scss';
 
 interface ModalProps {
   title?: string;
-  isHaveCloseBtn?: boolean;
   children: JSX.Element;
-  className?: string;
+  onClose: () => void;
 }
 
-function Modal({
-  title,
-  isHaveCloseBtn = true,
-  children,
-  className,
-}: ModalProps) {
-  const onClickDimmer = () => {};
+function Modal({ title, children, onClose }: ModalProps) {
+  const onClickCloseBtn = () => {
+    onClose();
+  };
 
   return (
     <Portal>
@@ -26,25 +22,18 @@ function Modal({
         aria-modal
         aria-labelledby="modal"
       >
-        <div className={cx(style.container, className)}>
-          {(title || isHaveCloseBtn) && (
-            <div className={style.header}>
-              {title && <h2>{title}</h2>}
-              {isHaveCloseBtn && (
-                <span>
-                  <MdClose />
-                </span>
-              )}
-            </div>
-          )}
-
-          {children}
+        <div className={style.dimmer} onClick={onClickCloseBtn} tabIndex={0} />
+        <div className={style['out-container']}>
+          <div className={style.header} id="modal-heading">
+            <h2 className={style.title}>{title}</h2>
+            <button className={style['close-modal']} onClick={onClickCloseBtn}>
+              <MdClose size={20} color={'white'} />
+            </button>
+          </div>
+          <div className={style['inner-container']} role="document">
+            {children}
+          </div>
         </div>
-        <div
-          className={style.dimmer}
-          onClick={onClickDimmer}
-          tabIndex={0}
-        ></div>
       </div>
     </Portal>
   );
