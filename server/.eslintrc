@@ -1,10 +1,5 @@
 {
   "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "tsconfig.json",
-    "tsconfigRootDir": ".",
-    "sourceType": "module"
-  },
   "plugins": ["@typescript-eslint/eslint-plugin"],
   "extends": [
     "plugin:@typescript-eslint/recommended",
@@ -21,7 +16,6 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "no-explicit-any": "error",
     "no-nested-ternary": "error",
     "eqeqeq": "error",
     "no-console": "warn"
