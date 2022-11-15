@@ -1,8 +1,7 @@
 const { getWorkspaces } = require('./service');
 const userModel = require('@apis/user/model');
 const workspaceModel = require('@apis/workspace/model');
-const AuthorizationError = require('@errors/authorization-error');
-const CustomError = require('@errors/index');
+const { default: AuthorizationError } = require('@errors/authorization-error');
 
 jest.mock('@apis/user/model', () => {
   return { findOne: jest.fn() };
