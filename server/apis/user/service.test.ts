@@ -39,3 +39,5 @@ describe('getWorkspaces()', () => {
     );
   });
 });
+
+export {};
