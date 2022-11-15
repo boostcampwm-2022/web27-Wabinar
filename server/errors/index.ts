@@ -1,6 +1,6 @@
 import { INTERNAL_SERVER_ERROR } from '@constants/http-status';
 
-export default class CustomError extends Error {
+class CustomError extends Error {
   message!: string;
   status!: number;
 
@@ -14,3 +14,5 @@ export default class CustomError extends Error {
     this.status = status;
   }
 }
+
+export default CustomError;
