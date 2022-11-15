@@ -1,13 +1,21 @@
-import { MdAdd } from "@react-icons/all-files/md/MdAdd";
-import React from "react";
+import { MdAdd } from '@react-icons/all-files/md/MdAdd';
+import React from 'react';
 
-import style from "./style.module.scss";
+import style from './style.module.scss';
 
-function AddButton() {
+interface AddButtonProps {
+  onClick: () => void;
+}
+
+function AddButton({ onClick }: AddButtonProps) {
+  const onClickBtn = () => {
+    onClick();
+  };
+
   return (
-    <div className={style.button}>
-      <MdAdd color="white" size={15} />
-    </div>
+    <button className={style.button} onClick={onClickBtn}>
+      <MdAdd color="white" size={20} />
+    </button>
   );
 }
 

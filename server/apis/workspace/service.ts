@@ -5,6 +5,8 @@ import AuthorizationError from '@errors/authorization-error';
 import InvalidJoinError from '@errors/invalid-join-error';
 
 export const create = async (name: string) => {
+  if (!name) throw new Error('워크스페이스 이름을 입력하세요 ^^');
+
   const code = uuidv4();
 
   const workspace = await workspaceModel.create({ name, code });

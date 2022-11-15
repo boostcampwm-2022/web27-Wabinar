@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginPage from "src/pages/Login";
+
+import { LoginPage, WorkspacePage } from "./pages";
 import "style/reset.scss";
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="/workspace" element={<WorkspacePage />} />
       </Routes>
     </BrowserRouter>
   );
