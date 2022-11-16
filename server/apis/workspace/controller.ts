@@ -6,6 +6,7 @@ import { OK } from '@constants/http-status';
 
 const router = express.Router();
 
+/* POST: 워크스페이스 생성 */
 router.post(
   '/',
   asyncWrapper(async (req: Request, res: Response) => {
@@ -17,6 +18,7 @@ router.post(
   }),
 );
 
+/* POST: 워크스페이스 참여 */
 router.post(
   '/join',
   jwtAuthenticator,
@@ -26,6 +28,19 @@ router.post(
     const joinedWorkspace = await workspaceService.join(req.user.id, code);
 
     res.status(OK).send(joinedWorkspace);
+  }),
+);
+
+/* GET: 특정 워크스페이스의 멤버, 회의록 목록 */
+router.get(
+  '/:id',
+  jwtAuthenticator,
+  asyncWrapper(async (req: Request, res: Response) => {
+    const { id: workspaceId } = req.params;
+
+    const workspaceInfo = await workspaceService.info(+workspaceId);
+
+    res.send({ ...workspaceInfo });
   }),
 );
 
