@@ -2,12 +2,13 @@ import { useDropdownContext } from './DropdownContext';
 
 interface MenuProps {
   children: React.ReactNode;
+  className: string;
 }
 
-function Menu({ children }: MenuProps) {
+function Menu({ children, className }: MenuProps) {
   const { isOpen } = useDropdownContext();
 
-  return <>{isOpen && <div>{children}</div>}</>;
+  return <>{isOpen && <ul className={className}>{children}</ul>}</>;
 }
 
 export default Menu;

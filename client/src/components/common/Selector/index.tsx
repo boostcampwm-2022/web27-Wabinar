@@ -11,13 +11,14 @@ interface SelectorProps {
   trigger: JSX.Element;
   options: SelectorOption[];
   onChange: (args: any) => void;
+  className: string;
 }
 
-function Selector({ trigger, options, onChange }: SelectorProps) {
+function Selector({ trigger, options, onChange, className }: SelectorProps) {
   return (
     <Dropdown onChange={onChange}>
       <Dropdown.Trigger trigger={trigger}></Dropdown.Trigger>
-      <Dropdown.Menu>
+      <Dropdown.Menu className={className}>
         {options.map(({ id, option }) => (
           <Dropdown.Item key={id} id={id}>
             {option}

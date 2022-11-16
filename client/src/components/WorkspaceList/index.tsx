@@ -42,6 +42,7 @@ function WorkspaceList() {
           trigger={<MdAdd className={style.button} size={20} />}
           options={MENUS}
           onChange={onSelectMenu}
+          className={style['dropdown-container']}
         />
         {selectedMenu && (
           <WorkspaceModal

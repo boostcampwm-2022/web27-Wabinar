@@ -13,7 +13,7 @@ function Item({ id, children }: ItemProps) {
     setIsOpen(false);
   };
 
-  return <div onClick={onSelect}>{children}</div>;
+  return <li onClick={onSelect}>{children}</li>;
 }
 
 export default Item;
