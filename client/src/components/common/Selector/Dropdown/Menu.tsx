@@ -1,5 +1,6 @@
+import { useDropdownContext } from 'src/hooks/useDropdownContext';
+
 import { SelectorStyle } from '../types';
-import { useDropdownContext } from './DropdownContext';
 
 interface MenuProps {
   children: React.ReactNode;

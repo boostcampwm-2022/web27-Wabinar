@@ -1,4 +1,4 @@
-import { useDropdownContext } from './DropdownContext';
+import { useDropdownContext } from 'src/hooks/useDropdownContext';
 
 interface TriggerProps {
   trigger: JSX.Element;

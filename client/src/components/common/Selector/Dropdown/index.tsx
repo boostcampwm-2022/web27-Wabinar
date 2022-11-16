@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
+import DropdownContext from 'src/contexts/dropdown';
 
-import { DropdownContext } from './DropdownContext';
 import Item from './Item';
 import Menu from './Menu';
 import Trigger from './Trigger';
