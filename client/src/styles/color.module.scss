@@ -1,0 +1,25 @@
+$primary-100: #323845;
+$white: #fff;
+$black: #474747;
+$gray-100: #5c5c5c;
+$gray-200: #bbbbbb;
+$gray-300: #d9d9d9;
+$red: #cc3b3b;
+$green: #36ba2b;
+$highlight-100: #59c3ff;
+$highlight-200: #1264a3;
+$modalBackground: #29292958;
+
+:export {
+  primary100: $primary-100;
+  white: $white;
+  black: $black;
+  gray100: $gray-100;
+  gray200: $gray-200;
+  gray300: $gray-300;
+  red: $red;
+  green: $green;
+  highlight100: $highlight-100;
+  highlight200: $highlight-200;
+  modalBackground: $modalBackground;
+}

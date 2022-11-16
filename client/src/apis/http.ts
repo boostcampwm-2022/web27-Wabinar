@@ -1,7 +1,8 @@
 import axios from 'axios';
+import env from 'config';
 
-const SERVER_URL = 'http://localhost:8080';
+const SERVER_PATH = env.SERVER_PATH;
 
 export const http = axios.create({
-  baseURL: SERVER_URL,
+  baseURL: SERVER_PATH,
 });

@@ -32,7 +32,7 @@ export const login = async (code: string) => {
   const loginToken = jwt.generateAccessToken(payload);
   const refreshToken = jwt.generateRefreshToken(payload);
 
-  return { loginToken, refreshToken };
+  return { user: payload, loginToken, refreshToken };
 };
 
 export const logout = async (accessToken: string) => {

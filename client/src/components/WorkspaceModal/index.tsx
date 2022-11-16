@@ -28,7 +28,7 @@ function WorkspaceModal({
       <>
         <span className={style.text}>{text}</span>
         <input className={style.input} type="text" onChange={onInput} />
-        <Button text={btnText} isDisable={!inputValue.length} />
+        <Button text={btnText} isDisabled={!inputValue.length} />
       </>
     </Modal>
   );
