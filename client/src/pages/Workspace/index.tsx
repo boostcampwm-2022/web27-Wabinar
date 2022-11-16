@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SelcetModal from 'src/components/SelectModal';
 import WorkspaceList from 'src/components/WorkspaceList';
 import WorkspaceModal from 'src/components/WorkspaceModal';
@@ -28,6 +28,10 @@ function WorkspacePage() {
       // 참여 완료 후 로직
     }
   };
+
+  useEffect(() => {
+    if (clickedMenuId !== 3) setInputValue('');
+  }, [clickedMenuId]);
 
   return (
     <div className={style.container}>
