@@ -5,7 +5,11 @@
   "repository": "https://github.com/boostcampwm-2022/web27-Wabinar.git",
   "scripts": {
     "postinstall": "husky install",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "env": "npm run dotenv-pull",
+    "dotenv-pull": "npm run dotenv-pull:client && npm run dotenv-pull:server",
+    "dotenv-pull:client": "echo For client... && cd client && npx dotenv-vault pull development",
+    "dotenv-pull:server": "echo For server... && cd server && npx dotenv-vault pull development"
   },
   "lint-staged": {
     "client/**/*.{ts,tsx}": [
