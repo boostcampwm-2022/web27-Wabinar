@@ -16,7 +16,7 @@ function WorkspaceList({ onSelectModalOpen }: WorkspaceListProps) {
   const userContext = useContext(UserContext);
 
   const updateWorkspaces = async (userId: number) => {
-    const { workspaces } = await getWorkspaces(userId);
+    const { workspaces } = await getWorkspaces({ id: userId });
     setWorkspaces(workspaces);
   };
 

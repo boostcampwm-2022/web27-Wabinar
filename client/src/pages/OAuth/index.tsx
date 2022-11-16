@@ -18,7 +18,7 @@ function OAuthPage() {
 
   const login = async (code: string) => {
     try {
-      const authorizedUser = await postAuthLogin(code);
+      const authorizedUser = await postAuthLogin({ code });
 
       userContext.setUser(authorizedUser);
 
