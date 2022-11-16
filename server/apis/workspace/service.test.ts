@@ -1,6 +1,9 @@
 const workspaceModel = require('./model');
 const workspaceService = require('./service');
 const { default: InvalidJoinError } = require('@errors/invalid-join-error');
+const {
+  default: InvalidWorkspaceError,
+} = require('@errors/invalid-workspace-error');
 
 jest.mock('./model', () => {
   return {
@@ -12,8 +15,13 @@ jest.mock('./model', () => {
 
 jest.mock('@apis/user/model', () => {
   return {
+    find: jest.fn(),
     updateOne: jest.fn(),
   };
+});
+
+jest.mock('@apis/mom/model', () => {
+  return { find: jest.fn() };
 });
 
 const VALID_CODE = 'wab-0000-0000-0000';
@@ -88,6 +96,51 @@ describe('join', () => {
     );
 
     expect(() => workspaceService.join(USER_ID, VALID_CODE)).rejects.toThrow();
+  });
+});
+
+describe('info', () => {
+  const WORKSPACE_ID = 1;
+  const INVALID_WORKSPACE_ID = -1;
+
+  it('워크스페이스 ID가 DB에 존재할 경우 조회에 성공한다.', async () => {
+    const WORKSPACE_NAME = 'Wab';
+
+    workspaceModel.findOne.mockResolvedValueOnce({
+      id: WORKSPACE_ID,
+      name: WORKSPACE_NAME,
+      code: VALID_CODE,
+      users: [],
+      moms: [],
+    });
+
+    expect(workspaceService.info(WORKSPACE_ID)).resolves.toEqual({
+      name: WORKSPACE_NAME,
+      users: [],
+      moms: [],
+    });
+  });
+
+  it('워크스페이스 Id가 없는 경우 실패한다.', async () => {
+    expect(() => workspaceService.info()).rejects.toThrow(
+      InvalidWorkspaceError,
+    );
+  });
+
+  it('워크스페이스 Id가 DB에 존재하지 않는 경우 실패한다.', async () => {
+    workspaceModel.findOne.mockResolvedValueOnce(null);
+
+    expect(() => workspaceService.info(INVALID_WORKSPACE_ID)).rejects.toThrow(
+      InvalidWorkspaceError,
+    );
+  });
+
+  it('워크스페이스 정보 획득 실패 시 에러를 던진다.', async () => {
+    workspaceModel.findOne.mockRejectedValueOnce(
+      new Error('Some error in database operation'),
+    );
+
+    expect(() => workspaceService.info(WORKSPACE_ID)).rejects.toThrow();
   });
 });
 

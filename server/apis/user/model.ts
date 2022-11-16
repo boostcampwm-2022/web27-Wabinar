@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
 import mongoose from '@db';
 
-interface User {
+export interface User {
   id: number;
   name: string;
   avatarUrl: string;
