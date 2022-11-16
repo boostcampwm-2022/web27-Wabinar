@@ -1,8 +1,8 @@
+import { http } from './http';
 import { OK, CREATED } from './http-status';
-import { baseRequest } from './util';
 
 export const getAuth = async () => {
-  const res = await baseRequest.get(`/auth`);
+  const res = await http.get(`/auth`);
 
   if (res.status !== OK) throw new Error();
 
@@ -10,7 +10,7 @@ export const getAuth = async () => {
 };
 
 export const postAuthLogin = async (code: string) => {
-  const res = await baseRequest.post(`/auth/login`, { code });
+  const res = await http.post(`/auth/login`, { code });
 
   if (res.status !== CREATED) throw new Error();
 
@@ -18,7 +18,7 @@ export const postAuthLogin = async (code: string) => {
 };
 
 export const deleteAuthlogout = async () => {
-  const res = await baseRequest.delete(`/auth/logout`);
+  const res = await http.delete(`/auth/logout`);
 
   if (res.status !== OK) throw new Error();
 
