@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import SelcetModal from 'src/components/SelectModal';
+import SelectModal from 'src/components/SelectModal';
 import WorkspaceList from 'src/components/WorkspaceList';
 import WorkspaceModal from 'src/components/WorkspaceModal';
 import { MENU, MENUS, MODAL_MENUS } from 'src/constants/workspace';
@@ -37,7 +37,7 @@ function WorkspacePage() {
     <div className={style.container}>
       <WorkspaceList onSelectModalOpen={() => setIsOpenSelectModal(true)} />
       {isOpenSelectModal && (
-        <SelcetModal
+        <SelectModal
           className={style['select-modal']}
           onClose={() => setIsOpenSelectModal(false)}
         >
@@ -48,7 +48,7 @@ function WorkspacePage() {
               </li>
             ))}
           </ul>
-        </SelcetModal>
+        </SelectModal>
       )}
 
       {MODAL_MENUS.map(({ id, props: { title, texts, btnText } }) => {
