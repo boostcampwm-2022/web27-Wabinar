@@ -1,4 +1,4 @@
-import WorkspaceList from 'src/components/WorkspaceList';
+import WorkspaceList from 'components/WorkspaceList';
 
 function WorkspacePage() {
   return (

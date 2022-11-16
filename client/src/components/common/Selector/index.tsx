@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import Dropdown from '../Dropdown';
+import Dropdown from './Dropdown';
 
 interface SelectorOption {
   id: number;
