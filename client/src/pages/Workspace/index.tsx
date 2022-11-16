@@ -51,20 +51,18 @@ function WorkspacePage() {
         </SelectModal>
       )}
 
-      {MODAL_MENUS.map(({ id, props: { title, texts, btnText } }) => {
-        if (id === clickedMenuId)
-          return (
-            <WorkspaceModal
-              key={id}
-              {...{ title, texts, btnText }}
-              inputValue={inputValue}
-              onChange={onInput}
-              onClose={() => setClickedMenuId(0)}
-              onClick={onClickBtn}
-              isInputDisabled={clickedMenuId === MENU.JOIN_SUCCESS_ID}
-            />
-          );
-      })}
+      {clickedMenuId !== 0 && (
+        <WorkspaceModal
+          title={MODAL_MENUS[clickedMenuId].title}
+          texts={MODAL_MENUS[clickedMenuId].texts}
+          btnText={MODAL_MENUS[clickedMenuId].btnText}
+          inputValue={inputValue}
+          onChange={onInput}
+          onClose={() => setClickedMenuId(0)}
+          onClick={onClickBtn}
+          isInputDisabled={clickedMenuId === MENU.JOIN_SUCCESS_ID}
+        />
+      )}
     </div>
   );
 }
