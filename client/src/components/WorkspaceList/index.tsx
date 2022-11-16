@@ -1,5 +1,6 @@
 import { MdAdd } from '@react-icons/all-files/md/MdAdd';
-import Selector from 'components/common/Selector';
+import Selector from 'common/Selector';
+import { SelectorStyle } from 'common/Selector/types';
 import WorkspaceModal from 'components/WorkspaceModal';
 import WorkspaceThumbnaliList from 'components/WorkspaceThumbnailList';
 import { memo, useContext, useEffect, useState } from 'react';
@@ -34,6 +35,11 @@ function WorkspaceList() {
     setSelectedMenu(id);
   };
 
+  const selectorStyle: SelectorStyle = {
+    menu: style.menu,
+    dimmed: style.dimmed,
+  };
+
   return (
     <>
       <div className={style.workspace__container}>
@@ -42,7 +48,7 @@ function WorkspaceList() {
           trigger={<MdAdd className={style.button} size={20} />}
           options={MENUS}
           onChange={onSelectMenu}
-          className={style['dropdown-container']}
+          style={selectorStyle}
         />
         {selectedMenu && (
           <WorkspaceModal

@@ -1,14 +1,28 @@
+import { SelectorStyle } from '../types';
 import { useDropdownContext } from './DropdownContext';
 
 interface MenuProps {
   children: React.ReactNode;
-  className: string;
+  style: SelectorStyle;
 }
 
-function Menu({ children, className }: MenuProps) {
-  const { isOpen } = useDropdownContext();
+function Menu({ children, style }: MenuProps) {
+  const { isOpen, setIsOpen } = useDropdownContext();
 
-  return <>{isOpen && <ul className={className}>{children}</ul>}</>;
+  const onClose = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      {isOpen && (
+        <>
+          <ul className={style.menu}>{children}</ul>
+          <div className={style.dimmed} onClick={onClose} />
+        </>
+      )}
+    </>
+  );
 }
 
 export default Menu;

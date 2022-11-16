@@ -1,24 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import Dropdown from './Dropdown';
+import { SelectorProps } from './types';
 
-interface SelectorOption {
-  id: number;
-  option: React.ReactNode;
-}
-
-interface SelectorProps {
-  trigger: JSX.Element;
-  options: SelectorOption[];
-  onChange: (args: any) => void;
-  className: string;
-}
-
-function Selector({ trigger, options, onChange, className }: SelectorProps) {
+function Selector({ trigger, options, onChange, style }: SelectorProps) {
   return (
     <Dropdown onChange={onChange}>
       <Dropdown.Trigger trigger={trigger}></Dropdown.Trigger>
-      <Dropdown.Menu className={className}>
+      <Dropdown.Menu style={style}>
         {options.map(({ id, option }) => (
           <Dropdown.Item key={id} id={id}>
             {option}

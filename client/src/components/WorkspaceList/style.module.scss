@@ -22,8 +22,9 @@
   cursor: pointer;
 }
 
-.dropdown-container {
+.menu {
   position: relative;
+  z-index: 1;
   top: -8px;
   left: 70px;
 
@@ -55,4 +56,13 @@
       padding-bottom: 0;
     }
   }
+}
+
+.dimmed {
+  position: fixed;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
 }
