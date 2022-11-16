@@ -1,11 +1,8 @@
-import cx from 'classnames';
-import Loader from 'components/common/Loader';
 import { useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { postAuthLogin } from 'src/apis/auth';
 import UserContext from 'src/contexts/user';
-
-import style from './style.module.scss';
+import LoadingPage from 'src/pages/Loading';
 
 function OAuthPage() {
   const userContext = useContext(UserContext);
@@ -13,11 +10,7 @@ function OAuthPage() {
   if (userContext === null) {
     console.log('유저 컨텍스트를 찾을 수 없습니다.');
 
-    return (
-      <div className={cx(style.container)}>
-        <Loader size={100} />
-      </div>
-    );
+    return <LoadingPage />;
   }
 
   const location = useLocation();
@@ -25,7 +18,7 @@ function OAuthPage() {
 
   const login = async (code: string) => {
     try {
-      const authorizedUser = await postAuthLogin(code);
+      const authorizedUser = await postAuthLogin({ code });
 
       userContext.setUser(authorizedUser);
 
@@ -47,11 +40,7 @@ function OAuthPage() {
     login(code);
   }, []);
 
-  return (
-    <div className={cx(style.container)}>
-      <Loader size={100} />
-    </div>
-  );
+  return <LoadingPage />;
 }
 
 export default OAuthPage;

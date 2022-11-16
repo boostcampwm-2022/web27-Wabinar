@@ -2,19 +2,20 @@ import express, { Request, Response } from 'express';
 import asyncWrapper from '@utils/async-wrapper';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
 import * as workspaceService from './service';
-import { OK } from '@constants/http-status';
+import { CREATED } from '@constants/http-status';
+import { PostParams, PostJoinParams } from '@params/workspace';
 
 const router = express.Router();
 
 /* POST: 워크스페이스 생성 */
 router.post(
   '/',
-  asyncWrapper(async (req: Request, res: Response) => {
+  asyncWrapper(async (req: Request<PostParams>, res: Response) => {
     const { name } = req.body;
 
     const workspace = await workspaceService.create(name);
 
-    res.status(OK).send({ ...workspace });
+    res.status(CREATED).send({ ...workspace });
   }),
 );
 
@@ -22,12 +23,12 @@ router.post(
 router.post(
   '/join',
   jwtAuthenticator,
-  asyncWrapper(async (req: Request, res: Response) => {
+  asyncWrapper(async (req: Request<PostJoinParams>, res: Response) => {
     const { code } = req.body;
 
     const joinedWorkspace = await workspaceService.join(req.user.id, code);
 
-    res.status(OK).send(joinedWorkspace);
+    res.status(CREATED).send(joinedWorkspace);
   }),
 );
 

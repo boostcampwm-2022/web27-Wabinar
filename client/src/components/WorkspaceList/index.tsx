@@ -1,5 +1,6 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useContext, useEffect, useState } from 'react';
 import { getWorkspaces } from 'src/apis/user';
+import UserContext from 'src/contexts/user';
 import { Workspace } from 'src/types/workspace';
 
 import AddButton from './AddButton';
@@ -12,18 +13,18 @@ interface WorkspaceListProps {
 
 function WorkspaceList({ onSelectModalOpen }: WorkspaceListProps) {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  /**
-   * 나중에 login하고 context생기면 바꿔 끼우면 돼요.
-   */
-  const userId = 63814960;
+  const userContext = useContext(UserContext);
 
   const updateWorkspaces = async (userId: number) => {
-    const { workspaces } = await getWorkspaces(userId);
+    const { workspaces } = await getWorkspaces({ id: userId });
     setWorkspaces(workspaces);
   };
 
   useEffect(() => {
-    updateWorkspaces(userId);
+    if (!userContext) {
+      return;
+    }
+    updateWorkspaces(userContext.user.id);
   }, []);
 
   return (
