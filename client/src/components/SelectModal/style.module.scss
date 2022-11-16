@@ -1,17 +1,12 @@
 @import 'styles/color.module.scss';
 
-.modal {
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.container {
+  position: relative;
 
-  .container {
+  .modal {
+    position: absolute;
+    top: 0;
+    z-index: 100;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,12 +21,12 @@
     font-size: 14px;
     margin: auto;
   }
+
   .dimmer {
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: $modalBackground;
   }
 }

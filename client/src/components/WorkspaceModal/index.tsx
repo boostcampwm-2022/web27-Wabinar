@@ -1,37 +1,46 @@
 import { BiCopy } from '@react-icons/all-files/bi/BiCopy';
 import cx from 'classnames';
+import { useState, useEffect } from 'react';
+import { MENU, MODAL_MENUS } from 'src/constants/workspace';
 
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import style from './style.module.scss';
 
 interface WorkspaceModalProps {
-  title: string;
-  texts: string[];
-  btnText: string;
-  inputValue: string;
-  onChange?: (value: string) => void;
-  onClose: () => void;
-  onClick: () => void;
-  isInputDisabled: boolean;
+  selectedMenu: number;
+  setSelectedMenu: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 function WorkspaceModal({
-  title,
-  texts,
-  btnText,
-  inputValue,
-  onChange,
-  onClose,
-  onClick,
-  isInputDisabled,
+  selectedMenu,
+  setSelectedMenu,
 }: WorkspaceModalProps) {
-  const onInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onChange) onChange(e.target.value);
+  const [inputValue, setInputValue] = useState('');
+
+  const { title, texts, btnText } = MODAL_MENUS[selectedMenu];
+  const isCreatedModal = selectedMenu === MENU.CREATED_ID;
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
   };
 
+  const onSubmit = () => {
+    if (selectedMenu === MENU.CREATE_ID) {
+      // 생성 완료 후 로직
+      setSelectedMenu(MENU.CREATED_ID);
+      setInputValue('WAB123456'); // TODO: 받아온 참여코드 넣어줄 것
+    } else if (selectedMenu === MENU.JOIN_ID) {
+      // 참여 완료 후 로직
+    }
+  };
+
+  useEffect(() => {
+    if (selectedMenu !== MENU.CREATED_ID) setInputValue('');
+  }, [selectedMenu]);
+
   return (
-    <Modal title={title} onClose={onClose}>
+    <Modal title={title} onClose={() => setSelectedMenu(null)}>
       <>
         {texts.map((text) => (
           <p key={text} className={style.text}>
@@ -40,20 +49,20 @@ function WorkspaceModal({
         ))}
 
         <div className={style['input-section']}>
-          {isInputDisabled && <BiCopy className={style['copy-icon']} />}
+          {isCreatedModal && <BiCopy className={style['copy-icon']} />}
           <input
-            className={cx(style.input, { [style.disabled]: isInputDisabled })}
+            className={cx(style.input, { [style.disabled]: isCreatedModal })}
             type="text"
             value={inputValue}
-            onChange={onInput}
-            disabled={isInputDisabled}
+            onChange={onChange}
+            disabled={isCreatedModal}
           />
         </div>
 
         <Button
           text={btnText}
           isDisabled={!inputValue.length}
-          onClick={onClick}
+          onClick={onSubmit}
         />
       </>
     </Modal>
