@@ -41,7 +41,7 @@ export const info = async (workspaceId: number) => {
   if (!workspace)
     throw new InvalidWorkspaceError('존재하지 않는 워크스페이스에요 ^^');
 
-  const { users, moms } = workspace;
+  const { name, users, moms } = workspace;
 
   const usersInfo: Pick<User, 'name' | 'avatarUrl'>[] = [];
   const momsInfo: string[] = [];
@@ -64,5 +64,5 @@ export const info = async (workspaceId: number) => {
     }
   }
 
-  return { usersInfo, momsInfo };
+  return { workspaceName: name, usersInfo, momsInfo };
 };
