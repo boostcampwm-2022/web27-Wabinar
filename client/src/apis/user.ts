@@ -1,11 +1,10 @@
 import { http } from './http';
+import { OK } from './http-status';
 
 export const getWorkspaces = async (userId: number) => {
-  try {
-    const { data } = await http.get(`/user/${userId}/workspace`);
+  const res = await http.get(`/user/${userId}/workspace`);
 
-    return data;
-  } catch (e) {
-    return;
-  }
+  if (res.status !== OK) throw new Error();
+
+  return res.data;
 };

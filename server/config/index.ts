@@ -12,4 +12,5 @@ export default {
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+  CLIENT_PATH: process.env.CLIENT_PATH,
 };

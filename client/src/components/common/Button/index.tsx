@@ -6,18 +6,20 @@ const cx = classNames.bind(style);
 
 interface ButtonProps {
   text: string;
+  href?: string;
   icon?: JSX.Element;
   className?: string;
-  isDisable?: boolean;
+  isDisabled?: boolean;
   color?: string;
   onClick?: () => void;
 }
 
 function Button({
   text,
+  href,
   icon,
   className,
-  isDisable = false,
+  isDisabled = false,
   color,
   onClick,
 }: ButtonProps) {
@@ -25,16 +27,21 @@ function Button({
     if (onClick) onClick();
   };
 
-  return (
-    <div
-      className={cx(style.button, className, { disable: isDisable })}
+  return href ? (
+    <a href={href} className={cx(style.button, className)}>
+      {icon}
+      <span>{text}</span>
+    </a>
+  ) : (
+    <button
+      className={cx(style.button, className, { disable: isDisabled })}
+      disabled={isDisabled}
+      onClick={onClickBtn}
       style={{ backgroundColor: color }}
     >
       {icon}
-      <button disabled={isDisable} onClick={onClickBtn}>
-        {text}
-      </button>
-    </div>
+      <span>{text}</span>
+    </button>
   );
 }
 

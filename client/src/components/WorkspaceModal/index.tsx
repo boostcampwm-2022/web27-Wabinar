@@ -52,7 +52,7 @@ function WorkspaceModal({
 
         <Button
           text={btnText}
-          isDisable={!inputValue.length}
+          isDisabled={!inputValue.length}
           onClick={onClick}
         />
       </>

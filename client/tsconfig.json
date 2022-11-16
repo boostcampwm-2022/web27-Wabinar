@@ -3,7 +3,9 @@
     "baseUrl": ".",
     "paths": {
       "src/*": ["./src/*"],
-      "style/*": ["./src/styles/*"]
+      "components/*": ["./src/components/*"],
+      "config": ["./src/config"],
+      "styles/*": ["./src/styles/*"]
     },
     "target": "ESNext",
     "useDefineForClassFields": true,
