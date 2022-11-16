@@ -19,7 +19,6 @@
     "esModuleInterop": true,
     "downlevelIteration": true,
     "typeRoots": ["../node_modules/@types", "./@types"],
-    "rootDir": ".",
     "outDir": "./dist",
     "plugins": [
       {

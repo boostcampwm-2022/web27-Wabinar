@@ -3,6 +3,7 @@ import asyncWrapper from '@utils/async-wrapper';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
 import * as authService from './service';
 import { OK, CREATED } from '@constants/http-status';
+import { postLoginParams } from '@params/auth';
 
 interface CookieOptions {
   httpOnly: boolean;
@@ -23,7 +24,7 @@ router.get(
 
 router.post(
   '/login',
-  asyncWrapper(async (req: Request, res: Response) => {
+  asyncWrapper(async (req: Request<postLoginParams>, res: Response) => {
     const { code } = req.body;
 
     const { user, loginToken, refreshToken } = await authService.login(code);
