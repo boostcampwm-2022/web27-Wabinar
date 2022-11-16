@@ -49,3 +49,28 @@
   padding: 12px;
   cursor: pointer;
 }
+
+.select-modal {
+  top: 20em;
+  box-shadow: 1px 1px 3px $gray-300;
+
+  ul {
+    li {
+      width: 80px;
+      padding: 8px 15px;
+      cursor: pointer;
+
+      &:not(:last-of-type) {
+        border-bottom: 1px solid $gray-200;
+      }
+
+      &:first-child {
+        padding-top: 0;
+      }
+
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+  }
+}

@@ -6,8 +6,8 @@ export const MENU = {
 Object.freeze(MENU);
 
 export const MENUS = [
-  { id: 1, text: '생성하기' },
-  { id: 2, text: '참여하기' },
+  { id: 1, option: '생성하기' },
+  { id: 2, option: '참여하기' },
 ];
 Object.freeze(MENUS);
 

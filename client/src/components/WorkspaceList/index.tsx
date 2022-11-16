@@ -1,6 +1,8 @@
+import Selector from 'components/common/Selector';
 import { memo, useContext, useEffect, useState } from 'react';
 import { getWorkspaces } from 'src/apis/user';
-import WorkspaceSelectModal from 'src/components/WorkspaceList/WorkspaceSelectModal';
+import WorkspaceModal from 'src/components/WorkspaceModal';
+import { MENUS } from 'src/constants/workspace';
 import UserContext from 'src/contexts/user';
 import { Workspace } from 'src/types/workspace';
 
@@ -12,7 +14,6 @@ function WorkspaceList() {
   const userContext = useContext(UserContext);
 
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const updateWorkspaces = async (userId: number) => {
     const { workspaces } = await getWorkspaces({ id: userId });
@@ -27,17 +28,27 @@ function WorkspaceList() {
     updateWorkspaces(userContext.user.id);
   }, []);
 
+  const [selectedMenu, setSelectedMenu] = useState<number | null>(null);
+
+  const onSelectMenu = (id: number) => {
+    setSelectedMenu(id);
+  };
+
   return (
     <>
       <div className={style.workspace__container}>
         <WorkspaceThumbnaliList workspaces={workspaces} />
-        <AddButton onClick={() => setIsOpen(true)} />
-
-        <WorkspaceSelectModal
-          className={style['select-modal']}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
+        <Selector
+          trigger={<AddButton />}
+          options={MENUS}
+          onChange={onSelectMenu}
         />
+        {selectedMenu && (
+          <WorkspaceModal
+            selectedMenu={selectedMenu}
+            setSelectedMenu={setSelectedMenu}
+          />
+        )}
       </div>
     </>
   );
