@@ -5,7 +5,8 @@
       "src/*": ["./src/*"],
       "components/*": ["./src/components/*"],
       "config": ["./src/config"],
-      "styles/*": ["./src/styles/*"]
+      "styles/*": ["./src/styles/*"],
+      "params/*": ["../types/params/*"]
     },
     "target": "ESNext",
     "useDefineForClassFields": true,
