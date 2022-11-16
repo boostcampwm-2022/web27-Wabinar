@@ -17,7 +17,7 @@ export const login = async (code: string) => {
     avatar_url: avatarUrl,
   } = await getGithubUser(accessToken, tokenType);
 
-  const isSignedUp = userModel.exists({ id });
+  const isSignedUp = await userModel.exists({ id });
 
   if (!isSignedUp) {
     await userModel.create({
