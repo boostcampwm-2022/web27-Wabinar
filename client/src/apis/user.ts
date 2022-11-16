@@ -1,11 +1,11 @@
-import { baseRequest } from './util';
+import { http } from './http';
 
 export const getWorkspaces = async (userId: number) => {
   try {
-    const { data } = await baseRequest.get(`/user/${userId}/workspace`);
+    const { data } = await http.get(`/user/${userId}/workspace`);
 
     return data;
   } catch (e) {
-    console.log(e);
+    return;
   }
 };
