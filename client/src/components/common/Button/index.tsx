@@ -11,6 +11,7 @@ interface ButtonProps {
   className?: string;
   isDisabled?: boolean;
   color?: string;
+  onClick?: () => void;
 }
 
 function Button({
@@ -20,7 +21,12 @@ function Button({
   className,
   isDisabled = false,
   color,
+  onClick,
 }: ButtonProps) {
+  const onClickBtn = () => {
+    if (onClick) onClick();
+  };
+
   return href ? (
     <a href={href} className={cx(style.button, className)}>
       {icon}
@@ -28,8 +34,9 @@ function Button({
     </a>
   ) : (
     <button
-      className={cx(style.button, className)}
+      className={cx(style.button, className, { disable: isDisabled })}
       disabled={isDisabled}
+      onClick={onClickBtn}
       style={{ backgroundColor: color }}
     >
       {icon}
