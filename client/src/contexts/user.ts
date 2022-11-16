@@ -7,8 +7,8 @@ export interface User {
 }
 
 interface IUserContext {
-  user?: User;
-  setUser: Dispatch<SetStateAction<User>>;
+  user: User;
+  setUser: Dispatch<SetStateAction<User | null>>;
 }
 
 const UserContext = createContext<IUserContext | null>(null);

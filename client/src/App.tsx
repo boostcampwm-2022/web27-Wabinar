@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
 import UserContext, { User } from 'src/contexts/user';
-import { LoginPage, OAuthPage, WorkspacePage } from 'src/pages';
+import { LoadingPage, LoginPage, OAuthPage, WorkspacePage } from 'src/pages';
 import 'styles/reset.scss';
 
 function App() {
-  const [user, setUser] = useState<User>({ id: -1, name: '', avatarUrl: '' });
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   const autoLogin = async () => {
@@ -22,7 +22,7 @@ function App() {
     autoLogin();
   }, []);
 
-  return (
+  return user ? (
     <UserContext.Provider value={{ user, setUser }}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
@@ -30,6 +30,8 @@ function App() {
         <Route path="/workspace" element={<WorkspacePage />} />
       </Routes>
     </UserContext.Provider>
+  ) : (
+    <LoadingPage />
   );
 }
 
