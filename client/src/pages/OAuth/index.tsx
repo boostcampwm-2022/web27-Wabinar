@@ -8,7 +8,17 @@ import UserContext from 'src/contexts/user';
 import style from './style.module.scss';
 
 function OAuthPage() {
-  const { setUser } = useContext(UserContext);
+  const userContext = useContext(UserContext);
+
+  if (userContext === null) {
+    console.log('유저 컨텍스트를 찾을 수 없습니다.');
+
+    return (
+      <>
+        <Loader size={100} />
+      </>
+    );
+  }
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -17,7 +27,8 @@ function OAuthPage() {
     try {
       const authorizedUser = await postAuthLogin(code);
 
-      setUser(authorizedUser);
+      userContext.setUser(authorizedUser);
+
       navigate('/workspace');
     } catch (e) {
       navigate('/');
@@ -28,9 +39,12 @@ function OAuthPage() {
     const search = new URLSearchParams(location.search);
     const code = search.get('code');
 
-    if (!code) navigate('/');
+    if (!code) {
+      navigate('/');
+      return;
+    }
 
-    login(code!);
+    login(code);
   }, []);
 
   return (

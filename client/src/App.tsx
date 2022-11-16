@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
-import UserContext from 'src/contexts/user';
+import UserContext, { User } from 'src/contexts/user';
 import { LoginPage, OAuthPage, WorkspacePage } from 'src/pages';
 import 'styles/reset.scss';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User>({ id: -1, name: '', avatarUrl: '' });
   const navigate = useNavigate();
 
   const autoLogin = async () => {
