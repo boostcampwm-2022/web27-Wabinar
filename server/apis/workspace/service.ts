@@ -34,7 +34,7 @@ export const join = async (userId: number, code: string) => {
 };
 
 export const info = async (workspaceId: number) => {
-  if (!workspaceId) throw new InvalidJoinError('잘못된 접근이에요 ^^');
+  if (!workspaceId) throw new InvalidWorkspaceError('잘못된 접근이에요 ^^');
 
   const workspace = await workspaceModel.findOne({ id: workspaceId });
 
@@ -43,17 +43,16 @@ export const info = async (workspaceId: number) => {
 
   const { name, users: userIds, moms: momsIds } = workspace;
 
-  const users: Pick<User, 'name' | 'avatarUrl'>[] = await userModel.find(
-    {
-      id: { $in: userIds },
-    },
-    { name: 1, avatarUrl: 1, _id: 0 },
-  );
+  const users: Pick<User, 'name' | 'avatarUrl'>[] =
+    (await userModel.find(
+      {
+        id: { $in: userIds },
+      },
+      { name: 1, avatarUrl: 1, _id: 0 },
+    )) || [];
 
-  const moms: string[] = await momModel.find(
-    { id: { $in: momsIds } },
-    { name: 1 },
-  );
+  const moms: string[] =
+    (await momModel.find({ id: { $in: momsIds } }, { name: 1 })) || [];
 
   return { name, users, moms };
 };
