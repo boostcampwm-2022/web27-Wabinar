@@ -1,11 +1,16 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import Dropdown from '../Dropdown';
 
+interface SelectorOption {
+  id: number;
+  option: React.ReactNode;
+}
+
 interface SelectorProps {
   trigger: JSX.Element;
-  options: string[];
-  onChange: () => void;
+  options: SelectorOption[];
+  onChange: (args: any) => void;
 }
 
 function Selector({ trigger, options, onChange }: SelectorProps) {
@@ -13,8 +18,10 @@ function Selector({ trigger, options, onChange }: SelectorProps) {
     <Dropdown onChange={onChange}>
       <Dropdown.Trigger trigger={trigger}></Dropdown.Trigger>
       <Dropdown.Menu>
-        {options.map((option, idx) => (
-          <Dropdown.Item key={idx}>{option}</Dropdown.Item>
+        {options.map(({ id, option }) => (
+          <Dropdown.Item key={id} id={id}>
+            {option}
+          </Dropdown.Item>
         ))}
       </Dropdown.Menu>
     </Dropdown>

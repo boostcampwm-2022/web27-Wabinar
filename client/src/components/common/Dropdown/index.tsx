@@ -1,28 +1,14 @@
-import React, { useState, useContext, createContext } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState } from 'react';
 
-interface IDropdownContext {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onChange: (arg: any) => void;
-}
-
-const DropdownContext = createContext<IDropdownContext | null>(null);
-
-function useDropdownContext() {
-  const context = useContext(DropdownContext);
-
-  if (!context)
-    throw new Error(
-      'DropdownContext는 정의된 스코프 안에서만 사용 가능해요 ^^',
-    );
-
-  return context;
-}
+import { DropdownContext } from './DropdownContext';
+import Item from './Item';
+import Menu from './Menu';
+import Trigger from './Trigger';
 
 interface DropdownProps {
   children: React.ReactNode;
-  onChange: () => void;
+  onChange: (args: any) => void;
 }
 
 function Dropdown({ children, onChange }: DropdownProps) {
@@ -39,49 +25,6 @@ function Dropdown({ children, onChange }: DropdownProps) {
       {children}
     </DropdownContext.Provider>
   );
-}
-
-interface TriggerProps {
-  trigger: JSX.Element;
-}
-
-function Trigger({ trigger }: TriggerProps) {
-  const { setIsOpen } = useDropdownContext();
-
-  return (
-    <div
-      onClick={() => {
-        setIsOpen((isOpen) => !isOpen);
-      }}
-    >
-      {trigger}
-    </div>
-  );
-}
-
-interface MenuProps {
-  children: React.ReactNode;
-}
-
-function Menu({ children }: MenuProps) {
-  const { isOpen } = useDropdownContext();
-
-  return <>{isOpen && <div>{children}</div>}</>;
-}
-
-interface ItemProps {
-  children: React.ReactNode;
-}
-
-function Item({ children }: ItemProps) {
-  const { setIsOpen, onChange } = useDropdownContext();
-
-  const onSelect = () => {
-    onChange(children);
-    setIsOpen(false);
-  };
-
-  return <div onClick={onSelect}>{children}</div>;
 }
 
 Dropdown.Trigger = Trigger;
