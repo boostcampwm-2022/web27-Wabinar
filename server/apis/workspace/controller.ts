@@ -15,7 +15,7 @@ router.post(
 
     const workspace = await workspaceService.create(name);
 
-    res.status(CREATED).send({ ...workspace });
+    res.status(CREATED).send(workspace);
   }),
 );
 
@@ -39,9 +39,9 @@ router.get(
   asyncWrapper(async (req: Request, res: Response) => {
     const { id: workspaceId } = req.params;
 
-    const workspaceInfo = await workspaceService.info(+workspaceId);
+    const workspaceInfo = await workspaceService.info(Number(workspaceId));
 
-    res.send({ ...workspaceInfo });
+    res.send(workspaceInfo);
   }),
 );
 
