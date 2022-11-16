@@ -3,7 +3,7 @@ import asyncWrapper from '@utils/async-wrapper';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
 import * as workspaceService from './service';
 import { CREATED } from '@constants/http-status';
-import { PostParams, PostJoinParams } from '@params/workspace';
+import { PostParams, PostJoinParams, GetInfoParams } from '@params/workspace';
 
 const router = express.Router();
 
@@ -36,7 +36,7 @@ router.post(
 router.get(
   '/:id',
   jwtAuthenticator,
-  asyncWrapper(async (req: Request, res: Response) => {
+  asyncWrapper(async (req: Request<GetInfoParams>, res: Response) => {
     const { id: workspaceId } = req.params;
 
     const workspaceInfo = await workspaceService.info(Number(workspaceId));
