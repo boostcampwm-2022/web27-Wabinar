@@ -14,9 +14,9 @@ function OAuthPage() {
     console.log('유저 컨텍스트를 찾을 수 없습니다.');
 
     return (
-      <>
+      <div className={cx(style.container)}>
         <Loader size={100} />
-      </>
+      </div>
     );
   }
 
