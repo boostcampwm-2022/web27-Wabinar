@@ -1,7 +1,7 @@
-import BubblesIcon from 'components//common/Icon/Bubbles';
-import GithubIcon from 'components//common/Icon/Github';
-import LogoIcon from 'components//common/Icon/Logo';
-import Button from 'components/common/Button';
+import Button from 'common/Button';
+import BubblesIcon from 'common/Icon/Bubbles';
+import GithubIcon from 'common/Icon/Github';
+import LogoIcon from 'common/Icon/Logo';
 import env from 'config';
 
 import style from './style.module.scss';

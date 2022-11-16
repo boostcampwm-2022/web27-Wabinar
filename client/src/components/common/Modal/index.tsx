@@ -1,5 +1,5 @@
 import { MdClose } from '@react-icons/all-files/md/MdClose';
-import Portal from 'components//common/Modal/Portal';
+import Portal from 'common/Modal/Portal';
 
 import style from './style.module.scss';
 
