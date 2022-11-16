@@ -1,7 +1,7 @@
-export interface postParams {
+export interface PostParams {
   name: string;
 }
 
-export interface postJoinParams {
+export interface PostJoinParams {
   code: string;
 }

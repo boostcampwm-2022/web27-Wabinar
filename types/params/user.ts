@@ -1,3 +1,3 @@
-export interface getWorkspaceParams {
+export interface GetWorkspaceParams {
   id: number;
 }
