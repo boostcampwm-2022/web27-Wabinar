@@ -41,28 +41,19 @@ export const info = async (workspaceId: number) => {
   if (!workspace)
     throw new InvalidWorkspaceError('존재하지 않는 워크스페이스에요 ^^');
 
-  const { name, users, moms } = workspace;
+  const { name, users: usersInfo, moms: momsInfo } = workspace;
 
-  const usersInfo: Pick<User, 'name' | 'avatarUrl'>[] = [];
-  const momsInfo: string[] = [];
+  const users: Pick<User, 'name' | 'avatarUrl'>[] = await userModel.find(
+    {
+      id: { $in: usersInfo },
+    },
+    { name: 1, avatarUrl: 1, _id: 0 },
+  );
 
-  for await (const id of users) {
-    const user = await userModel.findOne({ id });
+  const moms: string[] = await momModel.find(
+    { id: { $in: momsInfo } },
+    { name: 1 },
+  );
 
-    if (user) {
-      const { name, avatarUrl } = user;
-      usersInfo.push({ name, avatarUrl });
-    }
-  }
-
-  for await (const id of moms) {
-    const mom = await momModel.findOne({ id });
-
-    if (mom) {
-      const { name } = mom;
-      momsInfo.push(name);
-    }
-  }
-
-  return { workspaceName: name, usersInfo, momsInfo };
+  return { name, users, moms };
 };
