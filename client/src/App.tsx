@@ -19,7 +19,7 @@ function App() {
     setIsLoaded(true);
 
     if (!currentUser) {
-      if (location.pathname !== '/') navigate('/');
+      if (location.pathname === '/workspace') navigate('/');
       return;
     }
 
