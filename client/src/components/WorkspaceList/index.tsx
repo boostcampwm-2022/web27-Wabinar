@@ -1,10 +1,10 @@
 import Selector from 'common/Selector';
 import WorkspaceModal from 'components/WorkspaceModal';
 import WorkspaceThumbnaliList from 'components/WorkspaceThumbnailList';
-import { memo, useContext, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { getWorkspaces } from 'src/apis/user';
 import { MENUS } from 'src/constants/workspace';
-import UserContext from 'src/contexts/user';
+import { useUserContext } from 'src/hooks/useUserContext';
 import { SelectorStyle } from 'src/types/selector';
 import { Workspace } from 'src/types/workspace';
 
@@ -12,7 +12,7 @@ import AddButton from './AddButton';
 import style from './style.module.scss';
 
 function WorkspaceList() {
-  const userContext = useContext(UserContext);
+  const userContext = useUserContext();
 
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
@@ -22,7 +22,7 @@ function WorkspaceList() {
   };
 
   useEffect(() => {
-    if (!userContext) {
+    if (!userContext.user) {
       return;
     }
 

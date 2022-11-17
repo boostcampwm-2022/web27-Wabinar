@@ -1,13 +1,8 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
-
-export interface User {
-  id: number;
-  name: string;
-  avatarUrl: string;
-}
+import { User } from 'src/types/user';
 
 interface IUserContext {
-  user: User;
+  user: User | null;
   setUser: Dispatch<SetStateAction<User | null>>;
 }
 
