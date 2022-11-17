@@ -19,6 +19,7 @@ function CreateSuccessModal({
       onClose={onClose}
       onSubmit={onSubmit}
       isDisabled
+      inputValue="WAB1234"
     />
   );
 }
