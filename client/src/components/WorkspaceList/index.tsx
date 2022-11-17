@@ -4,6 +4,7 @@ import WorkspaceThumbnaliList from 'components/WorkspaceThumbnailList';
 import { memo, useEffect, useState } from 'react';
 import { getWorkspaces } from 'src/apis/user';
 import { MENUS } from 'src/constants/workspace';
+import SetWorkspacesContext from 'src/contexts/set-workspaces';
 import { useUserContext } from 'src/hooks/useUserContext';
 import { SelectorStyle } from 'src/types/selector';
 import { Workspace } from 'src/types/workspace';
@@ -41,7 +42,7 @@ function WorkspaceList() {
   };
 
   return (
-    <>
+    <SetWorkspacesContext.Provider value={setWorkspaces}>
       <div className={style.workspace__container}>
         <WorkspaceThumbnaliList workspaces={workspaces} />
         <Selector
@@ -55,7 +56,7 @@ function WorkspaceList() {
           setSelectedMenu={setSelectedMenu}
         />
       </div>
-    </>
+    </SetWorkspacesContext.Provider>
   );
 }
 

@@ -22,10 +22,20 @@
     border-radius: 10px;
     padding: 10px;
     font-size: 14px;
-    margin: 15px 0;
+    margin-top: 15px;
   }
 }
 
 .disabled {
   text-align: center;
+}
+
+.invalid {
+  border: 1px solid $red !important;
+}
+
+.error-message {
+  margin: 10px;
+  color: $red;
+  font-size: 12px;
 }
