@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { postWorkspace, postWorkspaceJoin } from 'src/apis/workspace';
 import { MENU } from 'src/constants/workspace';
 import { useSetWorkspaces } from 'src/hooks/useSetWorkspaces';
-import { useUserContext } from 'src/hooks/useUserContext';
 
 import FormModal, { ModalContents } from './FormModal';
 
