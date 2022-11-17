@@ -55,3 +55,15 @@
     }
   }
 }
+
+.dark-modal {
+  .out-container {
+    background-color: $primary-100;
+
+    .header {
+      background-color: $primary-100;
+      color: $white;
+      border-bottom: 1px solid $white;
+    }
+  }
+}

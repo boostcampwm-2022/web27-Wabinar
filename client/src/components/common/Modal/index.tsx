@@ -1,19 +1,23 @@
 import { MdClose } from '@react-icons/all-files/md/MdClose';
+import classNames from 'classnames/bind';
 import Portal from 'common/Modal/Portal';
 
 import style from './style.module.scss';
 
+const cx = classNames.bind(style);
+
 interface ModalProps {
   title?: string;
+  isDark?: boolean;
   children: JSX.Element;
   onClose: () => void;
 }
 
-function Modal({ title, children, onClose }: ModalProps) {
+function Modal({ title, isDark = false, children, onClose }: ModalProps) {
   return (
     <Portal>
       <div
-        className={style.modal}
+        className={cx(style.modal, { 'dark-modal': isDark })}
         role="alertdialog"
         aria-modal
         aria-labelledby="modal"
