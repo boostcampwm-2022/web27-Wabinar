@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import Loader from 'components/common/Loader';
+import Loader from 'common/Loader';
 
 import style from './style.module.scss';
 
