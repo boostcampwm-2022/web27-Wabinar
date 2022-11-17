@@ -1,11 +1,11 @@
 import Selector from 'common/Selector';
-import { SelectorStyle } from 'common/Selector/types';
 import WorkspaceModal from 'components/WorkspaceModal';
 import WorkspaceThumbnaliList from 'components/WorkspaceThumbnailList';
 import { memo, useContext, useEffect, useState } from 'react';
 import { getWorkspaces } from 'src/apis/user';
 import { MENUS } from 'src/constants/workspace';
 import UserContext from 'src/contexts/user';
+import { SelectorStyle } from 'src/types/selector';
 import { Workspace } from 'src/types/workspace';
 
 import AddButton from './AddButton';

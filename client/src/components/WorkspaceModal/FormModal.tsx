@@ -1,6 +1,5 @@
 import { BiCopy } from '@react-icons/all-files/bi/BiCopy';
 import cx from 'classnames';
-import { useState } from 'react';
 
 import Button from '../common/Button';
 import Modal from '../common/Modal';
@@ -19,6 +18,8 @@ interface ModalContainerProps {
   onClose: () => void;
   onSubmit: () => void;
   isDisabled?: boolean;
+  inputValue: string;
+  setInputValue?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 function FormModal({
@@ -28,11 +29,11 @@ function FormModal({
   onClose,
   onSubmit,
   isDisabled = false,
+  inputValue,
+  setInputValue,
 }: ModalContainerProps) {
-  const [inputValue, setInputValue] = useState('');
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    if (setInputValue) setInputValue(e.target.value);
   };
 
   return (

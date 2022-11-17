@@ -1,5 +1,6 @@
+import { SelectorProps } from 'src/types/selector';
+
 import Dropdown from './Dropdown';
-import { SelectorProps } from './types';
 
 function Selector({ TriggerElement, options, onChange, style }: SelectorProps) {
   return (
