@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "node-dev index.ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc && tsc-alias"
   },
   "packageManager": "yarn@3.2.4",
   "devDependencies": {
