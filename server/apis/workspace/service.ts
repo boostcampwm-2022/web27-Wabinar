@@ -27,8 +27,8 @@ export const join = async (userId: number, code: string) => {
 
   const { id, name } = workspace;
 
-  await workspaceModel.updateOne({ id }, { $push: { users: userId } });
-  await userModel.updateOne({ id: userId }, { $push: { workspaces: id } });
+  await workspaceModel.updateOne({ id }, { $addToSet: { users: userId } });
+  await userModel.updateOne({ id: userId }, { $addToSet: { workspaces: id } });
 
   return { id, name, code };
 };
