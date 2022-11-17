@@ -1,4 +1,3 @@
-import { MdAdd } from '@react-icons/all-files/md/MdAdd';
 import Selector from 'common/Selector';
 import { SelectorStyle } from 'common/Selector/types';
 import WorkspaceModal from 'components/WorkspaceModal';
@@ -9,6 +8,7 @@ import { MENUS } from 'src/constants/workspace';
 import UserContext from 'src/contexts/user';
 import { Workspace } from 'src/types/workspace';
 
+import AddButton from './AddButton';
 import style from './style.module.scss';
 
 function WorkspaceList() {
@@ -45,7 +45,7 @@ function WorkspaceList() {
       <div className={style.workspace__container}>
         <WorkspaceThumbnaliList workspaces={workspaces} />
         <Selector
-          trigger={<MdAdd className={style.button} size={20} />}
+          TriggerElement={AddButton}
           options={MENUS}
           onChange={onSelectMenu}
           style={selectorStyle}

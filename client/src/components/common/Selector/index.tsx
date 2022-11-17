@@ -1,10 +1,10 @@
 import Dropdown from './Dropdown';
 import { SelectorProps } from './types';
 
-function Selector({ trigger, options, onChange, style }: SelectorProps) {
+function Selector({ TriggerElement, options, onChange, style }: SelectorProps) {
   return (
     <Dropdown onChange={onChange}>
-      <Dropdown.Trigger trigger={trigger}></Dropdown.Trigger>
+      <Dropdown.Trigger TriggerElement={TriggerElement}></Dropdown.Trigger>
       <Dropdown.Menu style={style}>
         {options.map(({ id, option }) => (
           <Dropdown.Item key={id} id={id}>

@@ -11,7 +11,7 @@ export interface SelectorStyle {
 }
 
 export interface SelectorProps {
-  trigger: JSX.Element;
+  TriggerElement: React.ElementType;
   options: SelectorOption[];
   onChange: (args: any) => void;
   style: SelectorStyle;

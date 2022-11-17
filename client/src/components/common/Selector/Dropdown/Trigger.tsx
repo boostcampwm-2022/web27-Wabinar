@@ -1,21 +1,18 @@
+import React from 'react';
 import { useDropdownContext } from 'src/hooks/useDropdownContext';
 
 interface TriggerProps {
-  trigger: JSX.Element;
+  TriggerElement: React.ElementType;
 }
 
-function Trigger({ trigger }: TriggerProps) {
+function Trigger({ TriggerElement }: TriggerProps) {
   const { setIsOpen } = useDropdownContext();
 
-  return (
-    <div
-      onClick={() => {
-        setIsOpen((isOpen) => !isOpen);
-      }}
-    >
-      {trigger}
-    </div>
-  );
+  const onToggleOpen = () => {
+    setIsOpen((isOpen) => !isOpen);
+  };
+
+  return <TriggerElement onClick={onToggleOpen} />;
 }
 
 export default Trigger;
