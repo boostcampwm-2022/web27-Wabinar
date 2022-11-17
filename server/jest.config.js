@@ -10,4 +10,5 @@ module.exports = {
     '@utils/(.*)': '<rootDir>/utils/$1',
     '@errors/(.*)': '<rootDir>/errors/$1',
   },
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
 };
