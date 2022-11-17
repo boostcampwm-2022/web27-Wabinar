@@ -13,7 +13,7 @@ export const create = async (name: string) => {
 
   const workspace = await workspaceModel.create({ name, code });
 
-  return { name: workspace.name, code: workspace.code };
+  return { workspace };
 };
 
 export const join = async (userId: number, code: string) => {
