@@ -1,36 +1,38 @@
 import { MdClose } from '@react-icons/all-files/md/MdClose';
-import Portal from 'src/components/Portal';
+import classNames from 'classnames/bind';
+import Portal from 'common/Modal/Portal';
 
 import style from './style.module.scss';
 
+const cx = classNames.bind(style);
+
 interface ModalProps {
   title?: string;
+  isDark?: boolean;
   children: JSX.Element;
   onClose: () => void;
 }
 
-function Modal({ title, children, onClose }: ModalProps) {
-  const onClickCloseBtn = () => {
-    onClose();
-  };
-
+function Modal({ title, isDark = false, children, onClose }: ModalProps) {
   return (
     <Portal>
       <div
-        className={style.modal}
+        className={cx(style.modal, { 'dark-modal': isDark })}
         role="alertdialog"
         aria-modal
         aria-labelledby="modal"
       >
-        <div className={style.dimmer} onClick={onClickCloseBtn} tabIndex={0} />
+        <div className={style.dimmer} onClick={onClose} tabIndex={0} />
+
         <div className={style['out-container']}>
           <div className={style.header} id="modal-heading">
             <h2 className={style.title}>{title}</h2>
-            <button className={style['close-modal']} onClick={onClickCloseBtn}>
+            <button className={style['close-modal']} onClick={onClose}>
               <MdClose size={20} color={'white'} />
             </button>
           </div>
-          <div className={style['inner-container']} role="document">
+
+          <div className={style['inner-container']} role="form">
             {children}
           </div>
         </div>
