@@ -27,6 +27,14 @@ export const join = async (userId: number, code: string) => {
 
   const { id, name } = workspace;
 
+  const userWorkspaces = (
+    await userModel.find({ id: userId }, { workspaces: 1, _id: 0 })
+  )[0].workspaces;
+
+  if (userWorkspaces.includes(id)) {
+    throw new Error('이미 참여한 워크스페이스에요 ^^');
+  }
+
   await workspaceModel.updateOne({ id }, { $addToSet: { users: userId } });
   await userModel.updateOne({ id: userId }, { $addToSet: { workspaces: id } });
 
