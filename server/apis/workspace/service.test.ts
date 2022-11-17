@@ -34,17 +34,18 @@ jest.mock('uuid', () => {
 
 describe('create', () => {
   it('워크스페이스 이름이 주어진 경우 생성에 성공한다.', async () => {
+    const WORKSPACE_ID = 1;
     const WORKSPACE_NAME = 'Wab';
 
-    workspaceModel.create.mockResolvedValueOnce({
+    const workspace = {
+      id: WORKSPACE_ID,
       name: WORKSPACE_NAME,
       code: VALID_CODE,
-    });
+    };
 
-    expect(workspaceService.create(WORKSPACE_NAME)).resolves.toEqual({
-      name: WORKSPACE_NAME,
-      code: VALID_CODE,
-    });
+    workspaceModel.create.mockResolvedValueOnce(workspace);
+
+    expect(workspaceService.create(WORKSPACE_NAME)).resolves.toEqual(workspace);
   });
 
   it('워크스페이스 이름이 없는 경우 생성에 실패한다.', async () => {

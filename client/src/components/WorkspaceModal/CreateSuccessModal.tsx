@@ -2,14 +2,17 @@ import FormModal, { ModalContents } from './FormModal';
 
 interface CreateSuccessModalProps {
   modalContents: ModalContents;
+  code: string;
   onClose: () => void;
 }
 
 function CreateSuccessModal({
   modalContents,
+  code,
   onClose,
 }: CreateSuccessModalProps) {
   const onSubmit = () => {
+    onClose();
     return;
   };
 
@@ -19,7 +22,7 @@ function CreateSuccessModal({
       onClose={onClose}
       onSubmit={onSubmit}
       isDisabled
-      inputValue="WAB1234"
+      inputValue={code}
     />
   );
 }
