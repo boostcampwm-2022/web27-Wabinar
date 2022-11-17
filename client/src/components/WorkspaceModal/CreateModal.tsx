@@ -23,7 +23,7 @@ function CreateModal({
   const [inputValue, setInputValue] = useState<string>('');
 
   const onSubmit = async () => {
-    const { workspace } = await postWorkspace({ name: inputValue });
+    const workspace = await postWorkspace({ name: inputValue });
     const { code } = workspace;
 
     await postWorkspaceJoin({ code });

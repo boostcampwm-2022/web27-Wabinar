@@ -11,9 +11,9 @@ export const create = async (name: string) => {
 
   const code = uuidv4();
 
-  const workspace = await workspaceModel.create({ name, code });
+  const { id } = await workspaceModel.create({ name, code });
 
-  return { workspace };
+  return { id, name, code };
 };
 
 export const join = async (userId: number, code: string) => {
