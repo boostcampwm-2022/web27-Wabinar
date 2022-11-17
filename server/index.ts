@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import env from '@config';
 import authRouter from '@apis/auth/controller';
@@ -8,6 +9,7 @@ import errorHandler from '@middlewares/error-handler';
 import cors from '@middlewares/cors';
 
 const app = express();
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser(env.COOKIE_SECRET_KEY));
 app.use(cors());
