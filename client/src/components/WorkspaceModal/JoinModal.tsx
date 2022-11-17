@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/named
+import { AxiosError, AxiosResponse } from 'axios';
 import { useState } from 'react';
 import { postWorkspaceJoin } from 'src/apis/workspace';
 import { useSetWorkspaces } from 'src/hooks/useSetWorkspaces';
@@ -13,6 +15,9 @@ function JoinModal({ modalContents, onClose }: JoinModalProps) {
   const [inputValue, setInputValue] = useState<string>('');
 
   const setWorkspaces = useSetWorkspaces();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(
+    undefined,
+  );
 
   const onSubmit = async () => {
     try {
@@ -24,7 +29,9 @@ function JoinModal({ modalContents, onClose }: JoinModalProps) {
 
       onClose();
     } catch (e) {
-      console.log('에러 메세지 표시');
+      const { data } = (e as AxiosError).response as AxiosResponse;
+
+      setErrorMessage(data?.message ?? '다시 시도해주세요 ^^');
     }
   };
 
@@ -35,6 +42,7 @@ function JoinModal({ modalContents, onClose }: JoinModalProps) {
       onSubmit={onSubmit}
       inputValue={inputValue}
       setInputValue={setInputValue}
+      errorMessage={errorMessage}
     />
   );
 }

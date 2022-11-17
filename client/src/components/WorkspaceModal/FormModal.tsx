@@ -17,9 +17,10 @@ interface ModalContainerProps {
   btnText: string;
   onClose: () => void;
   onSubmit: () => void;
-  isDisabled?: boolean;
   inputValue: string;
   setInputValue?: React.Dispatch<React.SetStateAction<string>>;
+  isDisabled?: boolean;
+  errorMessage?: string;
 }
 
 function FormModal({
@@ -28,9 +29,10 @@ function FormModal({
   btnText,
   onClose,
   onSubmit,
-  isDisabled = false,
   inputValue,
   setInputValue,
+  isDisabled = false,
+  errorMessage = undefined,
 }: ModalContainerProps) {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (setInputValue) setInputValue(e.target.value);
@@ -40,7 +42,7 @@ function FormModal({
     <Modal title={title} onClose={onClose}>
       <>
         {texts.map((text) => (
-          <p key={text} className={style.text}>
+          <p key={text} className={style['text']}>
             {text}
           </p>
         ))}
@@ -48,13 +50,18 @@ function FormModal({
         <div className={style['input-section']}>
           {isDisabled && <BiCopy className={style['copy-icon']} />}
           <input
-            className={cx(style.input, { [style.disabled]: isDisabled })}
+            className={cx(style.input, {
+              [style.disabled]: isDisabled,
+              [style.invalid]: !!errorMessage,
+            })}
             type="text"
             value={inputValue}
             onChange={onChange}
             disabled={isDisabled}
           />
         </div>
+
+        {<p className={style['error-message']}>{errorMessage}</p>}
 
         <Button
           text={btnText}
