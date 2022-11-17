@@ -10,10 +10,6 @@ interface ModalProps {
 }
 
 function Modal({ title, children, onClose }: ModalProps) {
-  const onClickCloseBtn = () => {
-    onClose();
-  };
-
   return (
     <Portal>
       <div
@@ -22,15 +18,17 @@ function Modal({ title, children, onClose }: ModalProps) {
         aria-modal
         aria-labelledby="modal"
       >
-        <div className={style.dimmer} onClick={onClickCloseBtn} tabIndex={0} />
+        <div className={style.dimmer} onClick={onClose} tabIndex={0} />
+
         <div className={style['out-container']}>
           <div className={style.header} id="modal-heading">
             <h2 className={style.title}>{title}</h2>
-            <button className={style['close-modal']} onClick={onClickCloseBtn}>
+            <button className={style['close-modal']} onClick={onClose}>
               <MdClose size={20} color={'white'} />
             </button>
           </div>
-          <div className={style['inner-container']} role="document">
+
+          <div className={style['inner-container']} role="form">
             {children}
           </div>
         </div>

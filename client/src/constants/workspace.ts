@@ -1,7 +1,7 @@
 export const MENU = {
-  CREATE_ID: 1,
-  JOIN_ID: 2,
-  CREATED_ID: 3,
+  CREATE: 1,
+  JOIN: 2,
+  CREATE_SUCCESS: 3,
 };
 Object.freeze(MENU);
 

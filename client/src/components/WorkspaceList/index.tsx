@@ -29,7 +29,7 @@ function WorkspaceList() {
     updateWorkspaces(userContext.user.id);
   }, []);
 
-  const [selectedMenu, setSelectedMenu] = useState<number | null>(null);
+  const [selectedMenu, setSelectedMenu] = useState<number>(0);
 
   const onSelectMenu = (id: number) => {
     setSelectedMenu(id);
@@ -50,12 +50,10 @@ function WorkspaceList() {
           onChange={onSelectMenu}
           style={selectorStyle}
         />
-        {selectedMenu && (
-          <WorkspaceModal
-            selectedMenu={selectedMenu}
-            setSelectedMenu={setSelectedMenu}
-          />
-        )}
+        <WorkspaceModal
+          selectedMenu={selectedMenu}
+          setSelectedMenu={setSelectedMenu}
+        />
       </div>
     </>
   );
