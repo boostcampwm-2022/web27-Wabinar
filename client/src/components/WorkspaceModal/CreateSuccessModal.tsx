@@ -12,6 +12,7 @@ function CreateSuccessModal({
   onClose,
 }: CreateSuccessModalProps) {
   const onSubmit = () => {
+    onClose();
     return;
   };
 
