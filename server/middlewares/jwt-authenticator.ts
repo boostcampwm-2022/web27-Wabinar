@@ -9,7 +9,7 @@ const jwtAuthenticator = (req: Request, res: Response, next: NextFunction) => {
 
     return next();
   } catch (err) {
-    return next(); // without verification
+    throw new Error();
   }
 };
 

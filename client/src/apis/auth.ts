@@ -4,11 +4,15 @@ import { http } from './http';
 import { OK, CREATED } from './http-status';
 
 export const getAuth = async () => {
-  const res = await http.get(`/auth`);
+  try {
+    const res = await http.get(`/auth`);
 
-  if (res.status !== OK) throw new Error();
+    if (res.status !== OK) return null;
 
-  return res.data;
+    return res.data;
+  } catch (e) {
+    return null;
+  }
 };
 
 export const postAuthLogin = async ({ code }: PostLoginParams) => {
