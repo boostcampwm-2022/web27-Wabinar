@@ -38,8 +38,8 @@ describe('create', () => {
     const WORKSPACE_NAME = 'Wab';
 
     const workspace = {
-      id: WORKSPACE_ID,
-      name: WORKSPACE_NAME,
+      id: 2,
+      name: 'asdf',
       code: VALID_CODE,
     };
 
