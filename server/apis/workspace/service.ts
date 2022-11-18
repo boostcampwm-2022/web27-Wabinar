@@ -32,7 +32,7 @@ export const join = async (userId: number, code: string) => {
   )[0].workspaces;
 
   if (userWorkspaces.includes(id)) {
-    throw new Error('이미 참여한 워크스페이스에요 ^^');
+    throw new InvalidJoinError('이미 참여한 워크스페이스에요 ^^');
   }
 
   await workspaceModel.updateOne({ id }, { $addToSet: { users: userId } });
