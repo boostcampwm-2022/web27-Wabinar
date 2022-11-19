@@ -3,7 +3,7 @@ import React from 'react';
 
 interface CopyButton {
   target: string;
-  className: string;
+  className?: string;
 }
 
 function CopyButton({ target, className }: CopyButton) {
