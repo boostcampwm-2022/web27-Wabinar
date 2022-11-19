@@ -1,0 +1,63 @@
+@import 'styles/color.module.scss';
+
+.workspace__container {
+  position: relative;
+
+  background-color: $primary-100;
+  height: 100vh;
+  width: 78px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button {
+  fill: $white;
+  cursor: pointer;
+}
+
+.menu {
+  position: relative;
+  z-index: 1;
+  top: -8px;
+  left: 70px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+
+  border-radius: 10px;
+  box-shadow: 1px 1px 3px $gray-300;
+  background-color: $primary-100;
+  font-size: 14px;
+  color: $white;
+
+  li {
+    width: max-content;
+    padding: 8px 15px;
+    cursor: pointer;
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid $gray-200;
+    }
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+}
+
+.dimmed {
+  position: fixed;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}

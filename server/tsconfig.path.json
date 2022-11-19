@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@apis/*": ["apis/*"],
+      "@config": ["config"],
+      "@constants/*": ["constants/*"],
+      "@errors/*": ["errors/*"],
+      "@db": ["db"],
+      "@middlewares/*": ["middlewares/*"],
+      "@utils/*": ["utils/*"],
+      "@params/*": ["../types/params/*"]
+    }
+  }
+}
