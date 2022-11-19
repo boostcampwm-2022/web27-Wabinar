@@ -1,4 +1,3 @@
-const userModel = require('@apis/user/model');
 const workspaceModel = require('./model');
 const workspaceService = require('./service');
 const { default: InvalidJoinError } = require('@errors/invalid-join-error');
@@ -69,7 +68,8 @@ describe('join', () => {
       users: [],
       moms: [],
     });
-    userModel.find.mockResolvedValueOnce([{ workspaces: [] }]);
+
+    workspaceModel.updateOne.mockResolvedValueOnce({ modifiedCount: 1 });
 
     expect(workspaceService.join(USER_ID, VALID_CODE)).resolves.toEqual({
       id: WORKSPACE_ID,
@@ -100,7 +100,8 @@ describe('join', () => {
       users: [],
       moms: [],
     });
-    userModel.find.mockResolvedValueOnce([{ workspaces: [WORKSPACE_ID] }]);
+
+    workspaceModel.updateOne.mockResolvedValueOnce({ modifiedCount: 0 });
 
     expect(() => workspaceService.join(USER_ID, VALID_CODE)).rejects.toThrow(
       InvalidJoinError,
