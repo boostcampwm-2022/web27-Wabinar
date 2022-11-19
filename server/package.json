@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "node-dev index.ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc && tsc-alias"
   },
   "packageManager": "yarn@3.2.4",
   "devDependencies": {
@@ -12,6 +13,7 @@
     "@types/express": "^4.17.14",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/mongoose-auto-increment": "^5.0.35",
+    "@types/morgan": "^1.9.3",
     "@types/node": "^18.11.9",
     "@types/uuid": "^8.3.4",
     "dotenv": "^16.0.3",
@@ -28,6 +30,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.2",
     "mongoose-auto-increment": "^5.0.1",
+    "morgan": "^1.10.0",
     "uuid": "^9.0.0"
   }
 }
