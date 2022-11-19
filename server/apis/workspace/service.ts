@@ -27,8 +27,16 @@ export const join = async (userId: number, code: string) => {
 
   const { id, name } = workspace;
 
-  await workspaceModel.updateOne({ id }, { $push: { users: userId } });
-  await userModel.updateOne({ id: userId }, { $push: { workspaces: id } });
+  const res = await workspaceModel.updateOne(
+    { id },
+    { $addToSet: { users: userId } },
+  );
+
+  if (!res.modifiedCount) {
+    throw new InvalidJoinError('이미 참여한 워크스페이스에요 ^^');
+  }
+
+  await userModel.updateOne({ id: userId }, { $addToSet: { workspaces: id } });
 
   return { id, name, code };
 };

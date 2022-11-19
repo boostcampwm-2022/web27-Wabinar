@@ -57,11 +57,10 @@ describe('create', () => {
 
 describe('join', () => {
   const USER_ID = 1;
+  const WORKSPACE_ID = 1;
+  const WORKSPACE_NAME = 'Wab';
 
   it('유효한 참여코드가 주어진 경우 성공한다.', async () => {
-    const WORKSPACE_ID = 1;
-    const WORKSPACE_NAME = 'Wab';
-
     workspaceModel.findOne.mockResolvedValueOnce({
       id: WORKSPACE_ID,
       name: WORKSPACE_NAME,
@@ -69,6 +68,8 @@ describe('join', () => {
       users: [],
       moms: [],
     });
+
+    workspaceModel.updateOne.mockResolvedValueOnce({ modifiedCount: 1 });
 
     expect(workspaceService.join(USER_ID, VALID_CODE)).resolves.toEqual({
       id: WORKSPACE_ID,
@@ -89,6 +90,22 @@ describe('join', () => {
     expect(() =>
       workspaceService.join(USER_ID, 'invalid-code'),
     ).rejects.toThrow(InvalidJoinError);
+  });
+
+  it('이미 참여한 워크스페이스인 경우 실패한다.', async () => {
+    workspaceModel.findOne.mockResolvedValueOnce({
+      id: WORKSPACE_ID,
+      name: WORKSPACE_NAME,
+      code: VALID_CODE,
+      users: [],
+      moms: [],
+    });
+
+    workspaceModel.updateOne.mockResolvedValueOnce({ modifiedCount: 0 });
+
+    expect(() => workspaceService.join(USER_ID, VALID_CODE)).rejects.toThrow(
+      InvalidJoinError,
+    );
   });
 
   it('db 업데이트 중 에러가 발생하면 실패한다.', async () => {
