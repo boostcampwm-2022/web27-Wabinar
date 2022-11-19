@@ -1,0 +1,82 @@
+@import 'styles/color.module.scss';
+
+.sidebar__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 252px;
+  height: 100vh;
+}
+
+@mixin container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 25px;
+}
+
+.header {
+  @include container;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  border-bottom: 1px solid $gray-300;
+
+  & > h1 {
+    color: $black;
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
+
+.member-list {
+  @include container;
+  border-bottom: 1px solid $gray-300;
+}
+
+.member-item {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: flex-start;
+
+  & > img {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+  }
+
+  & > p {
+    color: $black;
+  }
+}
+
+.mom-list {
+  @include container;
+
+  & > h2 {
+    color: $black;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  & > p {
+    color: $gray-100;
+  }
+}
+
+.conf-button {
+  position: absolute;
+  bottom: 20px;
+  width: 80px;
+  height: 25px;
+  border-radius: 13px;
+  background-color: $green;
+  color: $white;
+}
