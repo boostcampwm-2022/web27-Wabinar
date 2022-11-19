@@ -1,30 +1,33 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
 import UserContext from 'src/contexts/user';
 import { LoadingPage, LoginPage, OAuthPage, WorkspacePage } from 'src/pages';
-import { User } from 'src/types/user';
+import { UserInfo } from 'src/types/user';
+
 import 'styles/reset.scss';
 
 function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const autoLogin = async () => {
-    const currentUser = await getAuth();
+    const { user, workspaceList } = await getAuth();
 
     setIsLoaded(true);
 
-    if (!currentUser) {
-      if (location.pathname === '/workspace') navigate('/');
+    if (!user) {
+      if (location.pathname.match('/workspace')) navigate('/');
       return;
     }
 
-    setUser(currentUser);
-    navigate('/workspace');
+    setUserInfo({ user, workspaceList });
+
+    const { id } = workspaceList[0];
+    navigate(`/workspace/${id}`);
   };
 
   useEffect(() => {
@@ -32,11 +35,11 @@ function App() {
   }, []);
 
   return isLoaded ? (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ userInfo, setUserInfo }}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/oauth" element={<OAuthPage />} />
-        <Route path="/workspace" element={<WorkspacePage />} />
+        <Route path="/workspace/:id" element={<WorkspacePage />} />
       </Routes>
     </UserContext.Provider>
   ) : (
