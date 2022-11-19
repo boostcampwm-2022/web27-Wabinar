@@ -1,10 +1,10 @@
-import { v4 as uuidv4 } from 'uuid';
-import workspaceModel from './model';
-import userModel, { User } from '@apis/user/model';
 import momModel from '@apis/mom/model';
+import userModel, { User } from '@apis/user/model';
 import AuthorizationError from '@errors/authorization-error';
 import InvalidJoinError from '@errors/invalid-join-error';
 import InvalidWorkspaceError from '@errors/invalid-workspace-error';
+import { v4 as uuidv4 } from 'uuid';
+import workspaceModel from './model';
 
 export const create = async (name: string) => {
   if (!name) throw new Error('워크스페이스 이름을 입력하세요 ^^');
@@ -51,16 +51,16 @@ export const info = async (workspaceId: number) => {
 
   const { name, users: userIds, moms: momsIds } = workspace;
 
-  const users: Pick<User, 'name' | 'avatarUrl'>[] =
+  const members: Pick<User, 'id' | 'name' | 'avatarUrl'>[] =
     (await userModel.find(
       {
         id: { $in: userIds },
       },
-      { name: 1, avatarUrl: 1, _id: 0 },
+      { id: 1, name: 1, avatarUrl: 1, _id: 0 },
     )) || [];
 
   const moms: string[] =
     (await momModel.find({ id: { $in: momsIds } }, { name: 1 })) || [];
 
-  return { name, users, moms };
+  return { name, members, moms };
 };
