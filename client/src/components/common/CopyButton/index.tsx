@@ -1,12 +1,11 @@
 import { BiCopy } from '@react-icons/all-files/bi/BiCopy';
-import React from 'react';
 
-interface CopyButton {
+interface CopyButtonProps {
   target: string;
   className?: string;
 }
 
-function CopyButton({ target, className }: CopyButton) {
+function CopyButton({ target, className }: CopyButtonProps) {
   const onCopy = async () => {
     try {
       await navigator.clipboard.writeText(target);
