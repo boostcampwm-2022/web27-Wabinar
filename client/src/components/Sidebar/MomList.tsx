@@ -8,12 +8,14 @@ function MomList() {
   ];
 
   return (
-    <div className={style['mom-list']}>
+    <div className={style['mom-list-container']}>
       <h2>회의록</h2>
-      {moms.map((item) => (
-        <p key={item.id}>{item.name}</p>
-      ))}
-      <p>+ 회의록 추가</p>
+      <ul className={style['mom-list']}>
+        {moms.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+      <button>+ 회의록 추가</button>
     </div>
   );
 }

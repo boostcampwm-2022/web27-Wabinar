@@ -15,14 +15,14 @@ function MemberList() {
   ];
 
   return (
-    <div className={style['member-list']}>
+    <ul className={style['member-list']}>
       {members.map((item) => (
-        <div key={item.id} className={style['member-item']}>
+        <li key={item.id} className={style['member-item']}>
           <img src={item.avatarUrl} />
           <span>{item.name}</span>
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 

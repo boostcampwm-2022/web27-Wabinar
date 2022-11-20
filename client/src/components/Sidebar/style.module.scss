@@ -57,17 +57,32 @@
   }
 }
 
-.mom-list {
+.mom-list-container {
   @include container;
 
   & > h2 {
-    color: $black;
     font-size: 18px;
     font-weight: 500;
+    color: $black;
   }
 
-  & > p {
+  & > button {
+    font-size: 16px;
+    text-align: start;
     color: $gray-100;
+  }
+}
+
+.mom-list {
+  font-size: 16px;
+  color: $gray-100;
+
+  & > li {
+    margin-top: 15px;
+  }
+
+  & > li:first-child {
+    margin-top: 0px;
   }
 }
 
