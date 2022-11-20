@@ -1,9 +1,9 @@
+import { User } from '@wabinar/types/user';
 import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
 import UserContext from 'src/contexts/user';
 import { LoadingPage, LoginPage, OAuthPage, WorkspacePage } from 'src/pages';
-import { User } from 'src/types/user';
 import 'styles/reset.scss';
 
 function App() {

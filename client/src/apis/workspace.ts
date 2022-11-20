@@ -1,12 +1,9 @@
-import { PostJoinParams, PostParams } from 'params/workspace';
-import { Workspace } from 'src/types/workspace';
+import { PostBody, PostJoinBody, Workspace } from '@wabinar/types/workspace';
 
-import { http } from './http';
-import { CREATED } from './http-status';
+import { http } from './core/http';
+import { CREATED } from './core/http-status';
 
-export const postWorkspace = async ({
-  name,
-}: PostParams): Promise<Workspace> => {
+export const postWorkspace = async ({ name }: PostBody): Promise<Workspace> => {
   const res = await http.post(`/workspace`, { name });
 
   if (res.status !== CREATED) throw new Error();
@@ -16,7 +13,7 @@ export const postWorkspace = async ({
 
 export const postWorkspaceJoin = async ({
   code,
-}: PostJoinParams): Promise<Workspace> => {
+}: PostJoinBody): Promise<Workspace> => {
   const res = await http.post(`/workspace/join`, { code });
 
   if (res.status !== CREATED) throw new Error();

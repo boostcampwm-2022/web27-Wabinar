@@ -1,9 +1,10 @@
-import { PostLoginParams } from 'params/auth';
+import { PostLoginBody } from '@wabinar/types/auth';
+import { User } from '@wabinar/types/user';
 
-import { http } from './http';
-import { OK, CREATED } from './http-status';
+import { http } from './core/http';
+import { OK, CREATED } from './core/http-status';
 
-export const getAuth = async () => {
+export const getAuth = async (): Promise<User | null> => {
   try {
     const res = await http.get(`/auth`);
 
@@ -15,7 +16,7 @@ export const getAuth = async () => {
   }
 };
 
-export const postAuthLogin = async ({ code }: PostLoginParams) => {
+export const postAuthLogin = async ({ code }: PostLoginBody): Promise<User> => {
   const res = await http.post(`/auth/login`, { code });
 
   if (res.status !== CREATED) throw new Error();

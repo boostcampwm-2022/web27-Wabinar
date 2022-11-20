@@ -1,4 +1,4 @@
-import { Workspace } from 'src/types/workspace';
+import { Workspace } from '@wabinar/types/workspace';
 
 import style from './style.module.scss';
 import WorkspaceThumbnailItem from './WorkspaceThumbnailItem';

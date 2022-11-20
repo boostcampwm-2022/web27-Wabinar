@@ -1,3 +1,4 @@
+import { Workspace } from '@wabinar/types/workspace';
 import Selector from 'common/Selector';
 import WorkspaceModal from 'components/WorkspaceModal';
 import WorkspaceThumbnaliList from 'components/WorkspaceThumbnailList';
@@ -7,7 +8,6 @@ import { MENUS } from 'src/constants/workspace';
 import SetWorkspacesContext from 'src/contexts/set-workspaces';
 import { useUserContext } from 'src/hooks/useUserContext';
 import { SelectorStyle } from 'src/types/selector';
-import { Workspace } from 'src/types/workspace';
 
 import AddButton from './AddButton';
 import style from './style.module.scss';

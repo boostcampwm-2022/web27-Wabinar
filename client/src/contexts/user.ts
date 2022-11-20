@@ -1,5 +1,5 @@
+import { User } from '@wabinar/types/user';
 import { createContext, Dispatch, SetStateAction } from 'react';
-import { User } from 'src/types/user';
 
 interface IUserContext {
   user: User | null;

@@ -3,7 +3,7 @@ import asyncWrapper from '@utils/async-wrapper';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
 import * as authService from './service';
 import { OK, CREATED } from '@constants/http-status';
-import { PostLoginParams } from '@params/auth';
+import { PostLoginBody, LoginResponseBody } from '@wabinar/types/auth';
 
 interface CookieOptions {
   httpOnly: boolean;
@@ -17,29 +17,34 @@ const router = express.Router();
 router.get(
   '/',
   jwtAuthenticator,
-  asyncWrapper(async (req: Request, res: Response) => {
+  asyncWrapper(async (req: Request, res: Response<LoginResponseBody>) => {
     res.status(OK).send(req.user);
   }),
 );
 
 router.post(
   '/login',
-  asyncWrapper(async (req: Request<PostLoginParams>, res: Response) => {
-    const { code } = req.body;
+  asyncWrapper(
+    async (
+      req: Request<{}, {}, PostLoginBody, {}>,
+      res: Response<LoginResponseBody>,
+    ) => {
+      const { code } = req.body;
 
-    const { user, loginToken, refreshToken } = await authService.login(code);
+      const { user, loginToken, refreshToken } = await authService.login(code);
 
-    const cookieOptions: CookieOptions = {
-      httpOnly: true,
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 24,
-      signed: true,
-    };
-    res.cookie('accessToken', loginToken, cookieOptions);
-    res.cookie('refreshToken', refreshToken, cookieOptions);
+      const cookieOptions: CookieOptions = {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 60 * 24,
+        signed: true,
+      };
+      res.cookie('accessToken', loginToken, cookieOptions);
+      res.cookie('refreshToken', refreshToken, cookieOptions);
 
-    res.status(CREATED).send(user);
-  }),
+      res.status(CREATED).send(user);
+    },
+  ),
 );
 
 router.delete(
