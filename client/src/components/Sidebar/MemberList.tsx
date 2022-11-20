@@ -19,7 +19,7 @@ function MemberList() {
       {members.map((item) => (
         <div key={item.id} className={style['member-item']}>
           <img src={item.avatarUrl} />
-          <p>{item.name}</p>
+          <span>{item.name}</span>
         </div>
       ))}
     </div>
