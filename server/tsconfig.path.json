@@ -8,8 +8,7 @@
       "@errors/*": ["errors/*"],
       "@db": ["db"],
       "@middlewares/*": ["middlewares/*"],
-      "@utils/*": ["utils/*"],
-      "@params/*": ["../types/params/*"]
+      "@utils/*": ["utils/*"]
     }
   }
 }

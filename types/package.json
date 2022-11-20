@@ -1,0 +1,5 @@
+{
+  "name": "@wabinar/types",
+  "version": "1.0.0",
+  "description": "API types for wabinar client and server"
+}
