@@ -6,7 +6,7 @@ import style from './style.module.scss';
 
 function Sidebar() {
   return (
-    <div className={style['sidebar__container']}>
+    <div className={style['sidebar-container']}>
       <div className={style['header']}>
         <h1>왭^^</h1>
         <SettingIcon />
