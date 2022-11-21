@@ -19,7 +19,7 @@ function Mom() {
   };
 
   return (
-    <div className={style['mom__container']}>
+    <div className={style['mom-container']}>
       <div className={style['mom']}>
         <div className={style['mom-header']}>
           <h1 contentEditable={true} onInput={onTitleChange}>
@@ -27,7 +27,7 @@ function Mom() {
           </h1>
           <span>{selectedMom.createdAt.toLocaleString()}</span>
         </div>
-        <div className={style['editor__container']}>회의록 내용</div>
+        <div className={style['editor-container']}>회의록 내용</div>
       </div>
     </div>
   );

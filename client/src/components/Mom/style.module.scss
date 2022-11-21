@@ -1,6 +1,6 @@
 @import 'styles/color.module.scss';
 
-.mom__container {
+.mom-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,7 +36,7 @@
   }
 }
 
-.editor__container {
+.editor-container {
   height: calc(100% - 70px);
   padding: 20px;
   box-sizing: border-box;
