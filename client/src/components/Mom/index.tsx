@@ -1,5 +1,3 @@
-import React from 'react';
-
 import style from './style.module.scss';
 
 function Mom() {
@@ -10,19 +8,30 @@ function Mom() {
     createdAt: new Date(),
   };
 
-  const onTitleChange = (e: React.FormEvent<HTMLParagraphElement>) => {
-    const title = e.target as HTMLElement;
+  /*
+    contentEditable 내용을 컨트롤하고 싶다면 ref 활용해볼 수 있음
+    const titleRef = useRef<HTMLHeadingElement>(null);
+  */
 
-    console.log(title.innerText);
-
-    // 제목 변경하는 요청
+  const onTitleChange: React.FormEventHandler<HTMLHeadingElement> = (e) => {
+    /*
+      제목 변경하는 요청
+      const title = e.target as HTMLHeadingElement;
+      title.innerText
+      OR
+      titleRef.current.innerText
+    */
   };
 
   return (
     <div className={style['mom-container']}>
       <div className={style['mom']}>
         <div className={style['mom-header']}>
-          <h1 contentEditable={true} onInput={onTitleChange}>
+          <h1
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+            onInput={onTitleChange}
+          >
             {selectedMom.name}
           </h1>
           <span>{selectedMom.createdAt.toLocaleString()}</span>
