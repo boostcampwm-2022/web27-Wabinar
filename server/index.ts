@@ -1,7 +1,7 @@
 import authRouter from '@apis/auth/controller';
 import userRouter from '@apis/user/controller';
 import workspaceRouter from '@apis/workspace/controller';
-import workspaceSocketServer from '@apis/workspace/socket';
+import momSocketServer from 'socket/mom';
 import env from '@config';
 import cors from '@middlewares/cors';
 import errorHandler from '@middlewares/error-handler';
@@ -31,7 +31,7 @@ const io = new Server({
   },
 });
 
-workspaceSocketServer(io);
+momSocketServer(io);
 
 io.attach(server);
 

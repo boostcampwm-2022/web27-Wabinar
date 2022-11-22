@@ -6,7 +6,7 @@ export const getMom = async (id: number) => {
   return mom;
 };
 
-export const addMom = async () => {
-  const mom = await momModel.insertMany([{ name: '', blocks: [] }]);
+export const createMom = async () => {
+  const mom = await momModel.create({ name: '', blocks: [] });
   return mom;
 };
