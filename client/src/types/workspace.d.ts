@@ -9,7 +9,7 @@ export interface Workspace {
 
 export type GetUserInfo = {
   user: User;
-  workspaceList: Workspace[];
+  workspaces: Workspace[];
 };
 
 export type WorkspaceInfo = {

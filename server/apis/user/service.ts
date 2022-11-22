@@ -1,6 +1,5 @@
 import userModel from '@apis/user/model';
 import workspaceModel from '@apis/workspace/model';
-import AuthorizationError from '@errors/authorization-error';
 
 export const getWorkspaces = async (userId: number, targetUserId?: number) => {
   /*
@@ -17,7 +16,7 @@ export const getWorkspaces = async (userId: number, targetUserId?: number) => {
     {
       id: { $in: user.workspaces },
     },
-    { id: 1, name: 1 },
+    { _id: 0, id: 1, name: 1 },
   );
 
   return workspaces;
