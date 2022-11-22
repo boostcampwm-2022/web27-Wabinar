@@ -1,4 +1,4 @@
-import { getMom } from '@apis/mom/service';
+import { addMom, getMom } from '@apis/mom/service';
 import { Server } from 'socket.io';
 
 function workspaceSocketServer(io: Server) {
@@ -23,6 +23,12 @@ function workspaceSocketServer(io: Server) {
 
       const mom = await getMom(roomId);
       workspace.to(roomId).emit('mom-selected', mom);
+    });
+
+    /* 회의록 추가하기 */
+    socket.on('mom-add', async () => {
+      const mom = await addMom();
+      workspace.emit('mom-added', mom);
     });
   });
 }
