@@ -27,11 +27,11 @@ router.get(
     // req.user가 존재하면 workspaceList를 같이 받아옴
     const { id: userId, name, avatarUrl } = req.user;
 
-    const workspaceList = await userService.getWorkspaces(userId);
+    const workspaces = await userService.getWorkspaces(userId);
 
     const user = { id: userId, name, avatarUrl };
 
-    res.status(OK).send({ user, workspaceList });
+    res.status(OK).send({ user, workspaces });
   }),
 );
 
@@ -40,12 +40,13 @@ router.get(
 // 로그인 하여 받아온 유저 정보로 workspace list 정보도 함께 받아온다.
 router.post(
   '/login',
+  jwtAuthenticator,
   asyncWrapper(async (req: Request<PostLoginParams>, res: Response) => {
     const { code } = req.body;
 
     const { user, loginToken, refreshToken } = await authService.login(code);
 
-    const workspaceList = await userService.getWorkspaces(Number(user.id));
+    const workspaces = await userService.getWorkspaces(Number(user.id));
 
     const cookieOptions: CookieOptions = {
       httpOnly: true,
@@ -56,7 +57,10 @@ router.post(
     res.cookie('accessToken', loginToken, cookieOptions);
     res.cookie('refreshToken', refreshToken, cookieOptions);
 
-    res.status(CREATED).send({ user, workspaceList });
+    console.log(loginToken);
+    console.log(refreshToken);
+
+    res.status(CREATED).send({ user, workspaces });
   }),
 );
 
