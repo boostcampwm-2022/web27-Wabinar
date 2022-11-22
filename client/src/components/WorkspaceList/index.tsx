@@ -36,7 +36,7 @@ function WorkspaceList() {
 
   return (
     <SetWorkspacesContext.Provider value={setWorkspaces}>
-      <div className={style.workspace__container}>
+      <div className={style['workspace-list-container']}>
         <WorkspaceThumbnaliList workspaces={workspaces} />
         <Selector
           TriggerElement={AddButton}

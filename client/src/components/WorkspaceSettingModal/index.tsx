@@ -1,17 +1,16 @@
 import { BiCodeBlock } from '@react-icons/all-files/bi/BiCodeBlock';
 import { BiCopy } from '@react-icons/all-files/bi/BiCopy';
-import React from 'react';
 
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import style from './style.module.scss';
 
-interface SettingModalProps {
+interface WorkspaceSettingModalProps {
   title: string;
   onClose: () => void;
 }
 
-function SettingModal({ title, onClose }: SettingModalProps) {
+function WorkspaceSettingModal({ title, onClose }: WorkspaceSettingModalProps) {
   const code = '1234';
 
   const onClick = () => {
@@ -45,4 +44,4 @@ function SettingModal({ title, onClose }: SettingModalProps) {
   );
 }
 
-export default SettingModal;
+export default WorkspaceSettingModal;
