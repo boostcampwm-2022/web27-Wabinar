@@ -1,12 +1,15 @@
-import express, { Request, Response } from 'express';
-import cookieParser from 'cookie-parser';
-import env from '@config';
 import authRouter from '@apis/auth/controller';
-import workspaceRouter from '@apis/workspace/controller';
 import userRouter from '@apis/user/controller';
-import errorHandler from '@middlewares/error-handler';
+import workspaceRouter from '@apis/workspace/controller';
+import workspaceSocketServer from '@apis/workspace/socket';
+import env from '@config';
 import cors from '@middlewares/cors';
+import errorHandler from '@middlewares/error-handler';
+import cookieParser from 'cookie-parser';
+import express, { Request, Response } from 'express';
+import http from 'http';
 import morgan from 'morgan';
+import { Server } from 'socket.io';
 
 const app = express();
 app.use(morgan('dev'));
@@ -21,4 +24,15 @@ app.use('/user', userRouter);
 
 app.use(errorHandler);
 
-app.listen(8080);
+const server = http.createServer(app);
+const io = new Server({
+  cors: {
+    origin: env.CLIENT_PATH,
+  },
+});
+
+workspaceSocketServer(io);
+
+io.attach(server);
+
+server.listen(8080);
