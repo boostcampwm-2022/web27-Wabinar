@@ -51,7 +51,7 @@ export const info = async (workspaceId: number) => {
 
   const { name, users: userIds, moms: momsIds } = workspace;
 
-  const members: Pick<User, 'id' | 'name' | 'avatarUrl'>[] =
+  const users: Pick<User, 'id' | 'name' | 'avatarUrl'>[] =
     (await userModel.find(
       {
         id: { $in: userIds },
@@ -62,5 +62,5 @@ export const info = async (workspaceId: number) => {
   const moms: string[] =
     (await momModel.find({ id: { $in: momsIds } }, { name: 1 })) || [];
 
-  return { name, members, moms };
+  return { name, users, moms };
 };
