@@ -1,21 +1,20 @@
 import { PostLoginParams } from 'params/auth';
+import { GetUserInfo } from 'src/types/workspace';
 
 import { http } from './http';
-import { OK, CREATED } from './http-status';
+import { CREATED, OK } from './http-status';
 
-export const getAuth = async () => {
-  try {
-    const res = await http.get(`/auth`);
+export const getAuth = async (): Promise<GetUserInfo> => {
+  const res = await http.get(`/auth`);
 
-    if (res.status !== OK) return null;
+  if (res.status !== OK) throw new Error();
 
-    return res.data;
-  } catch (e) {
-    return null;
-  }
+  return res.data;
 };
 
-export const postAuthLogin = async ({ code }: PostLoginParams) => {
+export const postAuthLogin = async ({
+  code,
+}: PostLoginParams): Promise<GetUserInfo> => {
   const res = await http.post(`/auth/login`, { code });
 
   if (res.status !== CREATED) throw new Error();

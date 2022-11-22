@@ -1,9 +1,9 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
-import { User } from 'src/types/user';
+import { UserInfo } from 'src/types/user';
 
 interface IUserContext {
-  user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>;
+  userInfo: UserInfo | null;
+  setUserInfo: Dispatch<SetStateAction<UserInfo | null>>;
 }
 
 const UserContext = createContext<IUserContext | null>(null);
