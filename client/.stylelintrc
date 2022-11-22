@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "stylelint-config-recommended-scss",
+    "stylelint-config-prettier-scss",
+    "stylelint-config-property-sort-order-smacss"
+  ],
+  "plugins": ["stylelint-scss"],
+  "rules": {
+    "at-rule-no-unknown": null,
+    "max-nesting-depth": 3,
+    "no-descending-specificity": null,
+    "string-quotes": "single",
+    "scss/at-rule-conditional-no-parentheses": null,
+    "selector-pseudo-class-no-unknown": null,
+    "property-no-unknown": null
+  }
+}
