@@ -15,7 +15,7 @@ function SettingIcon() {
 
   return (
     <>
-      <MdSettings size={15} onClick={onOpen} />
+      <MdSettings size={15} onClick={onOpen} style={{ cursor: 'pointer' }} />
       {isOpen && (
         <WorkspaceSettingModal title="워크스페이스 설정" onClose={onClose} />
       )}
