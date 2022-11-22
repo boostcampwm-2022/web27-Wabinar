@@ -15,7 +15,7 @@ function App() {
   const location = useLocation();
 
   const autoLogin = async () => {
-    const { user, workspaceList } = await getAuth();
+    const { user, workspaces } = await getAuth();
 
     setIsLoaded(true);
 
@@ -24,9 +24,9 @@ function App() {
       return;
     }
 
-    setUserInfo({ user, workspaceList });
+    setUserInfo({ user, workspaces });
 
-    const { id } = workspaceList[0];
+    const { id } = workspaces[0];
     navigate(`/workspace/${id}`);
   };
 

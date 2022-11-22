@@ -22,7 +22,7 @@ function OAuthPage() {
 
       userContext.setUserInfo(authorizedUser);
 
-      const id = authorizedUser.workspaceList[0].id;
+      const id = authorizedUser.workspaces[0].id;
       navigate(`/workspace/${id}`);
     } catch (e) {
       navigate('/');

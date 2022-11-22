@@ -8,5 +8,5 @@ export type TUser = {
 
 export interface UserInfo {
   user: User;
-  workspaceList: Workspace[];
+  workspaces: Workspace[];
 }

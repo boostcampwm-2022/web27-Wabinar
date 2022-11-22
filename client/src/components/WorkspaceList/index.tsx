@@ -20,7 +20,7 @@ function WorkspaceList() {
     if (!userContext.userInfo) {
       return;
     }
-    setWorkspaces(userContext.userInfo.workspaceList);
+    setWorkspaces(userContext.userInfo.workspaces);
   }, []);
 
   const [selectedMenu, setSelectedMenu] = useState<number>(0);
