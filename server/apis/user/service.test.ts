@@ -24,6 +24,7 @@ describe('getWorkspaces', () => {
     expect(workspaces).toEqual(successfulWorkspaces);
   });
 
+  /*
   it('비정상적인 유저 아이디를 받으면 에러를 던진다.', async () => {
     const user1 = 1;
     const user2 = 2;
@@ -32,6 +33,7 @@ describe('getWorkspaces', () => {
       AuthorizationError,
     );
   });
+  */
 });
 
 export {};
