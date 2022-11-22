@@ -1,6 +1,6 @@
 import { Workspace } from './workspace';
 
-export type User = {
+export type TUser = {
   id: number;
   name: string;
   avatarUrl: string;
