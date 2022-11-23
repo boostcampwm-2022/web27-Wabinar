@@ -1,5 +1,5 @@
-import { Schema } from 'mongoose';
 import mongoose from '@db';
+import { Schema } from 'mongoose';
 
 interface Block {
   type: String;
@@ -7,13 +7,11 @@ interface Block {
 }
 
 interface Mom {
-  id: number;
   name: string;
   blocks: Block[];
 }
 
 const momSchema = new Schema<Mom>({
-  id: Number,
   name: String,
   blocks: Array<Block>,
 });

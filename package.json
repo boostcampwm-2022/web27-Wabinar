@@ -12,6 +12,9 @@
     "dotenv-pull:server": "echo For server... && cd server && npx dotenv-vault pull development"
   },
   "lint-staged": {
+    "client/**/*.scss": [
+      "stylelint --config ./client/.stylelintrc --fix"
+    ],
     "client/**/*.{ts,tsx}": [
       "eslint --config ./client/.eslintrc --fix"
     ],
