@@ -1,4 +1,3 @@
-import Confbar from 'components/Confbar';
 import Mom from 'components/Mom';
 import Sidebar from 'components/Sidebar';
 import { TMom } from 'src/types/mom';
@@ -15,7 +14,6 @@ function Workspace({ name, members, moms }: WorkspaceProps) {
     <>
       <Sidebar />
       <Mom />
-      <Confbar />
     </>
   );
 }
