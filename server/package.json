@@ -24,6 +24,7 @@
     "typescript-transform-paths": "^3.4.4"
   },
   "dependencies": {
+    "@types/socket.io": "^3.0.2",
     "axios": "^1.1.3",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",

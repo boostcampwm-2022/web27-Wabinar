@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
 import UserContext from 'src/contexts/user';
-import { LoadingPage, LoginPage, OAuthPage, WorkspacePage } from 'src/pages';
+import { LoadingPage } from 'src/pages';
 import { UserInfo } from 'src/types/user';
+
+import Timer from './components/Timer';
 
 import 'styles/reset.scss';
 
@@ -36,11 +38,12 @@ function App() {
 
   return isLoaded ? (
     <UserContext.Provider value={{ userInfo, setUserInfo }}>
-      <Routes>
+      <Timer />
+      {/* <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/oauth" element={<OAuthPage />} />
         <Route path="/workspace/:id" element={<WorkspacePage />} />
-      </Routes>
+      </Routes> */}
     </UserContext.Provider>
   ) : (
     <LoadingPage />
