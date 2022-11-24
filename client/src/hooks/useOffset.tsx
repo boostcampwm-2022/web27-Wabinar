@@ -18,7 +18,7 @@ export function useOffset() {
   };
 
   return {
-    offset: offsetRef.current,
+    offsetRef,
     setOffset,
     clearOffset,
   };
