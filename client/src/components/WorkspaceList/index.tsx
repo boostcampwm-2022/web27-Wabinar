@@ -2,7 +2,6 @@ import Selector from 'common/Selector';
 import WorkspaceModal from 'components/WorkspaceModal';
 import WorkspaceThumbnaliList from 'components/WorkspaceThumbnailList';
 import { memo, useEffect, useState } from 'react';
-import { getWorkspaces } from 'src/apis/user';
 import { MENUS } from 'src/constants/workspace';
 import SetWorkspacesContext from 'src/contexts/set-workspaces';
 import { useUserContext } from 'src/hooks/useUserContext';
@@ -17,17 +16,11 @@ function WorkspaceList() {
 
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
-  const updateWorkspaces = async (userId: number) => {
-    const { workspaces } = await getWorkspaces({ id: userId });
-    setWorkspaces(workspaces);
-  };
-
   useEffect(() => {
-    if (!userContext.user) {
+    if (!userContext.userInfo) {
       return;
     }
-
-    updateWorkspaces(userContext.user.id);
+    setWorkspaces(userContext.userInfo.workspaces);
   }, []);
 
   const [selectedMenu, setSelectedMenu] = useState<number>(0);
@@ -43,7 +36,7 @@ function WorkspaceList() {
 
   return (
     <SetWorkspacesContext.Provider value={setWorkspaces}>
-      <div className={style.workspace__container}>
+      <div className={style['workspace-list-container']}>
         <WorkspaceThumbnaliList workspaces={workspaces} />
         <Selector
           TriggerElement={AddButton}

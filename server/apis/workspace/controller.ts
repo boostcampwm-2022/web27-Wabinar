@@ -1,9 +1,9 @@
-import express, { Request, Response } from 'express';
-import asyncWrapper from '@utils/async-wrapper';
+import { CREATED, OK } from '@constants/http-status';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
+import { GetInfoParams, PostJoinParams, PostParams } from '@params/workspace';
+import asyncWrapper from '@utils/async-wrapper';
+import express, { Request, Response } from 'express';
 import * as workspaceService from './service';
-import { CREATED } from '@constants/http-status';
-import { PostParams, PostJoinParams, GetInfoParams } from '@params/workspace';
 
 const router = express.Router();
 
@@ -41,7 +41,7 @@ router.get(
 
     const workspaceInfo = await workspaceService.info(Number(workspaceId));
 
-    res.send(workspaceInfo);
+    res.status(OK).send(workspaceInfo);
   }),
 );
 
