@@ -1,24 +1,22 @@
-import { IParticipant } from 'src/types/rtc';
-
 import style from './style.module.scss';
 import Video from './Video';
 
 interface ConfBarProps {
-  participants: IParticipant[];
+  streams: MediaStream[];
 }
 
-function ConfBar({ participants }: ConfBarProps) {
+function ConfBar({ streams }: ConfBarProps) {
   return (
     <div className={style['conf-bar']}>
       <ul>
-        {participants.map(({ socketId, stream }) => (
-          <>
+        {streams.map((stream) => (
+          <div key={stream.id}>
             {stream && (
-              <li key={socketId}>
+              <li>
                 <Video stream={stream} />
               </li>
             )}
-          </>
+          </div>
         ))}
       </ul>
     </div>

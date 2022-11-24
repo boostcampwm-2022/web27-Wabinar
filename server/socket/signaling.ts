@@ -1,42 +1,38 @@
 import { Server } from 'socket.io';
 
-interface User {
-  socketId: string;
-}
-
 function signalingSocketServer(io: Server) {
-  const signaling = io.of(/^\/signaling\/\d+$/);
-  const users: Set<User> = new Set();
+  const signaling = io.of(/^\/api\/signaling\/\d+$/);
 
   signaling.on('connection', (socket) => {
-    socket.on('join', () => {
-      const socketId = socket.id;
-      console.log(socketId, '들어옴');
+    socket.on('send_hello', () => {
+      const senderId = socket.id;
 
-      users.add({ socketId });
-
-      const otherUser = [...users].filter((user) => user.socketId !== socketId);
-
-      socket.emit('join', { socketId, participants: otherUser });
+      socket.broadcast.emit('receive_hello', senderId); // broadcast
     });
 
-    // senderId : offer를 보내기 시작한 사람의 id
-    // receiveId : offer를 받는 사람의 id
-    socket.on('offer', ({ receiveId, offer }) => {
-      console.log('offer', { receiveId, offer });
-      socket.to(receiveId).emit('offer', { senderId: socket.id, offer });
+    // send_offer: response to 'receive_hello' event
+    socket.on('send_offer', (offer, receiverId) => {
+      const senderId = socket.id;
+
+      socket.to(receiverId).emit('receive_offer', offer, senderId);
     });
 
-    socket.on('answer', ({ receiveId, answer }) => {
-      console.log('answer', { receiveId, answer });
-      socket.to(receiveId).emit('answer', { senderId: socket.id, answer });
+    // send_answer: response to 'receive_offer' event
+    socket.on('send_answer', (answer, receiverId) => {
+      const senderId = socket.id;
+
+      socket.to(receiverId).emit('receive_answer', answer, senderId);
     });
 
-    socket.on('ice-candidate', ({ receiveId, candidate }) => {
-      console.log('ice-candidate', { receiveId, candidate });
-      socket
-        .to(receiveId)
-        .emit('ice-candidate', { senderId: socket.id, candidate });
+    socket.on('send_ice', (ice, receiverId) => {
+      const senderId = socket.id;
+
+      socket.to(receiverId).emit('receive_ice', ice, senderId);
+    });
+
+    socket.on('disconnecting', () => {
+      const senderId = socket.id;
+      socket.broadcast.emit('receive_bye', senderId);
     });
   });
 }
