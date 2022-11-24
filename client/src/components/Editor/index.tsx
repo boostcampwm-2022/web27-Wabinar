@@ -131,6 +131,14 @@ function Editor() {
     };
   }, []);
 
+  const onKeyUp: React.KeyboardEventHandler = (e) => {
+    const arrowKeys = ['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'];
+
+    if (arrowKeys.includes(e.nativeEvent.key)) {
+      setOffsetRef();
+    }
+  };
+
   return (
     <p
       ref={blockRef}
@@ -141,7 +149,7 @@ function Editor() {
       onClick={setOffsetRef}
       onBlur={clearOffsetRef}
       onKeyDown={onKeyDown}
-      onKeyUp={setOffsetRef}
+      onKeyUp={onKeyUp}
     >
       {crdtRef.current && crdtRef.current.read()}
     </p>
