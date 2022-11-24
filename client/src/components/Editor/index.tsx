@@ -92,11 +92,11 @@ function Editor() {
     socket.on('mom-insertion', (op) => {
       const prevIndex = remoteInsertCRDT(op);
 
-      if (prevIndex === null || !blockRef.current) return;
+      if (!blockRef.current) return;
 
       blockRef.current.innerText = readCRDT();
 
-      if (offsetRef.current === null) return;
+      if (prevIndex === null || offsetRef.current === null) return;
 
       updateCaretPosition(Number(prevIndex < offsetRef.current));
     });
@@ -104,11 +104,11 @@ function Editor() {
     socket.on('mom-deletion', (op) => {
       const targetIndex = remoteDeleteCRDT(op);
 
-      if (targetIndex === null || !blockRef.current) return;
+      if (!blockRef.current) return;
 
       blockRef.current.innerText = readCRDT();
 
-      if (offsetRef.current === null) return;
+      if (targetIndex === null || offsetRef.current === null) return;
 
       updateCaretPosition(-Number(targetIndex <= offsetRef.current));
     });
