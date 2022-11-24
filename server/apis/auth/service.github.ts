@@ -1,4 +1,3 @@
-import axios from 'axios';
 import env from '@config';
 import AuthorizationError from '@errors/authorization-error';
 
@@ -11,36 +10,35 @@ export const getAccessToken = async (code: string) => {
     client_secret: env.GITHUB_CLIENT_SECRET,
     code,
   };
+
   const headers = {
-    'Content-Type': 'application/json',
+    'content-type': 'application/json',
     Accept: 'application/json',
   };
 
-  const { data: accessTokenResponse } = await axios.post(
-    ACCESS_TOKEN_REQUEST_URL,
-    body,
-    {
-      headers,
-    },
-  );
+  const response = await fetch(ACCESS_TOKEN_REQUEST_URL, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers,
+  }).then((res) => res.json());
 
-  if (accessTokenResponse.error) {
-    throw new Error('access token ìƒì„± ìš”ì²­ ì‹¤íŒ¨');
+  if (response.error) {
+    throw new Error('access token »ý¼º ¿äÃ» ½ÇÆÐ');
   }
 
-  return accessTokenResponse;
+  return response;
 };
 
 export const getGithubUser = async (accessToken: string, tokenType: string) => {
-  const { data: user } = await axios.get(USER_REQUEST_URL, {
+  const response = await fetch(USER_REQUEST_URL, {
     headers: {
       Authorization: `${tokenType} ${accessToken}`,
     },
-  });
+  }).then((res) => res.json());
 
-  if (user.error) {
-    throw new AuthorizationError('OAuth ìœ ì € ì •ë³´ ìš”ì²­ ì‹¤íŒ¨');
+  if (response.error) {
+    throw new AuthorizationError('OAuth À¯Àú Á¤º¸ ¿äÃ» ½ÇÆÐ');
   }
 
-  return user;
+  return response;
 };
