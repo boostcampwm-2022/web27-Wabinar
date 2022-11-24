@@ -1,3 +1,4 @@
+import Editor from '../Editor';
 import style from './style.module.scss';
 
 function Mom() {
@@ -36,7 +37,7 @@ function Mom() {
           </h1>
           <span>{selectedMom.createdAt.toLocaleString()}</span>
         </div>
-        <div className={style['editor-container']}>회의록 내용</div>
+        <Editor />
       </div>
     </div>
   );

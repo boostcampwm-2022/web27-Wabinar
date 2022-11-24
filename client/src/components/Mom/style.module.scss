@@ -1,4 +1,4 @@
-@import 'styles/color.module.scss';
+@import 'styles/color.module';
 
 .mom-container {
   display: flex;
@@ -18,12 +18,12 @@
 
 .mom-header {
   display: flex;
+  box-sizing: border-box;
   flex-direction: row;
   align-items: baseline;
   justify-content: space-between;
   height: 70px;
   padding: 0px 15px 20px 15px;
-  box-sizing: border-box;
   color: $gray-100;
 
   & > h1 {
@@ -34,11 +34,4 @@
       outline: none;
     }
   }
-}
-
-.editor-container {
-  height: calc(100% - 70px);
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: white;
 }
