@@ -18,9 +18,9 @@ app.use(cookieParser(env.COOKIE_SECRET_KEY));
 app.use(cors());
 
 app.get('/', (req: Request, res: Response) => res.send('Express'));
-app.use('/auth', authRouter);
-app.use('/workspace', workspaceRouter);
-app.use('/user', userRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/workspace', workspaceRouter);
+app.use('/api/user', userRouter);
 
 app.use(errorHandler);
 
