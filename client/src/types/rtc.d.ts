@@ -1,4 +1,4 @@
-export interface IStream {
-  id: string;
+export interface IParticipant {
+  socketId: string;
   stream: MediaStream;
 }

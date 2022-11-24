@@ -1,9 +1,9 @@
-import { RTC } from 'src/constants/rtc';
+import { STUN_SERVER } from 'src/constants/rtc';
 
 export const peerConnectionConfig = {
   iceServers: [
     {
-      urls: RTC.STUN_SERVER,
+      urls: STUN_SERVER,
     },
   ],
 };
