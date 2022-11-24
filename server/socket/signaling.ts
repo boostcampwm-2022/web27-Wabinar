@@ -4,16 +4,35 @@ function signalingSocketServer(io: Server) {
   const signaling = io.of(/^\/signaling\/\d+$/);
 
   signaling.on('connection', (socket) => {
-    socket.on('offer', (sdp, roomId) => {
-      socket.to(roomId).emit('offer', sdp);
+    socket.on('send_hello', () => {
+      const senderId = socket.id;
+
+      socket.broadcast.emit('receive_hello', senderId); // broadcast
     });
 
-    socket.on('answer', (sdp, roomId) => {
-      socket.to(roomId).emit('answer', sdp);
+    // send_offer: response to 'receive_hello' event
+    socket.on('send_offer', (offer, receiverId) => {
+      const senderId = socket.id;
+
+      socket.to(receiverId).emit('receive_offer', offer, senderId);
     });
 
-    socket.on('candidate', (candidate, roomId) => {
-      socket.to(roomId).emit('candidate', candidate);
+    // send_answer: response to 'receive_offer' event
+    socket.on('send_answer', (answer, receiverId) => {
+      const senderId = socket.id;
+
+      socket.to(receiverId).emit('receive_answer', answer, senderId);
+    });
+
+    socket.on('send_ice', (ice, receiverId) => {
+      const senderId = socket.id;
+
+      socket.to(receiverId).emit('receive_ice', ice, senderId);
+    });
+
+    socket.on('disconnecting', () => {
+      const senderId = socket.id;
+      socket.broadcast.emit('receive_bye', senderId);
     });
   });
 }

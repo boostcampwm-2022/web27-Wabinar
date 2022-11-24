@@ -1,10 +1,10 @@
 import authRouter from '@apis/auth/controller';
 import userRouter from '@apis/user/controller';
 import workspaceRouter from '@apis/workspace/controller';
+import { momSocketServer, signalingSocketServer } from '@socket';
 import env from '@config';
 import cors from '@middlewares/cors';
 import errorHandler from '@middlewares/error-handler';
-import { momSocketServer, signalingSocketServer } from '@socket';
 import cookieParser from 'cookie-parser';
 import express, { Request, Response } from 'express';
 import http from 'http';
