@@ -24,6 +24,7 @@ class CRDT {
 
   setClientId(id: number) {
     this.client = id;
+    Object.setPrototypeOf(this.structure, LinkedList.prototype);
   }
 
   generateNode(letter: string) {

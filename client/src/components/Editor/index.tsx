@@ -1,9 +1,9 @@
+import CRDT from '@wabinar/crdt';
 import { useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import io, { Socket } from 'socket.io-client';
 import env from 'src/config';
 import { useUserContext } from 'src/hooks/useUserContext';
-import CRDT from 'src/utils/crdt';
 
 import style from './style.module.scss';
 
@@ -11,8 +11,8 @@ function Editor() {
   const workspace = useParams();
   const socket: Socket = io(`${env.SERVER_PATH}/sc-workspace/${workspace.id}`);
 
+  const crdtRef = useRef<CRDT | null>(null);
   const userContext = useUserContext();
-  const crdt = new CRDT(1, userContext.userInfo?.user.id);
 
   const offsetRef = useRef<number | null>(null);
   const blockRef = useRef<HTMLParagraphElement>(null);
@@ -73,7 +73,7 @@ function Editor() {
     const event = e.nativeEvent as InputEvent;
 
     if (event.inputType === 'deleteContentBackward') {
-      const remoteDeletion = crdt.localDelete(caretOffset);
+      const remoteDeletion = crdtRef.current?.localDelete(caretOffset);
 
       socket.emit('mom-deletion', remoteDeletion);
       return;
@@ -81,17 +81,20 @@ function Editor() {
 
     const letter = event.data as string;
 
-    const remoteInsertion = crdt.localInsert(caretOffset - 2, letter); // 직전 문자의 인덱스
+    const remoteInsertion = crdtRef.current?.localInsert(
+      caretOffset - 2, // 직전 문자의 인덱스
+      letter,
+    );
     socket.emit('mom-insertion', remoteInsertion);
   };
 
   useEffect(() => {
     socket.on('mom-insertion', (op) => {
-      const prevIndex = crdt.remoteInsert(op) ?? -1;
+      const prevIndex = crdtRef.current?.remoteInsert(op) ?? -1;
 
-      if (!blockRef.current) return;
+      if (!blockRef.current || !crdtRef.current) return;
 
-      blockRef.current.innerText = crdt.read();
+      blockRef.current.innerText = crdtRef.current.read();
 
       if (offsetRef.current === null) return;
 
@@ -99,15 +102,27 @@ function Editor() {
     });
 
     socket.on('mom-deletion', (op) => {
-      const targetIndex = crdt.remoteDelete(op) ?? -1;
+      const targetIndex = crdtRef.current?.remoteDelete(op) ?? -1;
 
-      if (!blockRef.current) return;
+      if (!blockRef.current || !crdtRef.current) return;
 
-      blockRef.current.innerText = crdt.read();
+      blockRef.current.innerText = crdtRef.current.read();
 
       if (offsetRef.current === null) return;
 
       updateSelectionRange(-Number(targetIndex <= offsetRef.current));
+    });
+
+    socket.on('mom-initialization', (crdt) => {
+      Object.setPrototypeOf(crdt, CRDT.prototype);
+
+      crdtRef.current = crdt;
+      crdtRef.current?.setClientId(userContext.userInfo?.user.id);
+
+      if (!blockRef.current || !crdtRef.current) return;
+
+      blockRef.current.innerText = crdtRef.current.read();
+      blockRef.current.contentEditable = 'true';
     });
 
     return () => {
@@ -120,7 +135,6 @@ function Editor() {
     <p
       ref={blockRef}
       className={style['editor-container']}
-      contentEditable={true}
       suppressContentEditableWarning={true}
       onInput={onInput}
       onFocus={setOffsetRef}
@@ -129,7 +143,7 @@ function Editor() {
       onKeyDown={onKeyDown}
       onKeyUp={setOffsetRef}
     >
-      {crdt.read()}
+      {crdtRef.current && crdtRef.current.read()}
     </p>
   );
 }
