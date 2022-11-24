@@ -27,9 +27,19 @@ function momSocketServer(io: Server) {
       workspace.emit('created-mom', mom);
     });
 
+    /* crdt remote insert delete */
+    socket.on('mom-insertion', async (op) => {
+      workspace.emit('mom-insertion', op);
+    });
+
+    socket.on('mom-deletion', async (op) => {
+      workspace.emit('mom-deletion', op);
+    });
+
     // 에러 시
     socket.on('error', (err) => {
       console.log(err);
+      socket.disconnect();
     });
 
     socket.on('disconnect', () => {
