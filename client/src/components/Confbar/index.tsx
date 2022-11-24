@@ -12,13 +12,13 @@ function ConfBar({ participants }: ConfBarProps) {
     <div className={style['conf-bar']}>
       <ul>
         {participants.map(({ socketId, stream }) => (
-          <>
+          <div key={socketId}>
             {stream && (
-              <li key={socketId}>
+              <li>
                 <Video stream={stream} />
               </li>
             )}
-          </>
+          </div>
         ))}
       </ul>
     </div>

@@ -5,10 +5,11 @@ interface User {
 }
 
 function signalingSocketServer(io: Server) {
-  const signaling = io.of(/^\/signaling\/\d+$/);
+  const signaling = io.of(/^\/api\/signaling\/\d+$/);
   const users: Set<User> = new Set();
 
   signaling.on('connection', (socket) => {
+    console.log(socket);
     socket.on('join', () => {
       const socketId = socket.id;
       console.log(socketId, '들어옴');
@@ -17,7 +18,7 @@ function signalingSocketServer(io: Server) {
 
       const otherUser = [...users].filter((user) => user.socketId !== socketId);
 
-      socket.emit('join', { socketId, participants: otherUser });
+      socket.emit('join', { participants: otherUser });
     });
 
     // senderId : offer를 보내기 시작한 사람의 id
