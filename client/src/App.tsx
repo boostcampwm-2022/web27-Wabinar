@@ -26,8 +26,12 @@ function App() {
 
     setUserInfo({ user, workspaces });
 
-    const { id } = workspaces[0];
-    navigate(`/workspace/${id}`);
+    let workspaceId = 0;
+    if (workspaces) {
+      workspaceId = workspaces[0].id;
+    }
+
+    navigate(`/workspace/${workspaceId}`);
   };
 
   useEffect(() => {
