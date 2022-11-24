@@ -1,6 +1,6 @@
-export const RTC = {
-  join: 'join',
-  offer: 'offer',
-  answer: 'answer',
-  'ice-candidate': 'ice-candidate',
+export const RTC_MESSAGE = {
+  JOIN: 'join',
+  OFFER: 'offer',
+  ANSWER: 'answer',
+  ICE_CANDIDATE: 'ice-candidate',
 };
