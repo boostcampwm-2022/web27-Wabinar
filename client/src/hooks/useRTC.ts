@@ -51,7 +51,7 @@ function useRTC({ signalingNamespace }: RTCProps): IParticipant[] {
     /* 이벤트 핸들러: Peer에게 candidate를 전달 할 필요가 있을때 마다 발생 */
     peerConnection.onicecandidate = (e) => {
       const candidate = e.candidate;
-      console.log('candidate', candidate);
+
       if (candidate) {
         socket.emit(RTC_MESSAGE.ICE_CANDIDATE, {
           receiveId: peerId,
@@ -65,7 +65,6 @@ function useRTC({ signalingNamespace }: RTCProps): IParticipant[] {
       -> 아니면 내가 누군가의 offer를 remoteDescription에 추가했을 때?
     */
     peerConnection.ontrack = (e) => {
-      console.log('ontrack', e.streams[0]);
       // 새로운 peer를 참여자에 추가
       setParticipants((participants) => [
         ...participants,
@@ -86,8 +85,6 @@ function useRTC({ signalingNamespace }: RTCProps): IParticipant[] {
 
     /* 다른 유저 join */
     socket.on(RTC_MESSAGE.JOIN, ({ participants }) => {
-      console.log('다른 유저 join', participants);
-
       participants.forEach(async (participant: IParticipant) => {
         const { socketId } = participant;
         const peerConnection = setPeerConnection(socketId);
@@ -109,8 +106,6 @@ function useRTC({ signalingNamespace }: RTCProps): IParticipant[] {
 
     /* offer 받기 */
     socket.on(RTC_MESSAGE.OFFER, async ({ senderId, offer }) => {
-      console.log('offer 받기', { senderId, offer });
-
       const peerConnection = setPeerConnection(senderId);
       await peerConnection.setRemoteDescription(offer);
 
@@ -123,8 +118,6 @@ function useRTC({ signalingNamespace }: RTCProps): IParticipant[] {
 
     /* answer 받기 */
     socket.on(RTC_MESSAGE.ANSWER, async ({ senderId, answer }) => {
-      console.log('answer 받기', { senderId, answer });
-
       const peerConnection = peerConnectionRef?.current?.[senderId];
       if (!peerConnection) return;
       peerConnection.setRemoteDescription(answer);
@@ -132,8 +125,6 @@ function useRTC({ signalingNamespace }: RTCProps): IParticipant[] {
 
     /* ice candidate */
     socket.on(RTC_MESSAGE.ICE_CANDIDATE, async ({ senderId, candidate }) => {
-      console.log('ice candidate', { senderId, candidate });
-
       const peerConnection = peerConnectionRef?.current?.[senderId];
       if (!peerConnection) return;
       await peerConnection.addIceCandidate(candidate);
