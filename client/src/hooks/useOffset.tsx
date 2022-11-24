@@ -17,9 +17,25 @@ export function useOffset() {
     offsetRef.current = null;
   };
 
+  const onKeyUp: React.KeyboardEventHandler = (e) => {
+    const arrowKeys = ['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'];
+
+    if (arrowKeys.includes(e.nativeEvent.key)) {
+      setOffset();
+    }
+  };
+
+  const offsetHandlers = {
+    onFocus: setOffset,
+    onClick: setOffset,
+    onBlur: clearOffset,
+    onKeyUp: onKeyUp,
+  };
+
   return {
     offsetRef,
     setOffset,
     clearOffset,
+    offsetHandlers,
   };
 }

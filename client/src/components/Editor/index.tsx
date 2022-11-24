@@ -20,7 +20,7 @@ function Editor() {
     remoteDeleteCRDT,
   } = useCRDT();
 
-  const { offsetRef, setOffset, clearOffset } = useOffset();
+  const { offsetRef, setOffset, clearOffset, offsetHandlers } = useOffset();
 
   const blockRef = useRef<HTMLParagraphElement>(null);
 
@@ -128,25 +128,14 @@ function Editor() {
     }
   };
 
-  const onKeyUp: React.KeyboardEventHandler = (e) => {
-    const arrowKeys = ['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp'];
-
-    if (arrowKeys.includes(e.nativeEvent.key)) {
-      setOffset();
-    }
-  };
-
   return (
     <p
       ref={blockRef}
+      onInput={onInput}
+      {...offsetHandlers}
+      onKeyDown={onKeyDown}
       className={style['editor-container']}
       suppressContentEditableWarning={true}
-      onInput={onInput}
-      onFocus={setOffset}
-      onClick={setOffset}
-      onBlur={clearOffset}
-      onKeyDown={onKeyDown}
-      onKeyUp={onKeyUp}
     >
       {readCRDT()}
     </p>
