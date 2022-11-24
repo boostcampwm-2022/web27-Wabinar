@@ -7,7 +7,7 @@ import { CREATED, OK } from './http-status';
 export const postWorkspace = async ({
   name,
 }: PostParams): Promise<Workspace> => {
-  const res = await http.post(`/workspace`, { name });
+  const res = await http.post(`/api/workspace`, { name });
 
   if (res.status !== CREATED) throw new Error();
 
@@ -17,7 +17,7 @@ export const postWorkspace = async ({
 export const postWorkspaceJoin = async ({
   code,
 }: PostJoinParams): Promise<Workspace> => {
-  const res = await http.post(`/workspace/join`, { code });
+  const res = await http.post(`/api/workspace/join`, { code });
 
   if (res.status !== CREATED) throw new Error();
 
@@ -27,7 +27,7 @@ export const postWorkspaceJoin = async ({
 export const getWorkspaceInfo = async ({
   id,
 }: GetInfoParams): Promise<WorkspaceInfo> => {
-  const res = await http.get(`/workspace/${id}`);
+  const res = await http.get(`/api/workspace/${id}`);
 
   if (res.status !== OK) throw new Error();
 
