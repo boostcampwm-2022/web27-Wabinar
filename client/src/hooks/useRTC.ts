@@ -70,11 +70,6 @@ function useRTC({ socket }: RTCProps): Map<string, MediaStream> {
         newState.set(peerId, e.streams[0]);
         return newState;
       });
-
-      // setParticipants((participants) => [
-      //   ...participants,
-      //   { socketId: peerId, stream: e.streams[0] },
-      // ]);
     };
 
     return peerConnection;
