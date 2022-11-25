@@ -16,15 +16,18 @@ class CRDT {
   private client: number;
   private structure: LinkedList;
 
-  constructor(initialclock: number = 1, client: number = 0) {
+  constructor(
+    initialclock: number = 1,
+    client: number = 0,
+    initialStructure?: LinkedList,
+  ) {
     this.clock = initialclock;
     this.client = client;
-    this.structure = new LinkedList();
+    this.structure = initialStructure ?? new LinkedList();
   }
 
-  setClientId(id: number) {
-    this.client = id;
-    Object.setPrototypeOf(this.structure, LinkedList.prototype);
+  get data() {
+    return this.structure;
   }
 
   generateNode(letter: string) {

@@ -5,7 +5,7 @@ type RemoteIdentifier = Identifier | null;
 type ModifiedIndex = number | null;
 
 export default class LinkedList {
-  private head?: Node;
+  head?: Node;
 
   insertByIndex(index: number, node: Node): RemoteIdentifier {
     try {
