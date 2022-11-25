@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
+import { STUN_SERVER } from 'src/constants/rtc';
 import RTC from 'src/utils/rtc';
 
-export function useConfMediaStreams() {
+export function useConfMediaStreams(socket: Socket) {
   const [mediaStreams, setMediaStreams] = useState<Map<string, MediaStream>>(new Map());
 
   useEffect(() => {
@@ -10,15 +11,7 @@ export function useConfMediaStreams() {
       const userMedia = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
       setMediaStreams(prev => copyMapWithOperation(prev, map => map.set('me', userMedia)));
 
-      const socket = io('http://localhost:8080/123'); // TODO: 임시 시그널링 주소
-      const stunServers = [
-        'stun:stun.l.google.com:19302',
-        'stun:stun1.l.google.com:19302',
-        'stun:stun2.l.google.com:19302',
-        'stun:stun3.l.google.com:19302',
-        'stun:stun4.l.google.com:19302'
-      ];
-      const rtc = new RTC(socket, stunServers, userMedia);
+      const rtc = new RTC(socket, STUN_SERVER, userMedia);
       rtc.onMediaConnected((socketId, remoteStream) => {
         setMediaStreams(prev => copyMapWithOperation(prev, map => map.set(socketId, remoteStream)));
       });
@@ -32,6 +25,7 @@ export function useConfMediaStreams() {
   return mediaStreams;
 }
 
+// TODO: 코드 반복때문에 만든 함수. 더 좋은 방법 있으면 고치기
 function copyMapWithOperation<K, V>(prev: Map<K, V>, operation: (cur: Map<K, V>) => void) {
   const cur = new Map(prev);
   operation(cur);
