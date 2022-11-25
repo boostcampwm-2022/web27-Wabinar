@@ -9,7 +9,6 @@ function signalingSocketServer(io: Server) {
   const users: Set<User> = new Set();
 
   signaling.on('connection', (socket) => {
-    console.log(socket);
     socket.on('join', () => {
       const socketId = socket.id;
       console.log(socketId, '들어옴');
