@@ -32,6 +32,8 @@ function Editor() {
 
     const event = e.nativeEvent as InputEvent;
 
+    if (event.isComposing) return; // 한글 입력 무시
+
     if (event.inputType === 'deleteContentBackward') {
       const remoteDeletion = localDeleteCRDT(offsetRef.current);
 
@@ -119,6 +121,25 @@ function Editor() {
     };
   }, []);
 
+  // 한글 입력 핸들링
+  const onCompositionEnd: React.CompositionEventHandler = (e) => {
+    const event = e.nativeEvent as CompositionEvent;
+
+    // compositionend 이벤트가 공백 문자로 발생하는 경우가 있음
+    const letters = (event.data as string).split('');
+    const maxIndex = letters.length - 1;
+
+    letters.forEach((letter, idx) => {
+      if (offsetRef.current === null) return;
+
+      const previousLetterIndex = offsetRef.current - 2 - (maxIndex - idx);
+
+      const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
+
+      socket.emit('mom-insertion', remoteInsertion);
+    });
+  };
+
   // 블럭 한개 가정을 위한 임시 핸들러
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     if (e.key === 'Enter') {
@@ -132,6 +153,7 @@ function Editor() {
     <p
       ref={blockRef}
       onInput={onInput}
+      onCompositionEnd={onCompositionEnd}
       {...offsetHandlers}
       onKeyDown={onKeyDown}
       className={style['editor-container']}
