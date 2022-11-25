@@ -2,6 +2,7 @@ import CRDT, {
   RemoteInsertOperation,
   RemoteDeleteOperation,
 } from '@wabinar/crdt';
+import LinkedList from '@wabinar/crdt/linked-list';
 import { useRef } from 'react';
 import { useUserContext } from 'src/hooks/useUserContext';
 
@@ -23,10 +24,11 @@ export function useCRDT() {
   const operationSet: RemoteOperation[] = [];
 
   const syncCRDT = (object: unknown) => {
-    Object.setPrototypeOf(object, CRDT.prototype);
+    Object.setPrototypeOf(object, LinkedList.prototype);
 
-    crdtRef.current = object as CRDT;
-    crdtRef.current.setClientId(userContext.userInfo?.user.id);
+    const clientId = userContext.userInfo?.user.id;
+
+    crdtRef.current = new CRDT(1, clientId, object as LinkedList);
 
     initialized = true;
     operationSet.forEach(({ type, op }) => {
