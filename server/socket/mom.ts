@@ -1,13 +1,17 @@
-import { createMom, getMom } from '@apis/mom/service';
+import { createMom, getMom, putMom } from '@apis/mom/service';
 import { Server } from 'socket.io';
 import CRDT from '@wabinar/crdt';
 
-const crdt = new CRDT(1, -100);
+async function momSocketServer(io: Server) {
+  const momId = '6380c9f7b757041ca21fe96c';
 
-function momSocketServer(io: Server) {
+  const { structure } = await getMom(momId);
+
+  const crdt = new CRDT(1, -1, structure);
+
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
 
-  workspace.on('connection', (socket) => {
+  workspace.on('connection', async (socket) => {
     const name = socket.nsp.name;
     const workspaceId = name.match(/\d+/g)[0];
 
@@ -15,9 +19,6 @@ function momSocketServer(io: Server) {
       socket.disconnect();
       return;
     }
-
-    // 초기화에 필요한 정보 전달
-    socket.emit('mom-initialization', crdt);
 
     /* 회의록 선택 시 회의록 정보 불러오기 */
     socket.on('select-mom', async (roomId) => {
@@ -37,11 +38,15 @@ function momSocketServer(io: Server) {
     socket.on('mom-insertion', async (op) => {
       socket.broadcast.emit('mom-insertion', op);
       crdt.remoteInsert(op);
+
+      putMom(momId, crdt.data);
     });
 
     socket.on('mom-deletion', async (op) => {
       socket.broadcast.emit('mom-deletion', op);
       crdt.remoteDelete(op);
+
+      putMom(momId, crdt.data);
     });
 
     // 에러 시
@@ -53,6 +58,11 @@ function momSocketServer(io: Server) {
     socket.on('disconnect', () => {
       console.log('user disconnected', socket.id);
     });
+
+    // 초기화에 필요한 정보 전달
+    const { structure } = await getMom(momId);
+
+    socket.emit('mom-initialization', structure);
   });
 }
 
