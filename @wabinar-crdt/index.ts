@@ -23,7 +23,11 @@ class CRDT {
   ) {
     this.clock = initialclock;
     this.client = client;
-    this.structure = initialStructure ?? new LinkedList();
+
+    if (initialStructure) {
+      Object.setPrototypeOf(initialStructure, LinkedList.prototype);
+      this.structure = initialStructure as LinkedList;
+    }
   }
 
   get data() {
