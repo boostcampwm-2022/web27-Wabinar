@@ -5,7 +5,7 @@ import CRDT from '@wabinar/crdt';
 const crdt = new CRDT(1, -100);
 
 function momSocketServer(io: Server) {
-  const workspace = io.of(/^\/sc-workspace\/\d+$/);
+  const workspace = io.of(/^\/api\/sc-workspace\/\d+$/);
 
   workspace.on('connection', (socket) => {
     const name = socket.nsp.name;
