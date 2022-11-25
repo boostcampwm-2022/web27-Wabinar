@@ -9,7 +9,8 @@
       "@db": ["db"],
       "@middlewares/*": ["middlewares/*"],
       "@utils/*": ["utils/*"],
-      "@params/*": ["../types/params/*"]
+      "@params/*": ["../types/params/*"],
+      "@socket": ["socket"]
     }
   }
 }
