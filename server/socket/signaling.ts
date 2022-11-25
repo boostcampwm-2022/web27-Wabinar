@@ -1,27 +1,16 @@
 import { Server } from 'socket.io';
 
-interface User {
-  socketId: string;
-}
-
 function signalingSocketServer(io: Server) {
   const signaling = io.of(/^\/api\/signaling\/\d+$/);
-  const users: Set<User> = new Set();
 
   signaling.on('connection', (socket) => {
+    const socketId = socket.id;
+
     socket.on('join', () => {
-      const socketId = socket.id;
-      console.log(socketId, '들어옴');
-
-      users.add({ socketId });
-
-      const otherUser = [...users].filter((user) => user.socketId !== socketId);
-
-      socket.emit('join', { participants: otherUser });
+      socket.broadcast.emit('join', { socketId });
     });
 
-    // senderId : offer를 보내기 시작한 사람의 id
-    // receiveId : offer를 받는 사람의 id
+    // senderId : offer를 보내기 시작한 사람의 id, receiveId : offer를 받는 사람의 id
     socket.on('offer', ({ receiveId, offer }) => {
       console.log('offer', { receiveId, offer });
       socket.to(receiveId).emit('offer', { senderId: socket.id, offer });
@@ -37,6 +26,10 @@ function signalingSocketServer(io: Server) {
       socket
         .to(receiveId)
         .emit('ice-candidate', { senderId: socket.id, candidate });
+    });
+
+    socket.on('disconnect', () => {
+      socket.broadcast.emit('disconnected', socketId);
     });
   });
 }

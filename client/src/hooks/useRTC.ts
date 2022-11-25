@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { peerConnectionConfig } from 'src/config/rtc';
 import { RTC_MESSAGE } from 'src/constants/socket-message';
-import { IParticipant } from 'src/types/rtc';
 
 interface IPeerConnection {
   [id: string]: RTCPeerConnection; // key: 각 클라이언트의 socketId, value: RTCPeerConnection 객체
@@ -83,24 +82,20 @@ function useRTC({ socket }: RTCProps): Map<string, MediaStream> {
     /* 유저 join */
     socket.emit(RTC_MESSAGE.JOIN);
 
-    /* 다른 유저 join */
-    socket.on(RTC_MESSAGE.JOIN, ({ participants }) => {
-      participants.forEach(async (participant: IParticipant) => {
-        const { socketId } = participant;
-        const peerConnection = setPeerConnection(socketId);
+    /* 새로 들어온 유저의 socketId를 받음 */
+    socket.on(RTC_MESSAGE.JOIN, async ({ socketId }) => {
+      const peerConnection = setPeerConnection(socketId);
 
-        peerConnectionRef.current = {
-          ...peerConnectionRef.current,
-          [socketId]: peerConnection,
-        };
+      peerConnectionRef.current = {
+        ...peerConnectionRef.current,
+        [socketId]: peerConnection,
+      };
 
-        const offer = await peerConnection.createOffer();
-        peerConnection.setLocalDescription(offer);
-
-        socket.emit(RTC_MESSAGE.OFFER, {
-          receiveId: participant.socketId,
-          offer,
-        });
+      const offer = await peerConnection.createOffer();
+      peerConnection.setLocalDescription(offer);
+      socket.emit(RTC_MESSAGE.OFFER, {
+        receiveId: socketId,
+        offer,
       });
     });
 
@@ -129,6 +124,24 @@ function useRTC({ socket }: RTCProps): Map<string, MediaStream> {
       if (!peerConnection) return;
       await peerConnection.addIceCandidate(candidate);
     });
+
+    /* disconnected */
+    socket.on(RTC_MESSAGE.DISCONNECTED, async (senderId) => {
+      delete peerConnectionRef?.current?.[senderId];
+      setParticipants((prev) => {
+        const newState = new Map(prev);
+        newState.delete(senderId);
+        return newState;
+      });
+    });
+
+    return () => {
+      socket.off(RTC_MESSAGE.JOIN);
+      socket.off(RTC_MESSAGE.OFFER);
+      socket.off(RTC_MESSAGE.ANSWER);
+      socket.off(RTC_MESSAGE.ICE_CANDIDATE);
+      socket.off(RTC_MESSAGE.DISCONNECTED);
+    };
   }, []);
 
   return participants;
