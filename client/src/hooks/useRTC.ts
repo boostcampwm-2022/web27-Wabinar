@@ -1,24 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
+import { Socket } from 'socket.io-client';
 import { peerConnectionConfig } from 'src/config/rtc';
 import { RTC_MESSAGE } from 'src/constants/socket-message';
 import { IParticipant } from 'src/types/rtc';
-
-import useSocket from './useSocket';
 
 interface IPeerConnection {
   [id: string]: RTCPeerConnection; // key: 각 클라이언트의 socketId, value: RTCPeerConnection 객체
 }
 
 interface RTCProps {
-  signalingNamespace: string;
+  socket: Socket;
 }
 
-function useRTC({ signalingNamespace }: RTCProps): IParticipant[] {
-  const socket = useSocket(signalingNamespace);
-
+function useRTC({ socket }: RTCProps): Map<string, MediaStream> {
   const myStreamRef = useRef<MediaStream | null>(null);
   const myVideoRef = useRef<HTMLVideoElement | null>(null);
-  const [participants, setParticipants] = useState<IParticipant[]>([]);
+  const [participants, setParticipants] = useState<Map<string, MediaStream>>(
+    new Map(),
+  );
   const peerConnectionRef = useRef<IPeerConnection | null>(null);
 
   const setMyStream = async () => {
@@ -66,10 +65,16 @@ function useRTC({ signalingNamespace }: RTCProps): IParticipant[] {
     */
     peerConnection.ontrack = (e) => {
       // 새로운 peer를 참여자에 추가
-      setParticipants((participants) => [
-        ...participants,
-        { socketId: peerId, stream: e.streams[0] },
-      ]);
+      setParticipants((prev) => {
+        const newState = new Map(prev);
+        newState.set(peerId, e.streams[0]);
+        return newState;
+      });
+
+      // setParticipants((participants) => [
+      //   ...participants,
+      //   { socketId: peerId, stream: e.streams[0] },
+      // ]);
     };
 
     return peerConnection;

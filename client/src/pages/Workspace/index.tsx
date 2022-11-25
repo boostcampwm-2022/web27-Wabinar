@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { getWorkspaceInfo } from 'src/apis/workspace';
 import ConfBar from 'src/components/ConfBar';
 import useRTC from 'src/hooks/useRTC';
+import useSocket from 'src/hooks/useSocket';
 import { WorkspaceInfo } from 'src/types/workspace';
 
 import style from './style.module.scss';
@@ -25,7 +26,9 @@ function WorkspacePage() {
     loadWorkspaceInfo();
   }, []);
 
-  const participants = useRTC({ signalingNamespace: `/signaling/${id}` });
+  const socket = useSocket(`/signaling/${id}`);
+  const participants = useRTC({ socket });
+  const streams = Array.from(participants.values());
 
   return (
     <div className={style.container}>
@@ -37,7 +40,7 @@ function WorkspacePage() {
           moms={workspace.moms}
         />
       )}
-      <ConfBar participants={participants} />
+      <ConfBar streams={streams} />
     </div>
   );
 }
