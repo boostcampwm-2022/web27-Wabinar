@@ -15,7 +15,7 @@ interface RemoteOperation {
   op: RemoteDeleteOperation | RemoteInsertOperation;
 }
 
-function useCRDT() {
+export function useCRDT() {
   const crdtRef = useRef<CRDT>(new CRDT());
   const userContext = useUserContext();
 
@@ -91,5 +91,3 @@ function useCRDT() {
     remoteDeleteCRDT,
   };
 }
-
-export default useCRDT;
