@@ -29,8 +29,6 @@ function WorkspacePage() {
 
   useEffect(() => {
     loadWorkspaceInfo();
-    
-
   }, []);
 
   return (
