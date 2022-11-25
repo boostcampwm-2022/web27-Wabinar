@@ -16,13 +16,11 @@ export const getAccessToken = async (code: string) => {
     Accept: 'application/json',
   };
 
-  const { data: accessTokenResponse } = await axios.post(
-    ACCESS_TOKEN_REQUEST_URL,
-    body,
-    {
-      headers,
-    },
-  );
+  const accessTokenResponse = await fetch(ACCESS_TOKEN_REQUEST_URL, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers,
+  }).then((res) => res.json());
 
   if (accessTokenResponse.error) {
     throw new Error('access token 생성 요청 실패');
@@ -32,15 +30,15 @@ export const getAccessToken = async (code: string) => {
 };
 
 export const getGithubUser = async (accessToken: string, tokenType: string) => {
-  const { data: user } = await axios.get(USER_REQUEST_URL, {
+  const userResponse = await fetch(USER_REQUEST_URL, {
     headers: {
       Authorization: `${tokenType} ${accessToken}`,
     },
-  });
+  }).then((res) => res.json());
 
-  if (user.error) {
+  if (userResponse.error) {
     throw new AuthorizationError('OAuth 유저 정보 요청 실패');
   }
 
-  return user;
+  return userResponse;
 };
