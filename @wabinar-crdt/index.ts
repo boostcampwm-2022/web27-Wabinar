@@ -1,25 +1,30 @@
 import LinkedList from './linked-list';
 import { Identifier, Node } from './node';
 
-interface RemoteInsertOperation {
+export interface RemoteInsertOperation {
   prevId: Identifier | null;
   node: Node;
 }
 
-interface RemoteRemoveOperation {
+export interface RemoteDeleteOperation {
   targetId: Identifier | null;
   clock: number;
 }
 
 class CRDT {
-  clock: number;
-  client: number;
+  private clock: number;
+  private client: number;
   private structure: LinkedList;
 
-  constructor(initialclock: number, client: number) {
+  constructor(initialclock: number = 1, client: number = 0) {
     this.clock = initialclock;
     this.client = client;
     this.structure = new LinkedList();
+  }
+
+  setClientId(id: number) {
+    this.client = id;
+    Object.setPrototypeOf(this.structure, LinkedList.prototype);
   }
 
   generateNode(letter: string) {
@@ -38,7 +43,7 @@ class CRDT {
     return { prevId, node };
   }
 
-  localDelete(index: number): RemoteRemoveOperation {
+  localDelete(index: number): RemoteDeleteOperation {
     const targetId = this.structure.deleteByIndex(index);
 
     return { targetId, clock: this.clock };
@@ -54,7 +59,7 @@ class CRDT {
     return prevIndex;
   }
 
-  remoteDelete({ targetId, clock }: RemoteRemoveOperation) {
+  remoteDelete({ targetId, clock }: RemoteDeleteOperation) {
     const targetIndex = this.structure.deleteById(targetId);
 
     if (++this.clock < clock) {

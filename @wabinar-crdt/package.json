@@ -1,0 +1,6 @@
+{
+  "name": "@wabinar/crdt",
+  "version": "1.0.0",
+  "description": "CRDT for wabinar",
+  "license": "MIT"
+}
