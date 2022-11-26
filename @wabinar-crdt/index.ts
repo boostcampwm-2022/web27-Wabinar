@@ -1,15 +1,8 @@
-import LinkedList from './linked-list';
-import { Identifier, Node } from './node';
-
-export interface RemoteInsertOperation {
-  prevId: Identifier | null;
-  node: Node;
-}
-
-export interface RemoteDeleteOperation {
-  targetId: Identifier | null;
-  clock: number;
-}
+import LinkedList, {
+  RemoteDeleteOperation,
+  RemoteInsertOperation,
+} from './linked-list';
+import { Identifier } from './node';
 
 class CRDT {
   private clock: number;
@@ -32,20 +25,12 @@ class CRDT {
     return this.structure;
   }
 
-  generateNode(letter: string) {
-    const id = this.generateIdentifier();
-    return new Node(letter, id);
-  }
-
-  generateIdentifier() {
-    return new Identifier(this.clock++, this.client);
-  }
-
   localInsert(index: number, letter: string): RemoteInsertOperation {
-    const node = this.generateNode(letter);
-    const prevId = this.structure.insertByIndex(index, node);
+    const id = new Identifier(this.clock++, this.client);
 
-    return { prevId, node };
+    const remoteInsertion = this.structure.insertByIndex(index, letter, id);
+
+    return remoteInsertion;
   }
 
   localDelete(index: number): RemoteDeleteOperation {

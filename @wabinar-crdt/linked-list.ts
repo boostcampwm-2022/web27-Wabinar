@@ -4,28 +4,45 @@ type RemoteIdentifier = Identifier | null;
 
 type ModifiedIndex = number | null;
 
+export interface RemoteInsertOperation {
+  prevId: Identifier | null;
+  node: Node;
+}
+
+export interface RemoteDeleteOperation {
+  targetId: Identifier | null;
+  clock: number;
+}
+
 export default class LinkedList {
   head?: Node;
 
-  insertByIndex(index: number, node: Node): RemoteIdentifier {
+  insertByIndex(
+    index: number,
+    letter: string,
+    id: Identifier,
+  ): RemoteInsertOperation {
+    const node = new Node(letter, id);
+
     try {
       if (!this.head || index === -1) {
         node.next = this.head;
         this.head = node;
 
-        return null;
+        return { prevId: null, node };
       }
       const prevNode = this.findByIndex(index);
 
       node.next = prevNode.next;
       prevNode.next = node;
 
-      const { id: prevNodeId } = prevNode;
-      return prevNodeId;
+      const { id: prevId } = prevNode;
+
+      return { prevId, node };
     } catch (e) {
       console.log(`insertByIndex 실패 ^^\n${e}`);
 
-      return null;
+      return { prevId: null, node };
     }
   }
 

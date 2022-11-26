@@ -1,8 +1,8 @@
-import CRDT, {
+import CRDT from '@wabinar/crdt';
+import LinkedList, {
   RemoteInsertOperation,
   RemoteDeleteOperation,
-} from '@wabinar/crdt';
-import LinkedList from '@wabinar/crdt/linked-list';
+} from '@wabinar/crdt/linked-list';
 import { useRef } from 'react';
 import { useUserContext } from 'src/hooks/useUserContext';
 
