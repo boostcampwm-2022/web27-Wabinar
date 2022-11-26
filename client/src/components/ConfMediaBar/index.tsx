@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-import config from 'src/config';
+import env from 'src/config';
 import { useConfMediaStreams } from 'src/hooks/useConfMediaStreams';
 
 import ConfMedia from './ConfMedia';
@@ -10,7 +10,7 @@ interface ConfMediaBarProps {
 }
 
 function ConfMediaBar({ workspaceId }: ConfMediaBarProps) {
-  const socketUrl = `${config.SERVER_PATH}/signaling/${workspaceId}`;
+  const socketUrl = `${env.SERVER_PATH}/signaling/${workspaceId}`;
   const socket = io(socketUrl);
 
   const streams = useConfMediaStreams(socket);
