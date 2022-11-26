@@ -17,16 +17,16 @@ interface RemoteOperation {
 }
 
 export function useCRDT() {
-  const crdtRef = useRef<CRDT>(new CRDT());
   const userContext = useUserContext();
+  const clientId = userContext.userInfo?.user.id;
+
+  const crdtRef = useRef<CRDT>(new CRDT(1, clientId, new LinkedList()));
 
   let initialized = false;
   const operationSet: RemoteOperation[] = [];
 
   const syncCRDT = (object: unknown) => {
     Object.setPrototypeOf(object, LinkedList.prototype);
-
-    const clientId = userContext.userInfo?.user.id;
 
     crdtRef.current = new CRDT(1, clientId, object as LinkedList);
 

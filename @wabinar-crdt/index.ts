@@ -19,15 +19,13 @@ class CRDT {
   constructor(
     initialclock: number = 1,
     client: number = 0,
-    initialStructure?: LinkedList,
+    initialStructure: LinkedList,
   ) {
     this.clock = initialclock;
     this.client = client;
 
-    if (initialStructure) {
-      Object.setPrototypeOf(initialStructure, LinkedList.prototype);
-      this.structure = initialStructure as LinkedList;
-    }
+    Object.setPrototypeOf(initialStructure, LinkedList.prototype);
+    this.structure = initialStructure as LinkedList;
   }
 
   get data() {
