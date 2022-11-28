@@ -1,10 +1,17 @@
-import { createMom, getMom } from '@apis/mom/service';
+import { createMom, getMom, putMom } from '@apis/mom/service';
 import { Server } from 'socket.io';
+import CRDT from '@wabinar/crdt';
 
-function momSocketServer(io: Server) {
-  const workspace = io.of(/^\/sc-workspace\/\d+$/);
+async function momSocketServer(io: Server) {
+  const momId = '6380c9f7b757041ca21fe96c';
 
-  workspace.on('connection', (socket) => {
+  const { structure } = await getMom(momId);
+
+  const crdt = new CRDT(1, -1, structure);
+
+  const workspace = io.of(/^\/api\/sc-workspace\/\d+$/);
+
+  workspace.on('connection', async (socket) => {
     const name = socket.nsp.name;
     const workspaceId = name.match(/\d+/g)[0];
 
@@ -27,14 +34,35 @@ function momSocketServer(io: Server) {
       workspace.emit('created-mom', mom);
     });
 
+    /* crdt remote insert delete */
+    socket.on('mom-insertion', async (op) => {
+      socket.broadcast.emit('mom-insertion', op);
+      crdt.remoteInsert(op);
+
+      putMom(momId, crdt.data);
+    });
+
+    socket.on('mom-deletion', async (op) => {
+      socket.broadcast.emit('mom-deletion', op);
+      crdt.remoteDelete(op);
+
+      putMom(momId, crdt.data);
+    });
+
     // 에러 시
     socket.on('error', (err) => {
       console.log(err);
+      socket.disconnect();
     });
 
     socket.on('disconnect', () => {
       console.log('user disconnected', socket.id);
     });
+
+    // 초기화에 필요한 정보 전달
+    const { structure } = await getMom(momId);
+
+    socket.emit('mom-initialization', structure);
   });
 }
 

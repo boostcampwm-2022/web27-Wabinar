@@ -1,6 +1,6 @@
-import axios from 'axios';
 import env from '@config';
 import AuthorizationError from '@errors/authorization-error';
+import axios from 'axios';
 
 const ACCESS_TOKEN_REQUEST_URL = 'https://github.com/login/oauth/access_token';
 const USER_REQUEST_URL = 'https://api.github.com/user';
