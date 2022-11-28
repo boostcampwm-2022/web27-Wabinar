@@ -1,19 +1,40 @@
 import Workspace from 'components/Workspace';
 import WorkspaceList from 'components/WorkspaceList';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ConfMediaBar from 'src/components/ConfMediaBar';
+import MomContext from 'src/contexts/mom';
+import { SocketContext } from 'src/contexts/socket';
+import useSocket from 'src/hooks/useSocket';
 
 import style from './style.module.scss';
 
 function WorkspacePage() {
   const { id } = useParams();
+  const [isStart, setIsStart] = useState(false);
+
+  const momSocket = useSocket(`/sc-workspace/${id}`);
+
+  useEffect(() => {
+    momSocket.on('started-mom', () => {
+      setIsStart(true);
+    });
+
+    momSocket.on('stoped-mom', () => {
+      setIsStart(false);
+    });
+  }, []);
 
   return (
-    <div className={style.container}>
-      <WorkspaceList />
-      <Workspace workspaceId={id} />
-      <ConfMediaBar workspaceId={id} />
-    </div>
+    <SocketContext.Provider value={{ momSocket }}>
+      <MomContext.Provider value={{ isStart, setIsStart }}>
+        <div className={style.container}>
+          <WorkspaceList />
+          <Workspace workspaceId={id} />
+          {isStart && <ConfMediaBar />}
+        </div>
+      </MomContext.Provider>
+    </SocketContext.Provider>
   );
 }
 
