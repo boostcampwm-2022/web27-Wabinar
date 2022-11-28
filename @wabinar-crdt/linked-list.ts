@@ -56,8 +56,13 @@ export default class LinkedList {
       if (index === 0) {
         if (!this.head) throw new Error('head가 없는데 어떻게 삭제하셨나요 ^^');
 
+        if (!this.head.next) {
+          this.head = undefined;
+          return null;
+        }
+
+        this.head.next.prev = null;
         this.head = this.head.next;
-        this.head.prev = null;
 
         return null;
       }

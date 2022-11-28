@@ -12,7 +12,7 @@ export class Node {
   id: Identifier;
   value?: string;
   next?: Node;
-  prev?: Identifier;
+  prev?: Identifier | null;
 
   constructor(value: string, id: Identifier) {
     this.id = id;
