@@ -87,8 +87,6 @@ export default class LinkedList {
 
       // insertion to head
       if (id === null) {
-        node.prev = null;
-
         // 기존 head가 없거나 현재 node가 선행하는 경우
         if (!this.head || node.precedes(this.head)) {
           node.next = this.head;
