@@ -1,22 +1,33 @@
-import Confbar from 'components/Confbar';
 import Mom from 'components/Mom';
 import Sidebar from 'components/Sidebar';
-import { TMom } from 'src/types/mom';
-import { TUser } from 'src/types/user';
-
+import { useEffect, useState } from 'react';
+import { getWorkspaceInfo } from 'src/apis/workspace';
+import { WorkspaceInfo } from 'src/types/workspace';
 interface WorkspaceProps {
-  name: string;
-  members: TUser[];
-  moms: TMom[];
+  workspaceId?: string;
 }
 
-function Workspace({ name, members, moms }: WorkspaceProps) {
+function Workspace({ workspaceId }: WorkspaceProps) {
+  const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
+
+  useEffect(() => {
+    loadWorkspaceInfo();
+  }, []);
+
+  const loadWorkspaceInfo = async () => {
+    if (workspaceId) {
+      const workspaceInfo = await getWorkspaceInfo({ id: workspaceId });
+      setWorkspace(workspaceInfo);
+    }
+  };
+
   return (
-    <>
-      <Sidebar />
-      <Mom />
-      <Confbar />
-    </>
+    workspace && (
+      <>
+        <Sidebar />
+        <Mom />
+      </>
+    )
   );
 }
 
