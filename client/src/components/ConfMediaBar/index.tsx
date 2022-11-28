@@ -1,18 +1,13 @@
-import { io } from 'socket.io-client';
-import env from 'src/config';
+import { useParams } from 'react-router-dom';
 import { useConfMediaStreams } from 'src/hooks/useConfMediaStreams';
+import useSocket from 'src/hooks/useSocket';
 
 import ConfMedia from './ConfMedia';
 import style from './style.module.scss';
 
-interface ConfMediaBarProps {
-  workspaceId?: string;
-}
-
-function ConfMediaBar({ workspaceId }: ConfMediaBarProps) {
-  const socketUrl = `${env.SERVER_PATH}/signaling/${workspaceId}`;
-  const socket = io(socketUrl);
-
+function ConfMediaBar() {
+  const { id } = useParams();
+  const socket = useSocket(`/signaling/${id}`);
   const streams = useConfMediaStreams(socket);
 
   return (
