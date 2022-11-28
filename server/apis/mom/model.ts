@@ -1,5 +1,6 @@
 import mongoose from '@db';
 import { Schema } from 'mongoose';
+import LinkedList from '@wabinar/crdt/linked-list';
 
 interface Block {
   type: String;
@@ -9,11 +10,13 @@ interface Block {
 interface Mom {
   name: string;
   blocks: Block[];
+  structure: LinkedList;
 }
 
 const momSchema = new Schema<Mom>({
   name: String,
   blocks: Array<Block>,
+  structure: Object,
 });
 
 const momModel = mongoose.model('Mom', momSchema);

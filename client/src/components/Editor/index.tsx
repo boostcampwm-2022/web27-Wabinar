@@ -9,9 +9,7 @@ import style from './style.module.scss';
 
 function Editor() {
   const workspace = useParams();
-  const socket: Socket = io(
-    `${env.SERVER_PATH}/api/sc-workspace/${workspace.id}`,
-  );
+  const socket: Socket = io(`${env.SERVER_PATH}/sc-workspace/${workspace.id}`);
 
   const {
     syncCRDT,
