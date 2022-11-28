@@ -1,0 +1,61 @@
+@import 'styles/color.module';
+
+.question-container {
+  width: 100%;
+
+  padding: 20px;
+
+  border-radius: 12px;
+
+  background-color: $white;
+  box-shadow: 1px 4px 12px rgba(0, 0, 0, 0.2);
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+
+    text-align: center;
+  }
+
+  .question-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    margin: 8px 0px;
+
+    cursor: pointer;
+
+    .check-box {
+      width: 25px;
+      height: 25px;
+
+      margin-right: 12px;
+    }
+
+    .question {
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .check {
+      color: $gray-200;
+      text-decoration: line-through;
+    }
+
+    &:hover {
+      border-radius: 6px;
+      background-color: $gray-300;
+    }
+
+    &:active {
+      background-color: $gray-200;
+    }
+  }
+
+  .question-input {
+
+    width: 100%;
+    background-color: transparent;
+    font-size: 14px;
+  }
+}
