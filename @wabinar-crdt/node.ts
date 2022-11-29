@@ -11,7 +11,7 @@ export class Identifier {
 export class Node {
   id: Identifier;
   value?: string;
-  next?: Node;
+  next?: Identifier | null;
   prev?: Identifier | null;
 
   constructor(value: string, id: Identifier) {
