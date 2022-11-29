@@ -44,9 +44,7 @@ function VoteBlock() {
     inputRef.current.value = '';
   };
 
-  const onDelete: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    const { id: targetId } = e.currentTarget.closest('li') as HTMLLIElement;
-
+  const onDelete = (targetId: number) => {
     const filterdOptions = options.filter(
       (option) => option.id !== Number(targetId),
     );
@@ -65,7 +63,7 @@ function VoteBlock() {
             {isWriting && (
               <div
                 className={cx('box-fill', { 'position-right': true })}
-                onClick={onDelete}
+                onClick={() => onDelete(id)}
               >
                 <BiX size="20" />
               </div>
