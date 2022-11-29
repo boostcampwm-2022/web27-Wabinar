@@ -12,7 +12,7 @@ function WorkspacePage() {
     <div className={style.container}>
       <WorkspaceList />
       <Workspace workspaceId={id} />
-      <ConfMediaBar workspaceId={id} />
+      <ConfMediaBar />
     </div>
   );
 }
