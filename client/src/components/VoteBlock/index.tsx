@@ -45,11 +45,11 @@ function VoteBlock() {
   };
 
   const onDelete = (targetId: number) => {
-    const filterdOptions = options.filter(
+    const filteredOptions = options.filter(
       (option) => option.id !== Number(targetId),
     );
 
-    setOptions(filterdOptions);
+    setOptions(filteredOptions);
   };
 
   return (
