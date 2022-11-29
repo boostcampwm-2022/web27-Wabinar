@@ -1,7 +1,6 @@
 import { BiCheckbox } from '@react-icons/all-files/bi/BiCheckbox';
 import { BiCheckboxChecked } from '@react-icons/all-files/bi/BiCheckboxChecked';
 import classNames from 'classnames/bind';
-import { check } from 'prettier';
 import React, { useState } from 'react';
 
 import style from './style.module.scss';
@@ -83,7 +82,7 @@ function QuestionBlock() {
             data-question-id={id}
           >
             {isDone ? (
-              <BiCheckboxChecked className={cx('check-box', { check })} />
+              <BiCheckboxChecked className={cx('check-box', { check: true })} />
             ) : (
               <BiCheckbox className={style['check-box']} />
             )}
