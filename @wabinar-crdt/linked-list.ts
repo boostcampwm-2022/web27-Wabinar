@@ -121,7 +121,7 @@ export default class LinkedList {
 
       // prevNode에 연결된 노드가 현재 node에 선행하는 경우
       while (prevNode.next && this.getNode(prevNode.next)?.precedes(node)) {
-        prevNode = prevNode.next;
+        prevNode = this.getNode(prevNode.next);
         prevIndex++;
       }
 

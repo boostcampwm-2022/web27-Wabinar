@@ -1,6 +1,6 @@
 import CRDT from './index';
 import LinkedList, { RemoteInsertOperation } from './linked-list';
-import { Identifier, Node } from './node';
+import { Node } from './node';
 
 /**
  * utilities
@@ -11,8 +11,6 @@ const deepCopyRemoteInsertion = (op: RemoteInsertOperation) => {
 
   const copy = { ...node };
   Object.setPrototypeOf(copy, Node.prototype);
-
-  console.log(copy); // ! 여러 site에서 remote insert 하는 경우에 Identifier에 next 프로퍼티가 생김
 
   return { node: copy as Node };
 };
