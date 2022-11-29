@@ -29,7 +29,6 @@ const initialQuestion: Question[] = [
 
 function QuestionBlock() {
   const [questions, setQuestions] = useState<Question[]>(initialQuestion);
-  const [input, setInput] = useState<string>('');
 
   const onClick = (e: React.MouseEvent<HTMLLIElement>) => {
     const { questionId: targetId } = e.currentTarget.dataset;
@@ -44,20 +43,18 @@ function QuestionBlock() {
     setQuestions(nextQuestions);
   };
 
-  const onInput = (e: React.FormEvent<HTMLInputElement>) => {
+  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key !== 'Enter') return;
+
+    e.preventDefault();
+
     const target = e.target as HTMLInputElement;
-    setInput(target.value);
-  };
+    const { value: question } = target;
 
-  const onKeyDown: React.KeyboardEventHandler = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
+    if (!question || e.nativeEvent.isComposing) return;
 
-      if (question) {
-        createQuestion(input);
-        setInput();
-      }
-    }
+    createQuestion(question);
+    target.value = '';
   };
 
   const createQuestion = (question: string) => {
@@ -96,10 +93,8 @@ function QuestionBlock() {
       </ul>
       <input
         className={style['question-input']}
-        onInput={onInput}
         onKeyDown={onKeyDown}
         placeholder="항목을 입력해주세요"
-        value={input}
       />
     </div>
   );
