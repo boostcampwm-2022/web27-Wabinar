@@ -5,7 +5,6 @@ type RemoteIdentifier = Identifier | null;
 type ModifiedIndex = number | null;
 
 export interface RemoteInsertOperation {
-  prevId: Identifier | null;
   node: Node;
 }
 
@@ -32,7 +31,7 @@ export default class LinkedList {
 
         this.head = node;
 
-        return { prevId: null, node };
+        return { node };
       }
 
       const prevNode = this.findByIndex(index);
@@ -44,7 +43,7 @@ export default class LinkedList {
 
       node.prev = prevId;
 
-      return { prevId, node };
+      return { node };
     } catch (e) {
       throw new Error(`insertByIndex 실패 ^^\n${e}`);
     }
@@ -81,12 +80,12 @@ export default class LinkedList {
     }
   }
 
-  insertById(id: RemoteIdentifier, node: Node): ModifiedIndex {
+  insertById(node: Node): ModifiedIndex {
     try {
       let prevNode, prevIndex;
 
       // insertion to head
-      if (id === null) {
+      if (node.prev === null) {
         // 기존 head가 없거나 현재 node가 선행하는 경우
         if (!this.head || node.precedes(this.head)) {
           node.next = this.head;
@@ -98,7 +97,7 @@ export default class LinkedList {
         prevNode = this.head;
         prevIndex = 0;
       } else {
-        let { node: targetNode, index: targetIndex } = this.findById(id);
+        let { node: targetNode, index: targetIndex } = this.findById(node.prev);
 
         prevNode = targetNode;
         prevIndex = targetIndex;
