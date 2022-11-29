@@ -9,7 +9,7 @@ async function momSocketServer(io: Server) {
 
   const crdt = new CRDT(1, -1, structure);
 
-  const workspace = io.of(/^\/api\/sc-workspace\/\d+$/);
+  const workspace = io.of(/^\/sc-workspace\/\d+$/);
 
   workspace.on('connection', async (socket) => {
     const name = socket.nsp.name;
