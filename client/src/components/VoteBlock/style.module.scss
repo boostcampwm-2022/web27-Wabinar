@@ -1,0 +1,96 @@
+@import 'styles/color.module';
+
+.vote-container {
+  width: 100%;
+
+  padding: 20px;
+
+  border-radius: 12px;
+
+  background-color: $white;
+  box-shadow: 1px 4px 12px rgba(0, 0, 0, 0.2);
+
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+
+    text-align: center;
+  }
+
+  .option-item {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+
+    width: 100%;
+
+    margin: 14px 0px;
+    padding: 12px;
+
+    border-radius: 12px;
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+
+    cursor: pointer;
+
+    .box-fill {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 30px;
+      height: 30px;
+
+      margin-right: 12px;
+
+      border-radius: 4px;
+
+      background-color: $primary-100;
+      color: $white;
+
+      font-size: 16px;
+    }
+
+    .option {
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .option-input {
+      width: 100%;
+    }
+
+    .position-right {
+      position: absolute;
+      right: 0;
+    }
+  }
+
+  .vote-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+
+    margin-top: 20px;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 100px;
+      height: 30px;
+      margin-left: 12px;
+      padding: 0px;
+
+      border-radius: 8px;
+
+      background-color: $primary-100;
+      color: $white;
+
+      span {
+        padding: 0px;
+      }
+    }
+  }
+}
