@@ -1,19 +1,19 @@
-import { io } from 'socket.io-client';
-import env from 'src/config';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useConfMediaStreams } from 'src/hooks/useConfMediaStreams';
+import useSocket from 'src/hooks/useSocket';
 
 import ConfMedia from './ConfMedia';
+import StreamButton from './StreamButton';
 import style from './style.module.scss';
 
-interface ConfMediaBarProps {
-  workspaceId?: string;
-}
-
-function ConfMediaBar({ workspaceId }: ConfMediaBarProps) {
-  const socketUrl = `${env.SERVER_PATH}/signaling/${workspaceId}`;
-  const socket = io(socketUrl);
-
+function ConfMediaBar() {
+  const { id } = useParams();
+  const socket = useSocket(`/signaling/${id}`);
   const streams = useConfMediaStreams(socket);
+
+  const [isMicOn, setIsMicOn] = useState(false);
+  const [isCamOn, setIsCamOn] = useState(false);
 
   return (
     <div className={style['conf-bar']}>
@@ -21,9 +21,21 @@ function ConfMediaBar({ workspaceId }: ConfMediaBarProps) {
         {Array.from(streams).map(([id, stream]) => (
           <li key={id}>
             <ConfMedia key={id} stream={stream} />
+            <StreamButton
+              isMicOn={false}
+              isCamOn={true} // TODO: 임시로 지정
+            />
           </li>
         ))}
       </ul>
+      <StreamButton
+        {...{
+          isMicOn,
+          isCamOn,
+          setIsMicOn,
+          setIsCamOn,
+        }}
+      />
     </div>
   );
 }

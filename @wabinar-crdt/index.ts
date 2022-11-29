@@ -39,8 +39,8 @@ class CRDT {
     return { targetId, clock: this.clock };
   }
 
-  remoteInsert({ prevId, node }: RemoteInsertOperation) {
-    const prevIndex = this.structure.insertById(prevId, node);
+  remoteInsert({ node }: RemoteInsertOperation) {
+    const prevIndex = this.structure.insertById(node);
 
     if (++this.clock < node.id.clock) {
       this.clock = node.id.clock + 1;

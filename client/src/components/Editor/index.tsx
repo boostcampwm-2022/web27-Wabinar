@@ -1,15 +1,12 @@
-import { useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import io, { Socket } from 'socket.io-client';
-import env from 'src/config';
+import { useEffect, useRef } from 'react';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
+import useSocketContext from 'src/hooks/useSocketContext';
 
 import style from './style.module.scss';
 
 function Editor() {
-  const workspace = useParams();
-  const socket: Socket = io(`${env.SERVER_PATH}/sc-workspace/${workspace.id}`);
+  const { momSocket: socket } = useSocketContext();
 
   const {
     syncCRDT,
@@ -82,6 +79,8 @@ function Editor() {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
+    socket.emit('mom-initialization');
+    
     socket.on('mom-initialization', (crdt) => {
       syncCRDT(crdt);
 

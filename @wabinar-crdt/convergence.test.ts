@@ -7,12 +7,12 @@ import { Node } from './node';
  * 바로 전달하면 같은 인스턴스를 가리키게 되어 remote operation 의미가 사라짐
  */
 const deepCopyRemoteInsertion = (op: RemoteInsertOperation) => {
-  const { prevId, node } = op;
+  const { node } = op;
 
   const copy = { ...node };
   Object.setPrototypeOf(copy, Node.prototype);
 
-  return { prevId, node: copy as Node };
+  return { node: copy as Node };
 };
 
 const remoteInsertThroughSocket = (crdt: CRDT, op: RemoteInsertOperation) => {

@@ -10,13 +10,15 @@ export class Identifier {
 
 export class Node {
   id: Identifier;
-  value?: string;
-  next?: Node;
-  prev?: Identifier | null;
+  value: string;
+  next: Identifier | null;
+  prev: Identifier | null;
 
   constructor(value: string, id: Identifier) {
     this.id = id;
     this.value = value;
+    this.next = null;
+    this.prev = null;
   }
 
   precedes(node: Node) {

@@ -1,6 +1,6 @@
 import { createMom, getMom, putMom } from '@apis/mom/service';
-import { Server } from 'socket.io';
 import CRDT from '@wabinar/crdt';
+import { Server } from 'socket.io';
 
 async function momSocketServer(io: Server) {
   const momId = '6380c9f7b757041ca21fe96c';
@@ -9,7 +9,7 @@ async function momSocketServer(io: Server) {
 
   const crdt = new CRDT(1, -1, structure);
 
-  const workspace = io.of(/^\/api\/sc-workspace\/\d+$/);
+  const workspace = io.of(/^\/sc-workspace\/\d+$/);
 
   workspace.on('connection', async (socket) => {
     const name = socket.nsp.name;
@@ -19,6 +19,14 @@ async function momSocketServer(io: Server) {
       socket.disconnect();
       return;
     }
+
+    socket.on('start-mom', () => {
+      workspace.emit('started-mom');
+    });
+
+    socket.on('stop-mom', () => {
+      workspace.emit('stoped-mom');
+    });
 
     /* 회의록 선택 시 회의록 정보 불러오기 */
     socket.on('select-mom', async (roomId) => {
@@ -62,7 +70,9 @@ async function momSocketServer(io: Server) {
     // 초기화에 필요한 정보 전달
     const { structure } = await getMom(momId);
 
-    socket.emit('mom-initialization', structure);
+    socket.on('mom-initialization', () => {
+      socket.emit('mom-initialization', structure);
+    });
   });
 }
 
