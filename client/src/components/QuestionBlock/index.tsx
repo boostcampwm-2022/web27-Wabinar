@@ -53,26 +53,25 @@ function QuestionBlock() {
     if (e.key === 'Enter') {
       e.preventDefault();
 
-      const target = e.target as HTMLInputElement;
-      const { value: question } = target;
       if (question) {
-        createQuestion(question);
-        setInput('');
+        createQuestion(input);
+        setInput();
       }
     }
   };
 
   const createQuestion = (question: string) => {
-    const nextId = questions.at(-1)?.id;
+    const lastId = questions.at(-1)?.id;
 
-    setQuestions([
-      ...questions,
-      {
-        id: nextId !== undefined ? nextId + 1 : 0,
-        isDone: false,
-        question,
-      },
-    ]);
+    const nextId = lastId !== undefined ? lastId + 1 : 0;
+
+    const newQuestion = {
+      id: nextId,
+      isDone: false,
+      question,
+    };
+
+    setQuestions([...questions, newQuestion]);
   };
 
   return (
@@ -101,7 +100,7 @@ function QuestionBlock() {
         onKeyDown={onKeyDown}
         placeholder="항목을 입력해주세요"
         value={input}
-      ></input>
+      />
     </div>
   );
 }
