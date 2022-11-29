@@ -21,13 +21,13 @@ const initialOption: Option[] = [
 
 function VoteBlock() {
   const [options, setOptions] = useState<Option[]>(initialOption);
-  const [isWriting, setIsWriting] = useState<boolean>(true);
+  const [isUnRegisterd, setIsUnRegisterd] = useState<boolean>(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onRegister = () => {
-    if (!isWriting) return;
+    if (!isUnRegisterd) return;
 
-    setIsWriting(false);
+    setIsUnRegisterd(false);
   };
 
   const onAdd = () => {
@@ -60,7 +60,7 @@ function VoteBlock() {
           <li className={style['option-item']} key={id} id={id.toString()}>
             <div className={style['box-fill']}>{index + 1}</div>
             <p className={style.option}>{option}</p>
-            {isWriting && (
+            {isUnRegisterd && (
               <div
                 className={cx('box-fill', { 'position-right': true })}
                 onClick={() => onDelete(id)}
@@ -71,7 +71,7 @@ function VoteBlock() {
           </li>
         ))}
       </ul>
-      {isWriting && (
+      {isUnRegisterd && (
         <>
           <div className={style['option-item']}>
             <div className={style['box-fill']}></div>
