@@ -26,6 +26,8 @@ function VoteBlock() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onRegister = () => {
+    if (!options.length) throw new Error('투표 항목은 최소 1개에요 ^^');
+
     if (!isUnRegisterd) return;
 
     setIsUnRegisterd(false);
@@ -53,6 +55,12 @@ function VoteBlock() {
     setOptions(filteredOptions);
   };
 
+  const onClose = () => {
+    alert('투표 종료..!');
+    /**투표 결과 보여줘야함 */
+    setIsUnRegisterd(true);
+  };
+
   return (
     <div className={style['vote-container']}>
       <h3 className={style.title}>투표</h3>
@@ -73,25 +81,25 @@ function VoteBlock() {
         ))}
       </ul>
       {isUnRegisterd && (
-        <>
-          <div className={style['option-item']}>
-            <div className={style['box-fill']}></div>
-            <input
-              ref={inputRef}
-              className={style['option-input']}
-              placeholder="항목을 입력해주세요"
-            ></input>
-          </div>
-          <div className={style['vote-buttons']}>
-            <Button className={style.button} onClick={onAdd} text="항목 추가" />
-            <Button
-              className={style.button}
-              onClick={onRegister}
-              text="투표 등록"
-            />
-          </div>
-        </>
+        <div className={style['option-item']}>
+          <div className={style['box-fill']}></div>
+          <input
+            ref={inputRef}
+            className={style['option-input']}
+            placeholder="항목을 입력해주세요"
+          ></input>
+        </div>
       )}
+      <div className={style['vote-buttons']}>
+        {isUnRegisterd ? (
+          <>
+            <Button onClick={onAdd} text="항목 추가" />
+            <Button onClick={onRegister} text="투표 등록" />
+          </>
+        ) : (
+          <Button onClick={onClose} text="투표 종료" />
+        )}
+      </div>
     </div>
   );
 }

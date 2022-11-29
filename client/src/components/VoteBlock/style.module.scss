@@ -18,7 +18,6 @@
   }
 
   .option-item {
-
     display: flex;
     position: relative;
     flex-direction: row;
@@ -74,7 +73,7 @@
 
     margin-top: 20px;
 
-    .button {
+    button {
       display: flex;
       align-items: center;
       justify-content: center;
