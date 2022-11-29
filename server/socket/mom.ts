@@ -47,14 +47,14 @@ async function momSocketServer(io: Server) {
       socket.broadcast.emit('mom-insertion', op);
       crdt.remoteInsert(op);
 
-      putMom(momId, crdt.data);
+      putMom(momId, crdt.plainData);
     });
 
     socket.on('mom-deletion', async (op) => {
       socket.broadcast.emit('mom-deletion', op);
       crdt.remoteDelete(op);
 
-      putMom(momId, crdt.data);
+      putMom(momId, crdt.plainData);
     });
 
     // 에러 시
