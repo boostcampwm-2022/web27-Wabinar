@@ -1,4 +1,4 @@
-import { useMomContext } from 'src/hooks/useMomContext';
+import { useConfContext } from 'src/hooks/useConfContext';
 import useSocketContext from 'src/hooks/useSocketContext';
 import color from 'styles/color.module.scss';
 
@@ -7,8 +7,8 @@ import style from './style.module.scss';
 function ConfButton() {
   const { momSocket: socket } = useSocketContext();
 
-  const MomContext = useMomContext();
-  const { isStart, setIsStart } = MomContext;
+  const ConfContext = useConfContext();
+  const { isStart, setIsStart } = ConfContext;
 
   const onClick = () => {
     setIsStart(!isStart);

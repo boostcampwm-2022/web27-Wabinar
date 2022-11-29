@@ -1,10 +1,10 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
 
-interface IMomContext {
+interface IConfContext {
   isStart: boolean;
   setIsStart: Dispatch<SetStateAction<boolean>>;
 }
 
-const MomContext = createContext<IMomContext | null>(null);
+const ConfContext = createContext<IConfContext | null>(null);
 
-export default MomContext;
+export default ConfContext;

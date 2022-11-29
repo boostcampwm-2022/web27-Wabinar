@@ -3,7 +3,7 @@ import WorkspaceList from 'components/WorkspaceList';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ConfMediaBar from 'src/components/ConfMediaBar';
-import MomContext from 'src/contexts/mom';
+import ConfContext from 'src/contexts/conf';
 import { SocketContext } from 'src/contexts/socket';
 import useSocket from 'src/hooks/useSocket';
 
@@ -27,13 +27,13 @@ function WorkspacePage() {
 
   return (
     <SocketContext.Provider value={{ momSocket }}>
-      <MomContext.Provider value={{ isStart, setIsStart }}>
+      <ConfContext.Provider value={{ isStart, setIsStart }}>
         <div className={style.container}>
           <WorkspaceList />
           <Workspace workspaceId={id} />
           {isStart && <ConfMediaBar />}
         </div>
-      </MomContext.Provider>
+      </ConfContext.Provider>
     </SocketContext.Provider>
   );
 }
