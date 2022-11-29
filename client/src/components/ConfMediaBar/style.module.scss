@@ -10,12 +10,24 @@
 
   ul {
     height: 100%;
-    padding: 0 10px;
+    padding: 10px;
     overflow: hidden;
     overflow-y: auto;
+
+    li {
+      position: relative;
+      & > div {
+        position: absolute;
+        right: 5px;
+        bottom: 10px;
+      }
+    }
 
     li:not(:last-child) {
       margin-bottom: 10px;
     }
+  }
+  & > div {
+    margin-top: 10px;
   }
 }

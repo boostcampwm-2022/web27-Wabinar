@@ -3,7 +3,7 @@ import WorkspaceModal from 'components/WorkspaceModal';
 import WorkspaceThumbnaliList from 'components/WorkspaceThumbnailList';
 import { memo, useEffect, useState } from 'react';
 import { MENUS } from 'src/constants/workspace';
-import SetWorkspacesContext from 'src/contexts/set-workspaces';
+import WorkspaceContext from 'src/contexts/workspaces';
 import { useUserContext } from 'src/hooks/useUserContext';
 import { SelectorStyle } from 'src/types/selector';
 import { Workspace } from 'src/types/workspace';
@@ -35,7 +35,7 @@ function WorkspaceList() {
   };
 
   return (
-    <SetWorkspacesContext.Provider value={setWorkspaces}>
+    <WorkspaceContext.Provider value={{ setWorkspaces }}>
       <div className={style['workspace-list-container']}>
         <WorkspaceThumbnaliList workspaces={workspaces} />
         <Selector
@@ -49,7 +49,7 @@ function WorkspaceList() {
           setSelectedMenu={setSelectedMenu}
         />
       </div>
-    </SetWorkspacesContext.Provider>
+    </WorkspaceContext.Provider>
   );
 }
 

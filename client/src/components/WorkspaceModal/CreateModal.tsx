@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { postWorkspace, postWorkspaceJoin } from 'src/apis/workspace';
 import { MENU } from 'src/constants/workspace';
-import { useSetWorkspaces } from 'src/hooks/useSetWorkspaces';
+import useWorkspaceContext from 'src/hooks/useWorkspaceContext';
 
 import FormModal, { ModalContents } from './FormModal';
 
@@ -18,7 +18,7 @@ function CreateModal({
   setSelectedMenu,
   setCode,
 }: CreateModalProps) {
-  const setWorkspaces = useSetWorkspaces();
+  const { setWorkspaces } = useWorkspaceContext();
   const [inputValue, setInputValue] = useState<string>('');
 
   const onSubmit = async () => {
