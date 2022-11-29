@@ -13,11 +13,16 @@ export interface RemoteDeleteOperation {
   clock: number;
 }
 
+interface NodeMap {
+  [index: string]: Node;
+}
+
 export default class LinkedList {
-  head?: Identifier;
-  nodeMap: Object;
+  head: Identifier | null;
+  nodeMap: NodeMap;
 
   constructor() {
+    this.head = null;
     this.nodeMap = {};
   }
 
@@ -59,16 +64,18 @@ export default class LinkedList {
     try {
       // head deleted
       if (index === 0) {
-        if (!this.head) throw new Error('head가 없는데 어떻게 삭제하셨나요 ^^');
-
         const head = this.getHeadNode();
 
-        if (!head.next) {
+        if (!head) throw new Error('head가 없는데 어떻게 삭제하셨나요 ^^');
+
+        const nextNode = this.getNode(head.next);
+
+        if (!nextNode) {
           this.head = null;
+
           return null;
         }
 
-        const nextNode = this.getNode(head.next);
         nextNode.prev = null;
 
         this.deleteNode(head.id);
@@ -78,6 +85,8 @@ export default class LinkedList {
       }
 
       const prevNode = this.findByIndex(index - 1);
+
+      if (!prevNode.next) return null;
 
       const targetNode = this.getNode(prevNode.next);
 
@@ -119,10 +128,14 @@ export default class LinkedList {
         prevIndex = targetIndex;
       }
 
+      if (!prevNode) return null;
+
       // prevNode에 연결된 노드가 현재 node에 선행하는 경우
       while (prevNode.next && this.getNode(prevNode.next)?.precedes(node)) {
         prevNode = this.getNode(prevNode.next);
         prevIndex++;
+
+        if (!prevNode) return null;
       }
 
       node.next = prevNode.next;
@@ -141,9 +154,10 @@ export default class LinkedList {
   deleteById(id: RemoteIdentifier): ModifiedIndex {
     try {
       if (!id) {
-        if (!this.head) throw new Error('일어날 수 없는 일이 발생했어요 ^^');
-
         const head = this.getHeadNode();
+
+        if (!head) throw new Error('일어날 수 없는 일이 발생했어요 ^^');
+
         this.head = head.next;
 
         return null;
@@ -163,7 +177,7 @@ export default class LinkedList {
   }
 
   stringify(): string {
-    let node: Node | undefined = this.getHeadNode();
+    let node: Node | null = this.getHeadNode();
     let result = '';
 
     while (node) {
@@ -176,7 +190,7 @@ export default class LinkedList {
 
   private findByIndex(index: number): Node {
     let count = 0;
-    let currentNode: Node | undefined = this.getHeadNode();
+    let currentNode: Node | null = this.getHeadNode();
 
     while (count < index && currentNode) {
       currentNode = this.getNode(currentNode.next);
@@ -190,7 +204,7 @@ export default class LinkedList {
 
   private findById(id: Identifier) {
     let count = 0;
-    let currentNode: Node | undefined = this.getHeadNode();
+    let currentNode: Node | null = this.getHeadNode();
 
     while (currentNode) {
       if (JSON.stringify(currentNode.id) === JSON.stringify(id)) {
@@ -204,14 +218,14 @@ export default class LinkedList {
     throw new Error('없는 노드인데요 ^^');
   }
 
-  private getNode(id: Identifier): Node {
-    if (!id) return undefined;
+  private getNode(id: Identifier | null): Node | null {
+    if (!id) return null;
 
     return this.nodeMap[JSON.stringify(id)];
   }
 
   private getHeadNode() {
-    if (!this.head) return undefined;
+    if (!this.head) return null;
 
     return this.getNode(this.head);
   }
