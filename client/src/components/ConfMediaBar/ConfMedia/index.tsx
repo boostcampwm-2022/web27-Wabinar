@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 
 import style from './style.module.scss';
 
@@ -17,4 +17,4 @@ function ConfMedia({ stream }: MediaProps) {
   return <video className={style.video} ref={ref} autoPlay />;
 }
 
-export default ConfMedia;
+export default memo(ConfMedia);

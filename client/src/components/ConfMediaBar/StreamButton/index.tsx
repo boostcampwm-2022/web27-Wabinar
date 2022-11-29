@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, memo, SetStateAction } from 'react';
 
 import CamButton from './CamButton';
 import MicButton from './MicButton';
@@ -25,4 +25,4 @@ function StreamButton({
   );
 }
 
-export default StreamButton;
+export default memo(StreamButton);
