@@ -1,6 +1,6 @@
 import { createMom, getMom, putMom } from '@apis/mom/service';
-import { Server } from 'socket.io';
 import CRDT from '@wabinar/crdt';
+import { Server } from 'socket.io';
 
 async function momSocketServer(io: Server) {
   const momId = '6380c9f7b757041ca21fe96c';
@@ -19,6 +19,14 @@ async function momSocketServer(io: Server) {
       socket.disconnect();
       return;
     }
+
+    socket.on('start-mom', () => {
+      workspace.emit('started-mom');
+    });
+
+    socket.on('stop-mom', () => {
+      workspace.emit('stoped-mom');
+    });
 
     /* 회의록 선택 시 회의록 정보 불러오기 */
     socket.on('select-mom', async (roomId) => {
