@@ -70,7 +70,9 @@ async function momSocketServer(io: Server) {
     // 초기화에 필요한 정보 전달
     const { structure } = await getMom(momId);
 
-    socket.emit('mom-initialization', structure);
+    socket.on('mom-initialization', () => {
+      socket.emit('mom-initialization', structure);
+    });
   });
 }
 

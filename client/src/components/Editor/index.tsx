@@ -79,6 +79,8 @@ function Editor() {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
+    socket.emit('mom-initialization');
+    
     socket.on('mom-initialization', (crdt) => {
       syncCRDT(crdt);
 
