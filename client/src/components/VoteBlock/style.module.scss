@@ -75,15 +75,23 @@
     margin-top: 20px;
 
     .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       width: 100px;
       height: 30px;
-
       margin-left: 12px;
+      padding: 0px;
 
       border-radius: 8px;
 
       background-color: $primary-100;
       color: $white;
+
+      span {
+        padding: 0px;
+      }
     }
   }
 }
