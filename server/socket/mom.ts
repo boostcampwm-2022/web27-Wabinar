@@ -9,7 +9,7 @@ async function momSocketServer(io: Server) {
 
   const crdt = new CRDT(1, -1, structure);
 
-  const workspace = io.of(/^\/api\/sc-workspace\/\d+$/);
+  const workspace = io.of(/^\/sc-workspace\/\d+$/);
 
   workspace.on('connection', async (socket) => {
     const name = socket.nsp.name;
@@ -70,7 +70,9 @@ async function momSocketServer(io: Server) {
     // 초기화에 필요한 정보 전달
     const { structure } = await getMom(momId);
 
-    socket.emit('mom-initialization', structure);
+    socket.on('mom-initialization', () => {
+      socket.emit('mom-initialization', structure);
+    });
   });
 }
 

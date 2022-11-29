@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 
 function signalingSocketServer(io: Server) {
-  const signaling = io.of(/^\/api\/signaling\/\d+$/);
+  const signaling = io.of(/^\/signaling\/\d+$/);
 
   signaling.on('connection', (socket) => {
     socket.on('send_hello', () => {
