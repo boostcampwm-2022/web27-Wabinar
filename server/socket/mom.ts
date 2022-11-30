@@ -1,9 +1,8 @@
 import { createMom, getMom, putMom } from '@apis/mom/service';
-import { createVote, updateVote } from '@apis/mom/vote/service';
+import { createVote, stopVote, updateVote } from '@apis/mom/vote/service';
 import CRDT from '@wabinar/crdt';
 import LinkedList from '@wabinar/crdt/linked-list';
 import { Server } from 'socket.io';
-import { stopVote } from './../apis/mom/vote/service';
 
 async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
