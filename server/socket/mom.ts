@@ -70,7 +70,7 @@ async function momSocketServer(io: Server) {
     socket.on('mom-initialization', async () => {
       const crdt = momMap.get(socket.data.momId);
 
-      socket.emit('mom-initialization', crdt);
+      socket.emit('mom-initialization', crdt.data);
     });
 
     /* crdt remote insert delete */
