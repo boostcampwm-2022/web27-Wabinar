@@ -25,8 +25,8 @@ export const updateVote = (momId: number, optionId: number) => {
   const vote = votes[momId];
   if (!vote) return;
 
-  const option = vote.options.filter(({ id }) => optionId === id);
-  if (!option.length) return;
+  const isExist = vote.options.some(({ id }) => optionId === id);
+  if (!isExist) return;
 
   vote.options = vote.options.map((option) => {
     const { id, votedNum } = option;
