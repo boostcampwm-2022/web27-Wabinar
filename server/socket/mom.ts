@@ -1,6 +1,6 @@
 import { createMom, getMom, putMom } from '@apis/mom/service';
 import CRDT from '@wabinar/crdt';
-import { Server } from 'socket.io';
+import { Server, Socket, Namespace } from 'socket.io';
 import LinkedList from '@wabinar/crdt/linked-list';
 
 async function momSocketServer(io: Server) {
@@ -98,6 +98,8 @@ async function momSocketServer(io: Server) {
       putMom(momId, crdt.plainData);
     });
 
+    addEventHandlersForQuestionBlock(workspace, socket);
+
     socket.on('error', (err) => {
       console.log(err);
       socket.disconnect();
@@ -106,6 +108,44 @@ async function momSocketServer(io: Server) {
     socket.on('disconnect', () => {
       console.log('user disconnected', socket.id);
     });
+  });
+}
+
+interface Question {
+  id: number;
+  isResolved: boolean;
+  text: string;
+}
+
+// TODO: db 사용으로 바꾸기, 지금은 메모리 사용
+const questions: Question[] = [];
+
+function addEventHandlersForQuestionBlock(
+  namespace: Namespace,
+  socket: Socket,
+) {
+  socket.on('question-block__fetch-questions', () => {
+    socket.emit('question-block__questions-fetched', questions);
+  });
+
+  socket.on('question-block__add-question', (question) => {
+    questions.push(question);
+
+    namespace.emit('question-block__question-added', question);
+  });
+
+  socket.on('question-block__toggle-resolved', (id, toggledResolved) => {
+    // TODO: 일일이 id를 찾는 것보다 더 좋은 방법이 있으면 고치기
+    let targetIdx = 0;
+    for (let i = 0; i < questions.length; ++i) {
+      if (questions[i].id === id) {
+        targetIdx = i;
+        break;
+      }
+    }
+
+    questions[targetIdx].isResolved = toggledResolved;
+    namespace.emit('question-block__questions-fetched', questions);
   });
 }
 
