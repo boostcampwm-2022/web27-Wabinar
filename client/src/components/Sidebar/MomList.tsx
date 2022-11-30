@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import useMom from 'src/hooks/useMom';
+import useMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { TMom } from 'src/types/mom';
 
@@ -10,17 +10,17 @@ interface MomListProps {
 }
 
 function MomList({ moms }: MomListProps) {
-  const { setMom } = useMom();
-
+  const { selectedMom, setSelectedMom } = useMom();
   const { momSocket: socket } = useSocketContext();
-
   const [momList, setMomList] = useState<TMom[]>(moms);
 
   const onCreateMom = () => {
     socket.emit('create-mom');
   };
 
-  const onSelect = (targetId: number) => {
+  const onSelect = (targetId: string) => {
+    if (selectedMom && selectedMom._id === targetId) return;
+
     socket.emit('select-mom', targetId);
   };
 
@@ -28,7 +28,7 @@ function MomList({ moms }: MomListProps) {
     socket.on('created-mom', (mom) => setMomList((prev) => [...prev, mom]));
 
     socket.on('selected-mom', (mom) => {
-      setMom(mom);
+      setSelectedMom(mom);
     });
 
     return () => {
