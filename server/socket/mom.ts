@@ -64,7 +64,7 @@ async function momSocketServer(io: Server) {
           new CRDT(1, -1, { head, nodeMap } as LinkedList),
         );
       }
-      console.log(mom);
+
       // 선택된 회의록의 정보 전달
       socket.emit('selected-mom', mom);
     });
