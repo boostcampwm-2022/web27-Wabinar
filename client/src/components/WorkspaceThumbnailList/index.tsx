@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Workspace } from 'src/types/workspace';
 
 import style from './style.module.scss';
@@ -8,10 +9,20 @@ interface WorkspaceThumbnailListProps {
 }
 
 function WorkspaceThumbnailList({ workspaces }: WorkspaceThumbnailListProps) {
+  const navigate = useNavigate();
+
+  const onClick = (targetId: number) => {
+    navigate(`/workspace/${targetId}`);
+  };
+
   return (
     <ul className={style.thumbnail__list}>
-      {workspaces.map((workspace) => (
-        <WorkspaceThumbnailItem key={workspace.id} name={workspace.name} />
+      {workspaces.map(({ id, name }) => (
+        <WorkspaceThumbnailItem
+          key={id}
+          name={name}
+          onClick={() => onClick(id)}
+        />
       ))}
     </ul>
   );
