@@ -12,8 +12,7 @@ class CRDT {
   constructor(client: number = 0, initialStructure: LinkedList) {
     this.client = client;
 
-    Object.setPrototypeOf(initialStructure, LinkedList.prototype);
-    this.structure = initialStructure as LinkedList;
+    this.structure = new LinkedList(initialStructure);
 
     const { nodeMap } = initialStructure;
 
