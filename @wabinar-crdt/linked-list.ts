@@ -167,6 +167,7 @@ export default class LinkedList {
       const prevNode = this.findByIndex(targetIndex - 1);
 
       prevNode.next = targetNode.next;
+      this.deleteNode(id);
 
       return targetIndex;
     } catch (e) {
