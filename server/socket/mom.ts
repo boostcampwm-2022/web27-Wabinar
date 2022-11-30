@@ -12,8 +12,8 @@ async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
 
   workspace.on('connection', async (socket) => {
-    const name = socket.nsp.name;
-    const workspaceId = name.match(/\d+/g)[0];
+    const namespace = socket.nsp.name;
+    const workspaceId = namespace.match(/\d+/g)[0];
 
     if (!workspaceId) {
       socket.disconnect();
@@ -30,7 +30,14 @@ async function momSocketServer(io: Server) {
 
     /* 회의록 선택 시 회의록 정보 불러오기 */
     socket.on('select-mom', async (roomId) => {
+      const joinedRooms = [
+        ...io.of(namespace).adapter.socketRooms(socket.id),
+      ].filter((id) => id !== socket.id);
+
+      joinedRooms.forEach((room) => socket.leave(room));
+
       socket.join(roomId);
+      socket.data.roomId = roomId;
 
       const mom = await getMom(roomId);
       socket.emit('selected-mom', mom);

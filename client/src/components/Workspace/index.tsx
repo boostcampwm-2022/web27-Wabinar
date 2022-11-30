@@ -24,7 +24,7 @@ function Workspace({ workspaceId }: WorkspaceProps) {
   return (
     workspace && (
       <>
-        <Sidebar />
+        <Sidebar workspace={workspace} />
         <Mom />
       </>
     )
