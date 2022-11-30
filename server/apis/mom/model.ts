@@ -2,21 +2,16 @@ import mongoose from '@db';
 import { Schema } from 'mongoose';
 import LinkedList from '@wabinar/crdt/linked-list';
 
-interface Block {
-  type: String;
-  contents?: String;
-}
-
-interface Mom {
+interface Mom extends LinkedList {
   name: string;
-  blocks: Block[];
-  structure: LinkedList;
+  createdAt: Date;
 }
 
 const momSchema = new Schema<Mom>({
-  name: String,
-  blocks: Array<Block>,
-  structure: Object,
+  name: { type: String, default: '제목 없음' },
+  createdAt: { type: Date, default: new Date() },
+  head: { type: Object, default: null },
+  nodeMap: { type: Object, default: {} },
 });
 
 const momModel = mongoose.model('Mom', momSchema);
