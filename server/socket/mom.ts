@@ -3,6 +3,7 @@ import { createVote, updateVote } from '@apis/mom/vote/service';
 import CRDT from '@wabinar/crdt';
 import LinkedList from '@wabinar/crdt/linked-list';
 import { Server } from 'socket.io';
+import { stopVote } from './../apis/mom/vote/service';
 
 async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
@@ -110,6 +111,11 @@ async function momSocketServer(io: Server) {
       const message = res ? '투표 성공' : '투표 실패';
 
       socket.emit('updated-vote', message);
+    });
+
+    socket.on('stop-vote', (momId) => {
+      const res = stopVote(momId);
+      workspace.emit('stoped-vote', res);
     });
 
     socket.on('error', (err) => {
