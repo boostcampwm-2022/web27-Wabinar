@@ -9,16 +9,28 @@ class CRDT {
   private client: number;
   private structure: LinkedList;
 
-  constructor(
-    initialclock: number = 1,
-    client: number = 0,
-    initialStructure: LinkedList,
-  ) {
-    this.clock = initialclock;
+  constructor(client: number = 0, initialStructure: LinkedList) {
     this.client = client;
 
-    Object.setPrototypeOf(initialStructure, LinkedList.prototype);
-    this.structure = initialStructure as LinkedList;
+    this.structure = new LinkedList(initialStructure);
+
+    const { nodeMap } = initialStructure;
+
+    if (!nodeMap || !Object.keys(nodeMap).length) {
+      this.clock = 1;
+      return this;
+    }
+
+    // logical clock 동기화를 위함
+    const maxClock = Object.keys(nodeMap)
+      .map((id) => Number(JSON.parse(id).clock))
+      .reduce((prev, cur) => Math.max(prev, cur), 0);
+
+    this.clock = maxClock + 1;
+  }
+
+  get timestamp() {
+    return this.clock;
   }
 
   get data() {
@@ -34,7 +46,6 @@ class CRDT {
 
   localInsert(index: number, letter: string): RemoteInsertOperation {
     const id = new Identifier(this.clock++, this.client);
-
     const remoteInsertion = this.structure.insertByIndex(index, letter, id);
 
     return remoteInsertion;

@@ -32,10 +32,10 @@ const convergenceCheck = () => {
 /**
  * 테스트용 site들
  */
-const 원희 = new CRDT(1, 1, new LinkedList());
-const 주영 = new CRDT(1, 2, new LinkedList());
-const 도훈 = new CRDT(1, 3, new LinkedList());
-const 세영 = new CRDT(1, 4, new LinkedList());
+const 원희 = new CRDT(1, new LinkedList());
+const 주영 = new CRDT(2, new LinkedList());
+const 도훈 = new CRDT(3, new LinkedList());
+const 세영 = new CRDT(4, new LinkedList());
 
 describe('Convergence', () => {
   it('하나의 site에서 삽입', () => {

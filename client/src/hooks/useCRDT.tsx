@@ -20,15 +20,15 @@ export function useCRDT() {
   const userContext = useUserContext();
   const clientId = userContext.userInfo?.user.id;
 
-  const crdtRef = useRef<CRDT>(new CRDT(1, clientId, new LinkedList()));
+  const crdtRef = useRef<CRDT>(new CRDT(clientId, new LinkedList()));
 
   let initialized = false;
   const operationSet: RemoteOperation[] = [];
 
-  const syncCRDT = (object: unknown) => {
-    Object.setPrototypeOf(object, LinkedList.prototype);
+  const syncCRDT = (structure: unknown) => {
+    Object.setPrototypeOf(structure, LinkedList.prototype);
 
-    crdtRef.current = new CRDT(1, clientId, object as LinkedList);
+    crdtRef.current = new CRDT(clientId, structure as LinkedList);
 
     initialized = true;
     operationSet.forEach(({ type, op }) => {

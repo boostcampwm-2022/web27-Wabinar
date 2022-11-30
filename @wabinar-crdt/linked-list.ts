@@ -21,9 +21,34 @@ export default class LinkedList {
   head: Identifier | null;
   nodeMap: NodeMap;
 
-  constructor() {
-    this.head = null;
-    this.nodeMap = {};
+  constructor(initialStructure) {
+    if (!initialStructure) {
+      this.head = null;
+      this.nodeMap = {};
+
+      return this;
+    }
+
+    const { head, nodeMap } = initialStructure;
+
+    this.head = head ?? null;
+
+    if (!nodeMap && !Object.keys(nodeMap).length) {
+      this.nodeMap = nodeMap ?? {};
+
+      return this;
+    }
+
+    const nodeMapWithPrototype = Object.entries(nodeMap).reduce(
+      (prev, [id, node]) => {
+        Object.setPrototypeOf(node, Node.prototype);
+        prev[id] = node;
+
+        return prev;
+      },
+      {},
+    );
+    this.nodeMap = nodeMapWithPrototype;
   }
 
   insertByIndex(
@@ -103,6 +128,7 @@ export default class LinkedList {
 
   insertById(node: Node): ModifiedIndex {
     try {
+      Object.setPrototypeOf(node, Node.prototype);
       this.setNode(node.id, node);
 
       let prevNode, prevIndex;

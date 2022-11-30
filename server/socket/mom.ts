@@ -33,10 +33,7 @@ async function momSocketServer(io: Server) {
       const mom = await createMom(workspaceId);
       const { _id, head, nodeMap } = mom;
 
-      momMap.set(
-        _id.toString(),
-        new CRDT(1, -1, { head, nodeMap } as LinkedList),
-      );
+      momMap.set(_id.toString(), new CRDT(-1, { head, nodeMap } as LinkedList));
 
       workspace.emit('created-mom', mom);
     });
@@ -60,7 +57,7 @@ async function momSocketServer(io: Server) {
       if (!momMap.has(momId)) {
         const { head, nodeMap } = mom;
 
-        momMap.set(momId, new CRDT(1, -1, { head, nodeMap } as LinkedList));
+        momMap.set(momId, new CRDT(-1, { head, nodeMap } as LinkedList));
       }
 
       // 선택된 회의록의 정보 전달
