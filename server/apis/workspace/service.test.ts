@@ -134,7 +134,7 @@ describe('info', () => {
 
     expect(workspaceService.info(WORKSPACE_ID)).resolves.toEqual({
       name: WORKSPACE_NAME,
-      users: [],
+      members: [],
       moms: [],
     });
   });
