@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import useMom from 'src/hooks/useMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { TMom } from 'src/types/mom';
 
@@ -9,6 +10,8 @@ interface MomListProps {
 }
 
 function MomList({ moms }: MomListProps) {
+  const { setMom } = useMom();
+
   const { momSocket: socket } = useSocketContext();
 
   const [momList, setMomList] = useState<TMom[]>(moms);
@@ -17,9 +20,16 @@ function MomList({ moms }: MomListProps) {
     socket.emit('create-mom');
   };
 
+  const onSelect = (targetId: number) => {
+    socket.emit('select-mom', targetId);
+  };
+
   useEffect(() => {
     socket.on('created-mom', (mom) => setMomList((prev) => [...prev, mom]));
-    // TODO: socket.on('selected-mom', () => {});
+
+    socket.on('selected-mom', (mom) => {
+      setMom(mom);
+    });
 
     return () => {
       socket.off('created-mom');
@@ -30,12 +40,9 @@ function MomList({ moms }: MomListProps) {
     <div className={style['mom-list-container']}>
       <h2>회의록</h2>
       <ul className={style['mom-list']}>
-        {momList.map((item) => (
-          <li
-            key={item._id}
-            onClick={() => socket.emit('select-mom', item._id)}
-          >
-            {item._id}
+        {momList.map(({ _id: id }) => (
+          <li key={id} onClick={() => onSelect(id)}>
+            {id}
           </li>
         ))}
       </ul>
