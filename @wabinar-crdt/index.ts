@@ -25,6 +25,13 @@ class CRDT {
     return this.structure;
   }
 
+  get plainData() {
+    // DB에 저장할 때 ref 제거하기 위함
+    const stringifiedData = JSON.stringify(this.structure);
+
+    return JSON.parse(stringifiedData);
+  }
+
   localInsert(index: number, letter: string): RemoteInsertOperation {
     const id = new Identifier(this.clock++, this.client);
 
