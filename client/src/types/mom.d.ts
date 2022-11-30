@@ -1,4 +1,4 @@
 export type TMom = {
-  id: number;
+  _id: number;
   name: string;
 };
