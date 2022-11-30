@@ -86,7 +86,7 @@ async function momSocketServer(io: Server) {
 
     socket.on('mom-deletion', async (op) => {
       const momId = socket.data.momId;
-      socket.broadcast.emit('mom-deletion', op);
+      socket.to(momId).emit('mom-deletion', op);
 
       const crdt = momMap.get(momId);
       crdt.remoteDelete(op);
