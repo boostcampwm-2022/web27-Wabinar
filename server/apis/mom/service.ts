@@ -8,10 +8,10 @@ export const getMom = async (id: string) => {
 };
 
 export const createMom = async () => {
-  const mom = await momModel.create({ name: '', blocks: [] });
+  const mom = await momModel.create({});
   return mom;
 };
 
-export const putMom = async (id: string, structure: LinkedList) => {
-  await momModel.updateOne({ _id: id }, { structure });
+export const putMom = async (id: string, data: LinkedList) => {
+  await momModel.updateOne({ _id: id }, { head: data, nodeMap: data.nodeMap });
 };
