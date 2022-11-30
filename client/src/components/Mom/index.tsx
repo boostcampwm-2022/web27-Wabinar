@@ -36,17 +36,23 @@ function Mom() {
   return (
     <div className={style['mom-container']}>
       <div className={style['mom']}>
-        <div className={style['mom-header']}>
-          <h1
-            contentEditable={true}
-            suppressContentEditableWarning={true}
-            onInput={onTitleChange}
-          >
-            {selectedMom._id}
-          </h1>
-          <span>{new Date().toLocaleString()}</span>
-        </div>
-        <Editor />
+        {selectedMom ? (
+          <>
+            <div className={style['mom-header']}>
+              <h1
+                contentEditable={true}
+                suppressContentEditableWarning={true}
+                onInput={onTitleChange}
+              >
+                {selectedMom._id}
+              </h1>
+              <span>{new Date().toLocaleString()}</span>
+            </div>
+            <Editor />
+          </>
+        ) : (
+          <h1>아직 회의록이 없어요. 만들어 보세요^^</h1>
+        )}
       </div>
     </div>
   );
