@@ -1,7 +1,7 @@
 interface Option {
   id: number;
   text: string;
-  votedNum: number;
+  count: number;
 }
 
 interface Vote {
@@ -26,14 +26,14 @@ export const updateVote = (momId: number, optionId: number) => {
   const vote = votes[momId];
   if (!vote) return;
 
-  const option = vote.options.filter(({ id }) => optionId === id);
-  if (!option.length) return;
+  const isExist = vote.options.some(({ id }) => optionId === id);
+  if (!isExist) return;
 
   vote.options = vote.options.map((option) => {
-    const { id, votedNum } = option;
+    const { id, count } = option;
 
     if (id === optionId) {
-      return { ...option, votedNum: votedNum + 1 };
+      return { ...option, count: count + 1 };
     }
     return option;
   });
