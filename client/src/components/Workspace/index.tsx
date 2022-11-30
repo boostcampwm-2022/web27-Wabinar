@@ -16,7 +16,7 @@ function Workspace({ workspaceId }: WorkspaceProps) {
 
   useEffect(() => {
     loadWorkspaceInfo();
-  }, []);
+  }, [workspaceId]);
 
   const loadWorkspaceInfo = async () => {
     if (workspaceId) {
@@ -26,6 +26,8 @@ function Workspace({ workspaceId }: WorkspaceProps) {
       // 제일 처음 입장했을 때 defalult 회의록 보여주기
       if (workspaceInfo.moms.length) {
         setSelectedMom(workspaceInfo.moms[0]);
+      } else {
+        setSelectedMom(null);
       }
     }
   };
