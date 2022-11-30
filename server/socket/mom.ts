@@ -1,5 +1,5 @@
 import { createMom, getMom, putMom } from '@apis/mom/service';
-import { createVote, updateVote } from '@apis/mom/vote/service';
+import { createVote, stopVote, updateVote } from '@apis/mom/vote/service';
 import CRDT from '@wabinar/crdt';
 import LinkedList from '@wabinar/crdt/linked-list';
 import { Server } from 'socket.io';
@@ -110,6 +110,11 @@ async function momSocketServer(io: Server) {
       const message = res ? '투표 성공' : '투표 실패';
 
       socket.emit('updated-vote', message);
+    });
+
+    socket.on('stop-vote', (momId) => {
+      const res = stopVote(momId);
+      workspace.emit('stoped-vote', res);
     });
 
     socket.on('error', (err) => {
