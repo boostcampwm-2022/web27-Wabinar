@@ -1,13 +1,15 @@
+import useMom from 'src/hooks/useSelectedMom';
+
 import Editor from '../Editor';
 import style from './style.module.scss';
 
 function Mom() {
+  const { selectedMom } = useMom();
+
+  if (!selectedMom) {
+    return <h1>아직 회의록이 없어요. 만들어 보세요^^</h1>;
+  }
   // context나 props로 가져오기
-  const selectedMom = {
-    id: 1,
-    name: '회의록 1',
-    createdAt: new Date(),
-  };
 
   /*
     contentEditable 내용을 컨트롤하고 싶다면 ref 활용해볼 수 있음
@@ -22,6 +24,7 @@ function Mom() {
       OR
       titleRef.current.innerText
     */
+    const title = e.target as HTMLHeadingElement;
   };
 
   return (
@@ -33,9 +36,9 @@ function Mom() {
             suppressContentEditableWarning={true}
             onInput={onTitleChange}
           >
-            {selectedMom.name}
+            {selectedMom._id}
           </h1>
-          <span>{selectedMom.createdAt.toLocaleString()}</span>
+          <span>{new Date().toLocaleString()}</span>
         </div>
         <Editor />
       </div>

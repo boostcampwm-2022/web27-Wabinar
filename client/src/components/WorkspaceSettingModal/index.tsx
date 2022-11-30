@@ -1,8 +1,8 @@
 import { BiCodeBlock } from '@react-icons/all-files/bi/BiCodeBlock';
-import { BiCopy } from '@react-icons/all-files/bi/BiCopy';
+import Button from 'src/components/common/Button';
+import CopyButton from 'src/components/common/CopyButton';
+import Modal from 'src/components/common/Modal';
 
-import Button from '../common/Button';
-import Modal from '../common/Modal';
 import style from './style.module.scss';
 
 interface WorkspaceSettingModalProps {
@@ -26,7 +26,7 @@ function WorkspaceSettingModal({ title, onClose }: WorkspaceSettingModalProps) {
           <span className={style['label-title']}>참여코드</span>
         </label>
         <div className={style['input-section']}>
-          <BiCopy className={style['copy-icon']} />
+          <CopyButton className={style['copy-icon']} target={code} />
           <input
             className={style.input}
             type="text"
