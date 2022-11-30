@@ -1,7 +1,8 @@
 import { createMom, getMom, putMom } from '@apis/mom/service';
+import { createVote, stopVote, updateVote } from '@apis/mom/vote/service';
 import CRDT from '@wabinar/crdt';
-import { Server } from 'socket.io';
 import LinkedList from '@wabinar/crdt/linked-list';
+import { Server } from 'socket.io';
 
 async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
@@ -96,6 +97,24 @@ async function momSocketServer(io: Server) {
       crdt.remoteDelete(op);
 
       putMom(momId, crdt.plainData);
+    });
+
+    /* 투표 관련 이벤트 */
+    socket.on('create-vote', (momId, vote) => {
+      const newVote = createVote(momId, vote);
+      workspace.emit('created-vote', newVote);
+    });
+
+    socket.on('update-vote', (momId, optionId) => {
+      const res = updateVote(momId, Number(optionId));
+      const message = res ? '투표 성공' : '투표 실패';
+
+      socket.emit('updated-vote', message);
+    });
+
+    socket.on('stop-vote', (momId) => {
+      const res = stopVote(momId);
+      workspace.emit('stoped-vote', res);
     });
 
     socket.on('error', (err) => {
