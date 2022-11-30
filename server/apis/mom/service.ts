@@ -13,5 +13,8 @@ export const createMom = async () => {
 };
 
 export const putMom = async (id: string, data: LinkedList) => {
-  await momModel.updateOne({ _id: id }, { head: data, nodeMap: data.nodeMap });
+  await momModel.updateOne(
+    { _id: id },
+    { head: data.head, nodeMap: data.nodeMap },
+  );
 };
