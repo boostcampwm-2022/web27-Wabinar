@@ -3,9 +3,11 @@ import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
 import useSocketContext from 'src/hooks/useSocketContext';
 
-import style from './style.module.scss';
+interface BlockProps {
+  onKeyDown: React.KeyboardEventHandler;
+}
 
-function Editor() {
+function Block({ onKeyDown }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const {
@@ -80,7 +82,7 @@ function Editor() {
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
     socket.emit('mom-initialization');
-    
+
     socket.on('mom-initialization', (crdt) => {
       syncCRDT(crdt);
 
@@ -139,15 +141,6 @@ function Editor() {
     });
   };
 
-  // 블럭 한개 가정을 위한 임시 핸들러
-  const onKeyDown: React.KeyboardEventHandler = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-
-      console.log('새 블럭이 생길거에요 ^^');
-    }
-  };
-
   return (
     <p
       ref={blockRef}
@@ -155,7 +148,6 @@ function Editor() {
       onCompositionEnd={onCompositionEnd}
       {...offsetHandlers}
       onKeyDown={onKeyDown}
-      className={style['editor-container']}
       suppressContentEditableWarning={true}
     >
       {readCRDT()}
@@ -163,4 +155,4 @@ function Editor() {
   );
 }
 
-export default Editor;
+export default Block;

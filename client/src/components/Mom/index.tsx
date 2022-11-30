@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 
-import Editor from '../Editor';
+import Block from './Block';
 import style from './style.module.scss';
 
 function Mom() {
@@ -15,6 +16,19 @@ function Mom() {
       titleRef.current.innerText
     */
     const title = e.target as HTMLHeadingElement;
+  };
+
+  const [blocks, setBlocks] = useState<number[]>([]);
+
+  const onKeyDown: React.KeyboardEventHandler = (e) => {
+    switch (e.key) {
+      case 'Enter':
+        e.preventDefault();
+        setBlocks((prev) => [...prev, prev.length]);
+        break;
+      default:
+        return;
+    }
   };
 
   return (
@@ -32,7 +46,12 @@ function Mom() {
               </h1>
               <span>{new Date().toLocaleString()}</span>
             </div>
-            <Editor />
+            <div className={style['mom-body']}>
+              <Block onKeyDown={onKeyDown} />
+              {blocks.map((el) => (
+                <p key={el}>{el}</p>
+              ))}
+            </div>
           </>
         ) : (
           <h1>아직 회의록이 없어요. 만들어 보세요^^</h1>
