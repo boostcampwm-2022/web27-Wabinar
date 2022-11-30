@@ -57,12 +57,9 @@ async function momSocketServer(io: Server) {
 
       // 서버에 선택된 회의록의 crdt가 없다면 생성
       if (!momMap.has(momId)) {
-        const { _id, head, nodeMap } = mom;
+        const { head, nodeMap } = mom;
 
-        momMap.set(
-          _id.toString(),
-          new CRDT(1, -1, { head, nodeMap } as LinkedList),
-        );
+        momMap.set(momId, new CRDT(1, -1, { head, nodeMap } as LinkedList));
       }
 
       // 선택된 회의록의 정보 전달
@@ -73,8 +70,7 @@ async function momSocketServer(io: Server) {
     socket.on('mom-initialization', async () => {
       const crdt = momMap.get(socket.data.momId);
 
-      // TODO: FE에서 initialization 이벤트 플로우 조정
-      socket.emit('mom-initialization', crdt ?? new LinkedList());
+      socket.emit('mom-initialization', crdt);
     });
 
     /* crdt remote insert delete */
