@@ -14,7 +14,7 @@ function Sidebar({ workspace }: SidebarProps) {
   return (
     <div className={style['sidebar-container']}>
       <div className={style['header']}>
-        <h1>왭^^</h1>
+        <h1>{workspace.name}</h1>
         <SettingIcon />
       </div>
       <MemberList members={workspace.members} />
