@@ -22,11 +22,6 @@ function Workspace({ workspaceId }: WorkspaceProps) {
     if (workspaceId) {
       const workspaceInfo = await getWorkspaceInfo({ id: workspaceId });
       setWorkspace(workspaceInfo);
-
-      // 제일 처음 입장했을 때 defalult 회의록 보여주기
-      if (workspaceInfo.moms.length) {
-        setSelectedMom(workspaceInfo.moms[0]);
-      }
     }
   };
 

@@ -25,6 +25,11 @@ function MomList({ moms }: MomListProps) {
   };
 
   useEffect(() => {
+    // 첫번째 회의록을 디폴트로 설정
+    if (moms.length) {
+      socket.emit('select-mom', moms[0]._id);
+    }
+
     socket.on('created-mom', (mom) => setMomList((prev) => [...prev, mom]));
 
     socket.on('selected-mom', (mom) => {
@@ -40,9 +45,9 @@ function MomList({ moms }: MomListProps) {
     <div className={style['mom-list-container']}>
       <h2>회의록</h2>
       <ul className={style['mom-list']}>
-        {momList.map(({ _id: id }) => (
+        {momList.map(({ _id: id, name }) => (
           <li key={id} onClick={() => onSelect(id)}>
-            {id}
+            {name}
           </li>
         ))}
       </ul>
