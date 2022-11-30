@@ -8,16 +8,14 @@ interface MemberListProps {
 
 function MemberList({ members }: MemberListProps) {
   return (
-    members && (
-      <ul className={style['member-list']}>
-        {members.map((item) => (
-          <li key={item.id} className={style['member-item']}>
-            <img src={item.avatarUrl} />
-            <span>{item.name}</span>
-          </li>
-        ))}
-      </ul>
-    )
+    <ul className={style['member-list']}>
+      {members.map((item) => (
+        <li key={item.id} className={style['member-item']}>
+          <img src={item.avatarUrl} />
+          <span>{item.name}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
