@@ -17,6 +17,7 @@ const workspaceSchema = new Schema<Workspace>({
   users: { type: [Number], default: [] },
   moms: { type: [Number], default: [] },
 });
+
 workspaceSchema.plugin(autoIncrement.plugin, {
   model: 'workspace',
   field: 'id',

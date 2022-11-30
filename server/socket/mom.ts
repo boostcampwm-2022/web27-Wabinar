@@ -30,7 +30,7 @@ async function momSocketServer(io: Server) {
 
     /* 회의록 추가하기 */
     socket.on('create-mom', async () => {
-      const mom = await createMom();
+      const mom = await createMom(workspaceId);
       const { _id, head, nodeMap } = mom;
 
       momMap.set(
