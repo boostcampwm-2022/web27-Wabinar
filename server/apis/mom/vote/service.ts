@@ -50,7 +50,7 @@ export const stopVote = (momId: number) => {
   votes[momId].isDoing = false;
 
   const participantNum = votes[momId].options.reduce(
-    (acc, { votedNum }) => acc + votedNum,
+    (acc, { count }) => acc + count,
     0,
   );
 
