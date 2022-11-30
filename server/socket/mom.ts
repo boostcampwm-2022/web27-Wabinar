@@ -102,12 +102,14 @@ async function momSocketServer(io: Server) {
     /* 투표 관련 이벤트 */
     socket.on('create-vote', (momId, vote) => {
       const newVote = createVote(momId, vote);
-      workspace.emit('created-mom', newVote);
+      workspace.emit('created-vote', newVote);
     });
 
     socket.on('update-vote', (momId, optionId) => {
-      updateVote(momId, Number(optionId));
-      socket.emit('updated-vote', '투표 성공');
+      const res = updateVote(momId, Number(optionId));
+      const message = res ? '투표 성공' : '투표 실패';
+
+      socket.emit('updated-vote', message);
     });
 
     socket.on('error', (err) => {
