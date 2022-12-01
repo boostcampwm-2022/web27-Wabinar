@@ -1,4 +1,4 @@
-import { GetInfoParams, PostJoinParams, PostParams } from '@common/types/params/workspace';
+import { GetInfoParams, PostJoinParams, PostParams } from 'params/workspace';
 import { Workspace, WorkspaceInfo } from 'src/types/workspace';
 
 import { http } from './http';

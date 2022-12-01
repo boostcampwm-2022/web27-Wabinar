@@ -1,4 +1,4 @@
-import { PostLoginParams } from '@common/types/params/auth';
+import { PostLoginParams } from 'params/auth';
 import { GetUserInfo } from 'src/types/workspace';
 
 import { http } from './http';

@@ -1,5 +1,5 @@
-import { GetWorkspaceParams } from '@common/types/params/user';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
+import { GetWorkspaceParams } from '@params/user';
 import asyncWrapper from '@utils/async-wrapper';
 import express, { Request, Response } from 'express';
 import * as userService from './service';

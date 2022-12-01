@@ -7,7 +7,7 @@
       "components/*": ["./src/components/*"],
       "config": ["./src/config"],
       "styles/*": ["./src/styles/*"],
-      "@common/*": ["../common/*"]
+      "params/*": ["../types/params/*"]
     },
     "target": "ESNext",
     "useDefineForClassFields": true,
