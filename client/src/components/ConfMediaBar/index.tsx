@@ -18,7 +18,7 @@ function ConfMediaBar() {
       <ul>
         {Array.from(streams).map(([id, stream]) => (
           <li key={id}>
-            <ConfMedia key={id} stream={stream} />
+            <ConfMedia key={id} stream={stream} muted={id === 'me' ? true : false} />
             <StreamButton
               isMicOn={false}
               isCamOn={true} // TODO: 임시로 지정
