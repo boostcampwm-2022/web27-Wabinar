@@ -41,7 +41,7 @@ export const updateVote = (momId: number, optionId: number) => {
   return vote.options;
 };
 
-export const stopVote = (momId: number) => {
+export const endVote = (momId: number) => {
   const vote = votes[momId];
   if (!vote) return { message: '존재하지 않는 투표입니다 ^^' };
 

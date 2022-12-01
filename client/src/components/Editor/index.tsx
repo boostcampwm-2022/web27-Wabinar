@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -34,7 +35,7 @@ function Editor() {
     if (event.inputType === 'deleteContentBackward') {
       const remoteDeletion = localDeleteCRDT(offsetRef.current);
 
-      socket.emit('mom-deletion', remoteDeletion);
+      socket.emit(SOCKET_MESSAGE.MOM.DELETE, remoteDeletion);
       return;
     }
 
@@ -44,7 +45,7 @@ function Editor() {
 
     const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-    socket.emit('mom-insertion', remoteInsertion);
+    socket.emit(SOCKET_MESSAGE.MOM.INSERT, remoteInsertion);
   };
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
@@ -79,9 +80,9 @@ function Editor() {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    socket.emit('mom-initialization');
-    
-    socket.on('mom-initialization', (crdt) => {
+    socket.emit(SOCKET_MESSAGE.MOM.INIT);
+
+    socket.on(SOCKET_MESSAGE.MOM.INIT, (crdt) => {
       syncCRDT(crdt);
 
       if (!blockRef.current) return;
@@ -90,7 +91,7 @@ function Editor() {
       blockRef.current.contentEditable = 'true';
     });
 
-    socket.on('mom-insertion', (op) => {
+    socket.on(SOCKET_MESSAGE.MOM.INSERT, (op) => {
       const prevIndex = remoteInsertCRDT(op);
 
       if (!blockRef.current) return;
@@ -102,7 +103,7 @@ function Editor() {
       updateCaretPosition(Number(prevIndex < offsetRef.current));
     });
 
-    socket.on('mom-deletion', (op) => {
+    socket.on(SOCKET_MESSAGE.MOM.DELETE, (op) => {
       const targetIndex = remoteDeleteCRDT(op);
 
       if (!blockRef.current) return;
@@ -135,7 +136,7 @@ function Editor() {
 
       const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-      socket.emit('mom-insertion', remoteInsertion);
+      socket.emit(SOCKET_MESSAGE.MOM.INSERT, remoteInsertion);
     });
   };
 
