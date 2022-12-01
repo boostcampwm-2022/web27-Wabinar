@@ -154,6 +154,10 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     });
   };
 
+  const onPaste: React.ClipboardEventHandler<HTMLParagraphElement> = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <p
       ref={blockRef}
@@ -162,6 +166,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
       onCompositionEnd={onCompositionEnd}
       {...offsetHandlers}
       onKeyDown={onKeyDown}
+      onPaste={onPaste}
       suppressContentEditableWarning={true}
     >
       {readCRDT()}
