@@ -80,6 +80,10 @@ class CRDT {
   read() {
     return this.structure.stringify();
   }
+
+  spread() {
+    return this.structure.spread();
+  }
 }
 
 export default CRDT;

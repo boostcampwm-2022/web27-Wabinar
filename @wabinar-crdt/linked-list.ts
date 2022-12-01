@@ -21,7 +21,7 @@ export default class LinkedList {
   head: Identifier | null;
   nodeMap: NodeMap;
 
-  constructor(initialStructure) {
+  constructor(initialStructure?) {
     if (!initialStructure) {
       this.head = null;
       this.nodeMap = {};
@@ -209,6 +209,18 @@ export default class LinkedList {
 
     while (node) {
       result += node.value;
+      node = this.getNode(node.next);
+    }
+
+    return result;
+  }
+
+  spread(): string[] {
+    let node: Node | null = this.getHeadNode();
+    let result = [];
+
+    while (node) {
+      result.push(node.value);
       node = this.getNode(node.next);
     }
 
