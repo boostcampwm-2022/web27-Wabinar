@@ -20,17 +20,15 @@ export function useCRDT() {
   const userContext = useUserContext();
   const clientId = userContext.userInfo?.user.id;
 
-  const crdtRef = useRef<CRDT>(new CRDT(1, clientId, new LinkedList()));
+  const crdtRef = useRef<CRDT>(new CRDT(clientId, new LinkedList()));
 
-  let initialized = false;
+  const initializedRef = useRef<boolean>(false);
   const operationSet: RemoteOperation[] = [];
 
-  const syncCRDT = (object: unknown) => {
-    Object.setPrototypeOf(object, LinkedList.prototype);
+  const syncCRDT = (structure: unknown) => {
+    crdtRef.current = new CRDT(clientId, new LinkedList(structure));
 
-    crdtRef.current = new CRDT(1, clientId, object as LinkedList);
-
-    initialized = true;
+    initializedRef.current = true;
     operationSet.forEach(({ type, op }) => {
       switch (type) {
         case OPERATION_TYPE.INSERT:
@@ -46,12 +44,17 @@ export function useCRDT() {
   };
 
   const readCRDT = (): string => {
-    if (!initialized) return '';
+    if (!initializedRef.current) return '';
     return crdtRef.current.read();
   };
 
-  const localInsertCRDT = (index: number, letter: string) => {
-    const remoteInsertion = crdtRef.current.localInsert(index, letter);
+  const spreadCRDT = (): string[] => {
+    if (!initializedRef.current) return [];
+    return crdtRef.current.spread();
+  };
+
+  const localInsertCRDT = (index: number, value: string) => {
+    const remoteInsertion = crdtRef.current.localInsert(index, value);
 
     return remoteInsertion;
   };
@@ -63,7 +66,7 @@ export function useCRDT() {
   };
 
   const remoteInsertCRDT = (op: RemoteInsertOperation) => {
-    if (!initialized) {
+    if (!initializedRef.current) {
       operationSet.push({ type: OPERATION_TYPE.INSERT, op });
       return null;
     }
@@ -74,7 +77,7 @@ export function useCRDT() {
   };
 
   const remoteDeleteCRDT = (op: RemoteDeleteOperation) => {
-    if (!initialized) {
+    if (!initializedRef.current) {
       operationSet.push({ type: OPERATION_TYPE.DELETE, op });
       return null;
     }
@@ -87,6 +90,7 @@ export function useCRDT() {
   return {
     syncCRDT,
     readCRDT,
+    spreadCRDT,
     localInsertCRDT,
     localDeleteCRDT,
     remoteInsertCRDT,
