@@ -37,15 +37,15 @@ function Mom() {
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
 
+    const { index } = target.dataset;
+
     if (e.key === 'Enter') {
       e.preventDefault();
 
       const blockId = uuid();
-      const { index } = target.dataset;
 
       const remoteInsertion = localInsertCRDT(Number(index), blockId);
 
-      setBlocks(spreadCRDT());
       socket.emit('block-insertion', blockId, remoteInsertion);
       return;
     }
@@ -55,11 +55,8 @@ function Mom() {
 
       e.preventDefault();
 
-      const { index } = target.dataset;
-
       const remoteDeletion = localDeleteCRDT(Number(index));
 
-      setBlocks(spreadCRDT());
       socket.emit('block-deletion', remoteDeletion);
     }
   };
@@ -73,9 +70,15 @@ function Mom() {
       syncCRDT(crdt);
       setBlocks(spreadCRDT());
     });
+
+    return () => {
+      socket.off('mom-initialization');
+    };
   }, [selectedMom]);
 
   useEffect(() => {
+    socket.on('block-op-reflected', () => setBlocks(spreadCRDT()));
+
     socket.on('block-insertion', (op) => {
       remoteInsertCRDT(op);
       setBlocks(spreadCRDT());
@@ -121,12 +124,6 @@ function Mom() {
               <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
             </div>
             <div className={style['mom-body']}>
-              <Block
-                id={'test'}
-                index={0}
-                onKeyDown={onKeyDown}
-                // 테스트용 고정 블럭
-              />
               {blocks.map((id, index) => (
                 <Block key={id} id={id} index={index} onKeyDown={onKeyDown} />
               ))}
