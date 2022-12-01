@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useConfContext } from 'src/hooks/useConfContext';
 import useSocketContext from 'src/hooks/useSocketContext';
 import color from 'styles/color.module.scss';
@@ -26,4 +27,4 @@ function ConfButton() {
   );
 }
 
-export default ConfButton;
+export default memo(ConfButton);

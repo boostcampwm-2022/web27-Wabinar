@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import useMom from 'src/hooks/useSelectedMom';
+import { useState, useEffect, memo, useMemo, useCallback } from 'react';
+import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { TMom } from 'src/types/mom';
 
@@ -11,7 +10,7 @@ interface MomListProps {
 }
 
 function MomList({ moms }: MomListProps) {
-  const { selectedMom, setSelectedMom } = useMom();
+  const { selectedMom, setSelectedMom } = useSelectedMom();
   const { momSocket: socket } = useSocketContext();
   const [momList, setMomList] = useState<TMom[]>(moms);
 
