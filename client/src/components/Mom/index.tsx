@@ -55,9 +55,13 @@ function Mom() {
 
       e.preventDefault();
 
-      const remoteDeletion = localDeleteCRDT(Number(index));
-
-      socket.emit('block-deletion', remoteDeletion);
+      /**
+       * block deletion은 버그가 있어 주석 처리
+       *
+       * const remoteDeletion = localDeleteCRDT(Number(index));
+       *
+       * socket.emit('block-deletion', remoteDeletion);
+       */
     }
   };
 
