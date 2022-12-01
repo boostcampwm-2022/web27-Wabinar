@@ -53,11 +53,11 @@ export default class LinkedList {
 
   insertByIndex(
     index: number,
-    letter: string,
+    value: string,
     id: Identifier,
   ): RemoteInsertOperation {
     try {
-      const node = new Node(letter, id);
+      const node = new Node(value, id);
       this.setNode(id, node);
 
       // insertion to head

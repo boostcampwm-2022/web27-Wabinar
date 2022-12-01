@@ -44,9 +44,9 @@ class CRDT {
     return JSON.parse(stringifiedData);
   }
 
-  localInsert(index: number, letter: string): RemoteInsertOperation {
+  localInsert(index: number, value: string): RemoteInsertOperation {
     const id = new Identifier(this.clock++, this.client);
-    const remoteInsertion = this.structure.insertByIndex(index, letter, id);
+    const remoteInsertion = this.structure.insertByIndex(index, value, id);
 
     return remoteInsertion;
   }

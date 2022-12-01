@@ -55,8 +55,8 @@ export function useCRDT() {
     return crdtRef.current.spread();
   };
 
-  const localInsertCRDT = (index: number, letter: string) => {
-    const remoteInsertion = crdtRef.current.localInsert(index, letter);
+  const localInsertCRDT = (index: number, value: string) => {
+    const remoteInsertion = crdtRef.current.localInsert(index, value);
 
     return remoteInsertion;
   };
