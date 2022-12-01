@@ -9,8 +9,8 @@
       "@db": ["db"],
       "@middlewares/*": ["middlewares/*"],
       "@utils/*": ["utils/*"],
-      "@params/*": ["../types/params/*"],
-      "@socket": ["socket"]
+      "@socket": ["socket"],
+      "@common/*": ["../common/*"]
     }
   }
 }

@@ -1,6 +1,10 @@
+import {
+  GetInfoParams,
+  PostJoinParams,
+  PostParams,
+} from '@common/types/params/workspace';
 import { CREATED, OK } from '@constants/http-status';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
-import { GetInfoParams, PostJoinParams, PostParams } from '@params/workspace';
 import asyncWrapper from '@utils/async-wrapper';
 import express, { Request, Response } from 'express';
 import * as workspaceService from './service';

@@ -1,4 +1,4 @@
-import { GetWorkspaceParams } from 'params/user';
+import { GetWorkspaceParams } from '@common/types/params/user';
 
 import { http } from './http';
 import { OK } from './http-status';
