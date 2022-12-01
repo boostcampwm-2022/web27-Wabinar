@@ -26,7 +26,10 @@ export function useCRDT() {
   const operationSet: RemoteOperation[] = [];
 
   const syncCRDT = (structure: unknown) => {
-    crdtRef.current = new CRDT(clientId, new LinkedList(structure));
+    crdtRef.current = new CRDT(
+      clientId,
+      new LinkedList(structure as LinkedList),
+    );
 
     initializedRef.current = true;
     operationSet.forEach(({ type, op }) => {

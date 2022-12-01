@@ -21,7 +21,7 @@ export default class LinkedList {
   head: Identifier | null;
   nodeMap: NodeMap;
 
-  constructor(initialStructure?) {
+  constructor(initialStructure?: LinkedList) {
     if (!initialStructure) {
       this.head = null;
       this.nodeMap = {};
@@ -39,7 +39,7 @@ export default class LinkedList {
       return this;
     }
 
-    const nodeMapWithPrototype = Object.entries(nodeMap).reduce(
+    const nodeMapWithPrototype = Object.entries(nodeMap).reduce<NodeMap>(
       (prev, [id, node]) => {
         Object.setPrototypeOf(node, Node.prototype);
         prev[id] = node;
