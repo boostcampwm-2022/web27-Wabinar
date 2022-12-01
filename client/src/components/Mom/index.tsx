@@ -25,6 +25,8 @@ function Mom() {
   const [blocks, setBlocks] = useState<number[]>([]);
 
   const onKeyDown: React.KeyboardEventHandler = (e) => {
+    const target = e.target as HTMLParagraphElement;
+
     switch (e.key) {
       case 'Enter':
         e.preventDefault();
@@ -32,6 +34,13 @@ function Mom() {
         // TODO: api로 빈 블럭 하나 생성하고 Mom CRDT에 id 삽입
 
         setBlocks((prev) => [...prev, prev.length]);
+        break;
+      case 'Backspace':
+        if (target.innerText.length) return;
+
+        e.preventDefault();
+
+        setBlocks((prev) => prev.slice(0, -1));
         break;
       default:
         return;
