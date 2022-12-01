@@ -1,3 +1,5 @@
+import workspaceModel from '@apis/workspace/model';
+import { info } from '@apis/workspace/service';
 import LinkedList from '@wabinar/crdt/linked-list';
 import momModel from './model';
 
@@ -7,8 +9,14 @@ export const getMom = async (id: string) => {
   return mom;
 };
 
-export const createMom = async () => {
+export const createMom = async (workspaceId: string) => {
   const mom = await momModel.create({});
+
+  await workspaceModel.updateOne(
+    { id: workspaceId },
+    { $addToSet: { moms: mom.id } },
+  );
+
   return mom;
 };
 

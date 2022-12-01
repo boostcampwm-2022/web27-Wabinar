@@ -5,14 +5,18 @@ import style from './style.module.scss';
 interface WorkspaceThumbnailItemProps {
   name: string;
   imageUrl?: string;
+  onClick: () => void;
 }
 
 /**
  * API 연동할 때 변경해줘야 해요.
  */
-function WorkspaceThumbnailItem({ name }: WorkspaceThumbnailItemProps) {
+function WorkspaceThumbnailItem({
+  name,
+  onClick,
+}: WorkspaceThumbnailItemProps) {
   return (
-    <li className={style.thumbnail}>
+    <li className={style.thumbnail} onClick={onClick}>
       <div className={style.thumbnail__content}>
         {/* <img src={imageUrl} /> */}
         {name[0]}

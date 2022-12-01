@@ -1,7 +1,8 @@
 import { BiCheckbox } from '@react-icons/all-files/bi/BiCheckbox';
 import { BiCheckboxChecked } from '@react-icons/all-files/bi/BiCheckboxChecked';
 import classNames from 'classnames/bind';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import useSocketContext from 'src/hooks/useSocketContext';
 
 import style from './style.module.scss';
 
@@ -9,55 +10,44 @@ const cx = classNames.bind(style);
 
 interface Question {
   id: number;
-  isDone: boolean;
-  question: string;
+  isResolved: boolean;
+  text: string;
 }
 
-const initialQuestion: Question[] = [
-  {
-    id: 1,
-    isDone: true,
-    question: 'REACT가 뭔가요?',
-  },
-  {
-    id: 2,
-    isDone: false,
-    question: '오늘의 안건은 뭔가요?',
-  },
-];
-
 function QuestionBlock() {
-  const [questions, setQuestions] = useState<Question[]>(initialQuestion);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const { momSocket: socket } = useSocketContext();
 
-  const toggleQuestion = (question: Question): Question => {
-    /** TODO api 붙이기 */
-    question.isDone = !question.isDone;
-    return question;
-  };
-
-  const createQuestion = (question: string) => {
-    /** TODO api 붙이기 */
+  const createQuestion = (questionText: string) => {
     const lastId = questions.at(-1)?.id;
-
     const nextId = lastId !== undefined ? lastId + 1 : 0;
 
-    const newQuestion = {
+    const question = {
       id: nextId,
-      isDone: false,
-      question,
+      isResolved: false,
+      text: questionText,
     };
-
-    setQuestions([...questions, newQuestion]);
+    socket.emit('question-block__add-question', question);
   };
 
+  useEffect(() => {
+    socket.on('question-block__questions-fetched', fetchedQuestions => {
+      setQuestions([...fetchedQuestions]);
+    });
+
+    socket.on('question-block__question-added', (questionToAdd) => {
+      setQuestions(prev => [...prev, questionToAdd]);
+    });
+
+    socket.emit('question-block__fetch-questions');
+  }, []);
+
   const onClick: React.MouseEventHandler<HTMLLIElement> = (e) => {
-    const { id: targetId } = e.currentTarget;
+    const targetId = Number(e.currentTarget.id);
+    const clickedQuestion = questions.filter(q => q.id === targetId)[0];
+    const toggledResolved = !clickedQuestion.isResolved;
 
-    const nextQuestions = questions.map((question) =>
-      question.id === Number(targetId) ? toggleQuestion(question) : question,
-    );
-
-    setQuestions(nextQuestions);
+    socket.emit('question-block__toggle-resolved', targetId, toggledResolved);
   };
 
   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -78,19 +68,19 @@ function QuestionBlock() {
     <div className={style['question-container']}>
       <h3 className={style.title}>질문 리스트</h3>
       <ul>
-        {questions.map(({ id, isDone, question }) => (
+        {questions.map(({ id, isResolved, text: questionText }) => (
           <li
             className={style['question-item']}
             onClick={onClick}
             key={id}
             id={id.toString()}
           >
-            {isDone ? (
+            {isResolved ? (
               <BiCheckboxChecked className={cx('check-box', { check: true })} />
             ) : (
               <BiCheckbox className={style['check-box']} />
             )}
-            <p className={cx(question, { check: isDone })}>{question}</p>
+            <p className={cx(questionText, { check: isResolved })}>{questionText}</p>
           </li>
         ))}
       </ul>
