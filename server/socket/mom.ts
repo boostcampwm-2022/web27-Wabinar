@@ -4,6 +4,7 @@ import {
   getBlock,
   putBlock,
 } from '@apis/mom/block/service';
+import { Mom } from '@apis/mom/model';
 import * as Questions from '@apis/mom/questions/service';
 import { createMom, getMom, putMom } from '@apis/mom/service';
 import { createVote, endVote, updateVote } from '@apis/mom/vote/service';
@@ -20,6 +21,29 @@ async function momSocketServer(io: Server) {
 
   // 블럭 id : 블럭의 crdt 인스턴스
   const blockMap = new Map<string, CRDT>();
+
+  const initMapEntry = async (momId: string, mom: Mom) => {
+    const { head, nodeMap } = mom;
+
+    const momCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
+
+    momMap.set(momId, momCRDT);
+
+    const blockIds = momCRDT.spread();
+
+    const blockMapInsertions = blockIds.map((id) => {
+      return new Promise<void>(async (resolve) => {
+        const { head, nodeMap } = await getBlock(id);
+
+        const blockCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
+
+        blockMap.set(id, blockCRDT);
+        resolve();
+      });
+    });
+
+    await Promise.all(blockMapInsertions);
+  };
 
   workspace.on('connection', async (socket) => {
     const namespace = socket.nsp.name;
@@ -42,9 +66,8 @@ async function momSocketServer(io: Server) {
     /* 회의록 추가하기 */
     socket.on(SOCKET_MESSAGE.MOM.CREATE, async () => {
       const mom = await createMom(workspaceId);
-      const { _id, head, nodeMap } = mom;
 
-      momMap.set(_id.toString(), new CRDT(-1, { head, nodeMap } as LinkedList));
+      await initMapEntry(mom._id.toString(), mom);
 
       workspace.emit(SOCKET_MESSAGE.MOM.CREATE, mom);
     });
@@ -66,26 +89,7 @@ async function momSocketServer(io: Server) {
 
       // 서버에 선택된 회의록의 crdt가 없다면 생성
       if (!momMap.has(momId)) {
-        const { head, nodeMap } = mom;
-
-        const momCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
-
-        momMap.set(momId, momCRDT);
-
-        const blockIds = momCRDT.spread();
-
-        const blockMapInsertions = blockIds.map((id) => {
-          return new Promise<void>(async (resolve) => {
-            const { head, nodeMap } = await getBlock(id);
-
-            const blockCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
-
-            blockMap.set(id, blockCRDT);
-            resolve();
-          });
-        });
-
-        await Promise.all(blockMapInsertions);
+        await initMapEntry(momId, mom);
       }
 
       // 선택된 회의록의 정보 전달

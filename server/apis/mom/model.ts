@@ -3,7 +3,7 @@ import { Schema } from 'mongoose';
 import LinkedList from '@wabinar/crdt/linked-list';
 import autoIncrement from 'mongoose-auto-increment';
 
-interface Mom extends LinkedList {
+export interface Mom extends LinkedList {
   id: number;
   name: string;
   createdAt: Date;
