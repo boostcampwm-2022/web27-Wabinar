@@ -1,3 +1,4 @@
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useConfContext } from 'src/hooks/useConfContext';
 import useSocketContext from 'src/hooks/useSocketContext';
 import color from 'styles/color.module.scss';
@@ -12,7 +13,7 @@ function ConfButton() {
 
   const onClick = () => {
     setIsStart(!isStart);
-    socket.emit(isStart ? 'stop-mom' : 'start-mom');
+    socket.emit(isStart ? SOCKET_MESSAGE.MOM.END : SOCKET_MESSAGE.MOM.START);
   };
 
   return (
