@@ -1,6 +1,5 @@
-import { useEffect, useState, memo  } from 'react';
+import { useEffect, useState, memo } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
-import useMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { TMom } from 'src/types/mom';
 
@@ -24,6 +23,10 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
   };
 
   useEffect(() => {
+    if (moms.length) {
+      socket.emit(SOCKET_MESSAGE.MOM.SELECT, moms[0]._id);
+    }
+
     setMomList(moms);
 
     socket.on(SOCKET_MESSAGE.MOM.CREATE, (mom) =>
@@ -44,9 +47,9 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
     <div className={style['mom-list-container']}>
       <h2>회의록</h2>
       <ul className={style['mom-list']}>
-        {momList.map(({ _id: id }) => (
+        {momList.map(({ _id: id, name }) => (
           <li key={id} onClick={() => onSelect(id)}>
-            {id}
+            {name}
           </li>
         ))}
       </ul>
