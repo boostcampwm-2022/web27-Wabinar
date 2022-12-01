@@ -1,6 +1,11 @@
 import LinkedList from '@wabinar/crdt/linked-list';
 import blockModel from './model';
 
+export const getBlock = async (id: string) => {
+  const block = await blockModel.findOne({ id });
+  return block;
+};
+
 export const createBlock = async (id: string) => {
   const block = await blockModel.create({ id });
 

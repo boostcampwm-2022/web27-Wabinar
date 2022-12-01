@@ -1,4 +1,9 @@
-import { createBlock, deleteBlock, putBlock } from '@apis/mom/block/service';
+import {
+  createBlock,
+  deleteBlock,
+  getBlock,
+  putBlock,
+} from '@apis/mom/block/service';
 import { createMom, getMom, putMom } from '@apis/mom/service';
 import { createVote, stopVote, updateVote } from '@apis/mom/vote/service';
 import CRDT from '@wabinar/crdt';
@@ -64,7 +69,19 @@ async function momSocketServer(io: Server) {
       if (!momMap.has(momId)) {
         const { head, nodeMap } = mom;
 
-        momMap.set(momId, new CRDT(-1, { head, nodeMap } as LinkedList));
+        const momCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
+
+        momMap.set(momId, momCRDT);
+
+        const blockIds = momCRDT.spread();
+
+        blockIds.forEach(async (id) => {
+          const { head, nodeMap } = await getBlock(id);
+
+          const blockCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
+
+          blockMap.set(id, blockCRDT);
+        });
       }
 
       // 선택된 회의록의 정보 전달
