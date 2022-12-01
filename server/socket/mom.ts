@@ -2,6 +2,7 @@ import { createMom, getMom, putMom } from '@apis/mom/service';
 import CRDT from '@wabinar/crdt';
 import { Server, Socket, Namespace } from 'socket.io';
 import LinkedList from '@wabinar/crdt/linked-list';
+import * as Questions from '@apis/mom/questions/service';
 
 async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
@@ -111,34 +112,25 @@ async function momSocketServer(io: Server) {
   });
 }
 
-interface Question {
-  id: number;
-  isResolved: boolean;
-  text: string;
-}
-
-// TODO: db 사용으로 바꾸기, 지금은 메모리 사용
-const questions: Question[] = [];
-
 function addEventHandlersForQuestionBlock(
   namespace: Namespace,
   socket: Socket,
 ) {
   socket.on('question-block__fetch-questions', () => {
+    const questions = Questions.fetch();
+
     socket.emit('question-block__questions-fetched', questions);
   });
 
   socket.on('question-block__add-question', (question) => {
-    questions.push(question);
+    Questions.add(question);
 
     namespace.emit('question-block__question-added', question);
   });
 
   socket.on('question-block__toggle-resolved', (id, toggledResolved) => {
-    // TODO: 일일이 id를 찾는 것보다 더 좋은 방법이 있으면 고치기
-    const targetIdx = questions.findIndex((item) => item.id === id);
-
-    questions[targetIdx].isResolved = toggledResolved;
+    Questions.toggleResolved(id, toggledResolved);
+    const questions = Questions.fetch();
 
     namespace.emit('question-block__questions-fetched', questions);
   });
