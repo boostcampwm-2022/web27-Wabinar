@@ -132,9 +132,6 @@ function Block({ id, onKeyDown, index }: BlockProps) {
       ee.off(`block-initialization-${id}`, onInitialize);
       ee.off(`text-insertion-${id}`, onInsert);
       ee.off(`text-deletion-${id}`, onDelete);
-
-      socket.removeAllListeners();
-      socket.disconnect();
     };
   }, []);
 

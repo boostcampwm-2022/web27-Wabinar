@@ -1,6 +1,5 @@
-import { useEffect, useState, memo  } from 'react';
+import { useEffect, useState, memo } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
-import useMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { TMom } from 'src/types/mom';
 
@@ -24,9 +23,8 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
   };
 
   useEffect(() => {
-    // 첫번째 회의록을 디폴트로 설정
     if (moms.length) {
-      socket.emit('select-mom', moms[0]._id);
+      socket.emit(SOCKET_MESSAGE.MOM.SELECT, moms[0]._id);
     }
 
     setMomList(moms);

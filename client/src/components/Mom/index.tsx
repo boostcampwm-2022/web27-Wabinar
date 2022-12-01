@@ -102,6 +102,7 @@ function Mom() {
     });
 
     return () => {
+      socket.off('block-op-reflected');
       socket.off('block-initialization');
       socket.off('text-insertion');
       socket.off('text-deletion');
