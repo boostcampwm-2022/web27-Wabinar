@@ -1,6 +1,6 @@
 import Workspace from 'components/Workspace';
 import WorkspaceList from 'components/WorkspaceList';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ConfMediaBar from 'src/components/ConfMediaBar';
 import ConfContext from 'src/contexts/conf';
@@ -13,7 +13,8 @@ function WorkspacePage() {
   const { id } = useParams();
   const [isStart, setIsStart] = useState(false);
 
-  const momSocket = useSocket(`/sc-workspace/${id}`);
+  const momSocket = useMemo(() => useSocket(`/sc-workspace/${id}`), [id]);
+  const signalingSocket = useMemo(() => useSocket(`/signaling/${id}`), [id]);
 
   useEffect(() => {
     momSocket.on('started-mom', () => {
@@ -26,7 +27,7 @@ function WorkspacePage() {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ momSocket }}>
+    <SocketContext.Provider value={{ momSocket, signalingSocket }}>
       <ConfContext.Provider value={{ isStart, setIsStart }}>
         <div className={style.container}>
           <WorkspaceList />
