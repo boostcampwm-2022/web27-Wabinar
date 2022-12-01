@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useConfContext } from 'src/hooks/useConfContext';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -27,4 +28,4 @@ function ConfButton() {
   );
 }
 
-export default ConfButton;
+export default memo(ConfButton);

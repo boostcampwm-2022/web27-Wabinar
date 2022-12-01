@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo  } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
 import useMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -8,10 +8,10 @@ import style from './style.module.scss';
 
 interface MomListProps {
   moms: TMom[];
+  setSelectedMom: React.Dispatch<React.SetStateAction<TMom | null>>;
 }
 
-function MomList({ moms }: MomListProps) {
-  const { selectedMom, setSelectedMom } = useMom();
+function MomList({ moms, setSelectedMom }: MomListProps) {
   const { momSocket: socket } = useSocketContext();
   const [momList, setMomList] = useState<TMom[]>(moms);
 
@@ -20,7 +20,6 @@ function MomList({ moms }: MomListProps) {
   };
 
   const onSelect = (targetId: string) => {
-    if (selectedMom && selectedMom._id === targetId) return;
     socket.emit(SOCKET_MESSAGE.MOM.SELECT, targetId);
   };
 
@@ -56,4 +55,4 @@ function MomList({ moms }: MomListProps) {
   );
 }
 
-export default MomList;
+export default memo(MomList);
