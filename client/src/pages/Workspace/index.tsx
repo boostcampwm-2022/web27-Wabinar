@@ -18,11 +18,11 @@ function WorkspacePage() {
   const signalingSocket = useMemo(() => useSocket(`/signaling/${id}`), [id]);
 
   useEffect(() => {
-    momSocket.on(SOCKET_MESSAGE.MOM.START_MOM, () => {
+    momSocket.on(SOCKET_MESSAGE.MOM.START, () => {
       setIsStart(true);
     });
 
-    momSocket.on(SOCKET_MESSAGE.MOM.STOP_MOM, () => {
+    momSocket.on(SOCKET_MESSAGE.MOM.STOP, () => {
       setIsStart(false);
     });
   }, []);

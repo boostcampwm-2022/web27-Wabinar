@@ -35,7 +35,7 @@ function Editor() {
     if (event.inputType === 'deleteContentBackward') {
       const remoteDeletion = localDeleteCRDT(offsetRef.current);
 
-      socket.emit(SOCKET_MESSAGE.MOM.DELETE_MOM, remoteDeletion);
+      socket.emit(SOCKET_MESSAGE.MOM.DELETE, remoteDeletion);
       return;
     }
 
@@ -45,7 +45,7 @@ function Editor() {
 
     const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-    socket.emit(SOCKET_MESSAGE.MOM.INSERT_MOM, remoteInsertion);
+    socket.emit(SOCKET_MESSAGE.MOM.INSERT, remoteInsertion);
   };
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
@@ -80,9 +80,9 @@ function Editor() {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    socket.emit(SOCKET_MESSAGE.MOM.INIT_MOM);
+    socket.emit(SOCKET_MESSAGE.MOM.INIT);
 
-    socket.on(SOCKET_MESSAGE.MOM.INIT_MOM, (crdt) => {
+    socket.on(SOCKET_MESSAGE.MOM.INIT, (crdt) => {
       syncCRDT(crdt);
 
       if (!blockRef.current) return;
@@ -91,7 +91,7 @@ function Editor() {
       blockRef.current.contentEditable = 'true';
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.INSERT_MOM, (op) => {
+    socket.on(SOCKET_MESSAGE.MOM.INSERT, (op) => {
       const prevIndex = remoteInsertCRDT(op);
 
       if (!blockRef.current) return;
@@ -103,7 +103,7 @@ function Editor() {
       updateCaretPosition(Number(prevIndex < offsetRef.current));
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.DELETE_MOM, (op) => {
+    socket.on(SOCKET_MESSAGE.MOM.DELETE, (op) => {
       const targetIndex = remoteDeleteCRDT(op);
 
       if (!blockRef.current) return;
@@ -136,7 +136,7 @@ function Editor() {
 
       const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-      socket.emit(SOCKET_MESSAGE.MOM.INSERT_MOM, remoteInsertion);
+      socket.emit(SOCKET_MESSAGE.MOM.INSERT, remoteInsertion);
     });
   };
 

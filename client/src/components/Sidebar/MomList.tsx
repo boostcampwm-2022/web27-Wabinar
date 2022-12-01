@@ -16,28 +16,28 @@ function MomList({ moms }: MomListProps) {
   const [momList, setMomList] = useState<TMom[]>(moms);
 
   const onCreateMom = () => {
-    socket.emit(SOCKET_MESSAGE.MOM.CREATE_MOM);
+    socket.emit(SOCKET_MESSAGE.MOM.CREATE);
   };
 
   const onSelect = (targetId: string) => {
     if (selectedMom && selectedMom._id === targetId) return;
-    socket.emit(SOCKET_MESSAGE.MOM.SELECT_MOM, targetId);
+    socket.emit(SOCKET_MESSAGE.MOM.SELECT, targetId);
   };
 
   useEffect(() => {
     setMomList(moms);
 
-    socket.on(SOCKET_MESSAGE.MOM.CREATE_MOM, (mom) =>
+    socket.on(SOCKET_MESSAGE.MOM.CREATE, (mom) =>
       setMomList((prev) => [...prev, mom]),
     );
 
-    socket.on(SOCKET_MESSAGE.MOM.SELECT_MOM, (mom) => {
+    socket.on(SOCKET_MESSAGE.MOM.SELECT, (mom) => {
       setSelectedMom(mom);
     });
 
     return () => {
-      socket.off(SOCKET_MESSAGE.MOM.CREATE_MOM);
-      socket.off(SOCKET_MESSAGE.MOM.SELECT_MOM);
+      socket.off(SOCKET_MESSAGE.MOM.CREATE);
+      socket.off(SOCKET_MESSAGE.MOM.SELECT);
     };
   }, [moms]);
 
