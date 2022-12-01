@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { TUser } from 'src/types/user';
 
 import style from './style.module.scss';
@@ -19,4 +20,4 @@ function MemberList({ members }: MemberListProps) {
   );
 }
 
-export default MemberList;
+export default memo(MemberList);
