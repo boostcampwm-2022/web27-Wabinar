@@ -136,15 +136,10 @@ function addEventHandlersForQuestionBlock(
 
   socket.on('question-block__toggle-resolved', (id, toggledResolved) => {
     // TODO: 일일이 id를 찾는 것보다 더 좋은 방법이 있으면 고치기
-    let targetIdx = 0;
-    for (let i = 0; i < questions.length; ++i) {
-      if (questions[i].id === id) {
-        targetIdx = i;
-        break;
-      }
-    }
+    const targetIdx = questions.findIndex((item) => item.id === id);
 
     questions[targetIdx].isResolved = toggledResolved;
+
     namespace.emit('question-block__questions-fetched', questions);
   });
 }
