@@ -22,7 +22,7 @@ function WorkspacePage() {
       setIsStart(true);
     });
 
-    momSocket.on(SOCKET_MESSAGE.MOM.STOP, () => {
+    momSocket.on(SOCKET_MESSAGE.MOM.END, () => {
       setIsStart(false);
     });
   }, []);

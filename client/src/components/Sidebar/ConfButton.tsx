@@ -13,7 +13,7 @@ function ConfButton() {
 
   const onClick = () => {
     setIsStart(!isStart);
-    socket.emit(isStart ? SOCKET_MESSAGE.MOM.STOP : SOCKET_MESSAGE.MOM.START);
+    socket.emit(isStart ? SOCKET_MESSAGE.MOM.END : SOCKET_MESSAGE.MOM.START);
   };
 
   return (

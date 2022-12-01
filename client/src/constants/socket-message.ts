@@ -1,7 +1,7 @@
 const SOCKET_MESSAGE = {
   MOM: {
     START: 'start',
-    STOP: 'stop',
+    END: 'end',
     CREATE: 'create',
     SELECT: 'select',
     INIT: 'init',
@@ -9,7 +9,7 @@ const SOCKET_MESSAGE = {
     DELETE: 'delete',
     CREATE_VOTE: 'create-vote',
     UPDATE_VOTE: 'update-vote',
-    STOP_VOTE: 'stop-vote',
+    END_VOTE: 'end-vote',
   },
   WORKSPACE: {
     SEND_HELLO: 'send-hello',

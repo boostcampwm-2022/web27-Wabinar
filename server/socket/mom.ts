@@ -1,6 +1,6 @@
 import * as Questions from '@apis/mom/questions/service';
 import { createMom, getMom, putMom } from '@apis/mom/service';
-import { createVote, stopVote, updateVote } from '@apis/mom/vote/service';
+import { createVote, endVote, updateVote } from '@apis/mom/vote/service';
 import SOCKET_MESSAGE from '@constants/socket-message';
 import CRDT from '@wabinar/crdt';
 import LinkedList from '@wabinar/crdt/linked-list';
@@ -26,8 +26,8 @@ async function momSocketServer(io: Server) {
       workspace.emit(SOCKET_MESSAGE.MOM.START);
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.STOP, () => {
-      workspace.emit(SOCKET_MESSAGE.MOM.STOP);
+    socket.on(SOCKET_MESSAGE.MOM.END, () => {
+      workspace.emit(SOCKET_MESSAGE.MOM.END);
     });
 
     /* 회의록 추가하기 */
@@ -116,9 +116,9 @@ async function momSocketServer(io: Server) {
       socket.emit(SOCKET_MESSAGE.MOM.UPDATE_VOTE, message);
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.STOP_VOTE, (momId) => {
-      const res = stopVote(momId);
-      workspace.emit(SOCKET_MESSAGE.MOM.STOP_VOTE, res);
+    socket.on(SOCKET_MESSAGE.MOM.END_VOTE, (momId) => {
+      const res = endVote(momId);
+      workspace.emit(SOCKET_MESSAGE.MOM.END_VOTE, res);
     });
 
     socket.on('error', (err) => {
