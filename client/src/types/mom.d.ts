@@ -1,4 +1,5 @@
 export type TMom = {
-  id: number;
+  _id: string;
   name: string;
+  createdAt: Date;
 };

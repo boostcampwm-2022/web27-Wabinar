@@ -4,9 +4,10 @@ import style from './style.module.scss';
 
 interface MediaProps {
   stream: MediaStream;
+  muted: boolean;
 }
 
-function ConfMedia({ stream }: MediaProps) {
+function ConfMedia({ stream, muted }: MediaProps) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -14,7 +15,7 @@ function ConfMedia({ stream }: MediaProps) {
     ref.current.srcObject = stream;
   }, [stream]);
 
-  return <video className={style.video} ref={ref} autoPlay />;
+  return <video className={style.video} ref={ref} muted={muted} autoPlay />;
 }
 
 export default memo(ConfMedia);

@@ -21,18 +21,43 @@ export default class LinkedList {
   head: Identifier | null;
   nodeMap: NodeMap;
 
-  constructor() {
-    this.head = null;
-    this.nodeMap = {};
+  constructor(initialStructure?: LinkedList) {
+    if (!initialStructure) {
+      this.head = null;
+      this.nodeMap = {};
+
+      return this;
+    }
+
+    const { head, nodeMap } = initialStructure;
+
+    this.head = head ?? null;
+
+    if (!nodeMap && !Object.keys(nodeMap).length) {
+      this.nodeMap = nodeMap ?? {};
+
+      return this;
+    }
+
+    const nodeMapWithPrototype = Object.entries(nodeMap).reduce<NodeMap>(
+      (prev, [id, node]) => {
+        Object.setPrototypeOf(node, Node.prototype);
+        prev[id] = node;
+
+        return prev;
+      },
+      {},
+    );
+    this.nodeMap = nodeMapWithPrototype;
   }
 
   insertByIndex(
     index: number,
-    letter: string,
+    value: string,
     id: Identifier,
   ): RemoteInsertOperation {
     try {
-      const node = new Node(letter, id);
+      const node = new Node(value, id);
       this.setNode(id, node);
 
       // insertion to head
@@ -103,6 +128,7 @@ export default class LinkedList {
 
   insertById(node: Node): ModifiedIndex {
     try {
+      Object.setPrototypeOf(node, Node.prototype);
       this.setNode(node.id, node);
 
       let prevNode, prevIndex;
@@ -167,6 +193,7 @@ export default class LinkedList {
       const prevNode = this.findByIndex(targetIndex - 1);
 
       prevNode.next = targetNode.next;
+      this.deleteNode(id);
 
       return targetIndex;
     } catch (e) {
@@ -182,6 +209,18 @@ export default class LinkedList {
 
     while (node) {
       result += node.value;
+      node = this.getNode(node.next);
+    }
+
+    return result;
+  }
+
+  spread(): string[] {
+    let node: Node | null = this.getHeadNode();
+    let result = [];
+
+    while (node) {
+      result.push(node.value);
       node = this.getNode(node.next);
     }
 

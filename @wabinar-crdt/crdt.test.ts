@@ -4,7 +4,7 @@ import LinkedList from './linked-list';
 describe('Local operation', () => {
   const initialStructure = new LinkedList();
 
-  const 나 = new CRDT(1, 1, initialStructure);
+  const 나 = new CRDT(1, initialStructure);
 
   it('head에 삽입', () => {
     let innerText = 나.read();

@@ -35,3 +35,15 @@
     }
   }
 }
+
+.mom-body {
+  box-sizing: border-box;
+  height: calc(100% - 70px);
+  padding: 20px;
+  background-color: white;
+  white-space: pre-wrap;
+
+  & > *:focus {
+    outline: none;
+  }
+}
