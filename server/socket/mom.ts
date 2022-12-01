@@ -73,13 +73,18 @@ async function momSocketServer(io: Server) {
 
         const blockIds = momCRDT.spread();
 
-        blockIds.forEach(async (id) => {
-          const { head, nodeMap } = await getBlock(id);
+        const blockMapInsertions = blockIds.map((id) => {
+          return new Promise<void>(async (resolve) => {
+            const { head, nodeMap } = await getBlock(id);
 
-          const blockCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
+            const blockCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
 
-          blockMap.set(id, blockCRDT);
+            blockMap.set(id, blockCRDT);
+            resolve();
+          });
         });
+
+        await Promise.all(blockMapInsertions);
       }
 
       // 선택된 회의록의 정보 전달
