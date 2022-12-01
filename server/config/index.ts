@@ -13,4 +13,6 @@ export default {
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
   CLIENT_PATH: process.env.CLIENT_PATH,
+  PORT: process.env.PORT,
+  SOCKET_PATH: process.env.WEBSOCKET_PATH,
 };
