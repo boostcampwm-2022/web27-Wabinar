@@ -1,3 +1,4 @@
+import { createBlock, deleteBlock, putBlock } from '@apis/mom/block/service';
 import { createMom, getMom, putMom } from '@apis/mom/service';
 import { createVote, stopVote, updateVote } from '@apis/mom/vote/service';
 import CRDT from '@wabinar/crdt';
@@ -9,6 +10,12 @@ async function momSocketServer(io: Server) {
 
   // 회의록 id : 회의록의 crdt 인스턴스
   const momMap = new Map<string, CRDT>();
+
+  // 블럭 id : 블럭의 crdt 인스턴스
+  const blockMap = new Map<string, CRDT>();
+
+  // 테스트용 블럭
+  blockMap.set('test', new CRDT(-1, new LinkedList()));
 
   workspace.on('connection', async (socket) => {
     const namespace = socket.nsp.name;
@@ -64,10 +71,47 @@ async function momSocketServer(io: Server) {
       socket.emit('selected-mom', mom);
     });
 
+    /* crdt for Mom */
+    socket.on('mom-initialization', async () => {
+      const momId = socket.data.momId;
+
+      const crdt = momMap.get(momId);
+
+      socket.emit('mom-initialization', crdt.data);
+    });
+
+    socket.on('block-insertion', async (blockId, op) => {
+      const momId = socket.data.momId;
+
+      // 새로운 블럭 db에 만들고
+      const { head, nodeMap } = await createBlock(blockId);
+      const crdt = new CRDT(-1, { head, nodeMap } as LinkedList);
+
+      // momMap crdt에 remoteInsert 반영
+      const momCrdt = momMap.get(momId);
+      momCrdt.remoteInsert(op);
+      putMom(momId, momCrdt.plainData);
+
+      blockMap.set(blockId, crdt);
+      socket.to(momId).emit('block-insertion', op);
+    });
+
+    socket.on('block-deletion', async (blockId, op) => {
+      const momId = socket.data.momId;
+      socket.to(momId).emit('block-deletion', blockId, op);
+
+      const momCrdt = momMap.get(momId);
+      momCrdt.remoteDelete(op);
+      putMom(momId, momCrdt.plainData);
+
+      // 회의록에서 삭제된 블럭은 blockMap과 db에서도 삭제
+      blockMap.delete(blockId);
+      deleteBlock(blockId);
+    });
+
     /* crdt for Block */
     socket.on('block-initialization', async (blockId) => {
-      const momId = socket.data.momId;
-      const crdt = momMap.get(momId);
+      const crdt = blockMap.get(blockId);
 
       socket.emit('block-initialization', blockId, crdt.data);
     });
@@ -76,20 +120,20 @@ async function momSocketServer(io: Server) {
       const momId = socket.data.momId;
       socket.to(momId).emit('text-insertion', blockId, op);
 
-      const crdt = momMap.get(momId);
+      const crdt = blockMap.get(blockId);
       crdt.remoteInsert(op);
 
-      putMom(momId, crdt.plainData);
+      putBlock(blockId, crdt.plainData);
     });
 
     socket.on('text-deletion', async (blockId, op) => {
       const momId = socket.data.momId;
       socket.to(momId).emit('text-deletion', blockId, op);
 
-      const crdt = momMap.get(momId);
+      const crdt = blockMap.get(blockId);
       crdt.remoteDelete(op);
 
-      putMom(momId, crdt.plainData);
+      putBlock(blockId, crdt.plainData);
     });
 
     /* 투표 관련 이벤트 */

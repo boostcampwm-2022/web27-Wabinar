@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useCRDT } from 'src/hooks/useCRDT';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
+import { v4 as uuid } from 'uuid';
 
 import Block from './Block';
 import ee from './EventEmitter';
@@ -8,8 +10,16 @@ import style from './style.module.scss';
 
 function Mom() {
   const { selectedMom } = useSelectedMom();
-
   const { momSocket: socket } = useSocketContext();
+
+  const {
+    syncCRDT,
+    spreadCRDT,
+    localInsertCRDT,
+    localDeleteCRDT,
+    remoteInsertCRDT,
+    remoteDeleteCRDT,
+  } = useCRDT();
 
   const onTitleChange: React.FormEventHandler<HTMLHeadingElement> = (e) => {
     /*
@@ -22,32 +32,60 @@ function Mom() {
     const title = e.target as HTMLHeadingElement;
   };
 
-  const [blocks, setBlocks] = useState<number[]>([]);
+  const [blocks, setBlocks] = useState<string[]>([]);
 
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
 
-    switch (e.key) {
-      case 'Enter':
-        e.preventDefault();
+    if (e.key === 'Enter') {
+      e.preventDefault();
 
-        // TODO: api로 빈 블럭 하나 생성하고 Mom CRDT에 id 삽입
+      const blockId = uuid();
+      const { index } = target.dataset;
 
-        setBlocks((prev) => [...prev, prev.length]);
-        break;
-      case 'Backspace':
-        if (target.innerText.length) return;
+      const remoteInsertion = localInsertCRDT(Number(index), blockId);
 
-        e.preventDefault();
+      setBlocks(spreadCRDT());
+      socket.emit('block-insertion', blockId, remoteInsertion);
+      return;
+    }
 
-        setBlocks((prev) => prev.slice(0, -1));
-        break;
-      default:
-        return;
+    if (e.key === 'Backspace') {
+      if (target.innerText.length) return;
+
+      e.preventDefault();
+
+      const { index } = target.dataset;
+
+      const remoteDeletion = localDeleteCRDT(Number(index));
+
+      setBlocks(spreadCRDT());
+      socket.emit('block-deletion', remoteDeletion);
     }
   };
 
   useEffect(() => {
+    if (!selectedMom) return;
+
+    socket.emit('mom-initialization', selectedMom._id);
+
+    socket.on('mom-initialization', (crdt) => {
+      syncCRDT(crdt);
+      setBlocks(spreadCRDT());
+    });
+  }, [selectedMom]);
+
+  useEffect(() => {
+    socket.on('block-insertion', (op) => {
+      remoteInsertCRDT(op);
+      setBlocks(spreadCRDT());
+    });
+
+    socket.on('block-deletion', (op) => {
+      remoteDeleteCRDT(op);
+      setBlocks(spreadCRDT());
+    });
+
     socket.on('block-initialization', (id, crdt) => {
       ee.emit(`block-initialization-${id}`, crdt);
     });
@@ -84,13 +122,18 @@ function Mom() {
             </div>
             <div className={style['mom-body']}>
               <Block
-                id={
-                  selectedMom._id // TODO: blockId 수정
-                }
+                id={'test'}
+                data-index={0}
                 onKeyDown={onKeyDown}
+                // 테스트용 고정 블럭
               />
-              {blocks.map((el) => (
-                <p key={el}>{el}</p>
+              {blocks.map((id, index) => (
+                <Block
+                  key={id}
+                  id={id}
+                  data-index={index}
+                  onKeyDown={onKeyDown}
+                />
               ))}
             </div>
           </>
