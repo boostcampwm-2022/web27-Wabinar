@@ -1,8 +1,9 @@
 import { createMom, getMom, putMom } from '@apis/mom/service';
 import { createVote, stopVote, updateVote } from '@apis/mom/vote/service';
 import CRDT from '@wabinar/crdt';
+import { Server, Socket, Namespace } from 'socket.io';
 import LinkedList from '@wabinar/crdt/linked-list';
-import { Server } from 'socket.io';
+import * as Questions from '@apis/mom/questions/service';
 
 async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
@@ -99,6 +100,8 @@ async function momSocketServer(io: Server) {
       putMom(momId, crdt.plainData);
     });
 
+    addEventHandlersForQuestionBlock(workspace, socket);
+    
     /* 투표 관련 이벤트 */
     socket.on('create-vote', (momId, vote) => {
       const newVote = createVote(momId, vote);
@@ -125,6 +128,30 @@ async function momSocketServer(io: Server) {
     socket.on('disconnect', () => {
       console.log('user disconnected', socket.id);
     });
+  });
+}
+
+function addEventHandlersForQuestionBlock(
+  namespace: Namespace,
+  socket: Socket,
+) {
+  socket.on('question-block__fetch-questions', () => {
+    const questions = Questions.fetch();
+
+    socket.emit('question-block__questions-fetched', questions);
+  });
+
+  socket.on('question-block__add-question', (question) => {
+    Questions.add(question);
+
+    namespace.emit('question-block__question-added', question);
+  });
+
+  socket.on('question-block__toggle-resolved', (id, toggledResolved) => {
+    Questions.toggleResolved(id, toggledResolved);
+    const questions = Questions.fetch();
+
+    namespace.emit('question-block__questions-fetched', questions);
   });
 }
 
