@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import useMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { TMom } from 'src/types/mom';
@@ -20,11 +21,12 @@ function MomList({ moms }: MomListProps) {
 
   const onSelect = (targetId: string) => {
     if (selectedMom && selectedMom._id === targetId) return;
-
     socket.emit('select-mom', targetId);
   };
 
   useEffect(() => {
+    setMomList(moms);
+
     socket.on('created-mom', (mom) => setMomList((prev) => [...prev, mom]));
 
     socket.on('selected-mom', (mom) => {
@@ -33,8 +35,9 @@ function MomList({ moms }: MomListProps) {
 
     return () => {
       socket.off('created-mom');
+      socket.off('selected-mom');
     };
-  }, []);
+  }, [moms]);
 
   return (
     <div className={style['mom-list-container']}>

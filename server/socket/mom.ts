@@ -1,4 +1,5 @@
 import { createMom, getMom, putMom } from '@apis/mom/service';
+import { createVote, stopVote, updateVote } from '@apis/mom/vote/service';
 import CRDT from '@wabinar/crdt';
 import { Server, Socket, Namespace } from 'socket.io';
 import LinkedList from '@wabinar/crdt/linked-list';
@@ -30,7 +31,7 @@ async function momSocketServer(io: Server) {
 
     /* 회의록 추가하기 */
     socket.on('create-mom', async () => {
-      const mom = await createMom();
+      const mom = await createMom(workspaceId);
       const { _id, head, nodeMap } = mom;
 
       momMap.set(
@@ -100,6 +101,24 @@ async function momSocketServer(io: Server) {
     });
 
     addEventHandlersForQuestionBlock(workspace, socket);
+    
+    /* 투표 관련 이벤트 */
+    socket.on('create-vote', (momId, vote) => {
+      const newVote = createVote(momId, vote);
+      workspace.emit('created-vote', newVote);
+    });
+
+    socket.on('update-vote', (momId, optionId) => {
+      const res = updateVote(momId, Number(optionId));
+      const message = res ? '투표 성공' : '투표 실패';
+
+      socket.emit('updated-vote', message);
+    });
+
+    socket.on('stop-vote', (momId) => {
+      const res = stopVote(momId);
+      workspace.emit('stoped-vote', res);
+    });
 
     socket.on('error', (err) => {
       console.log(err);
