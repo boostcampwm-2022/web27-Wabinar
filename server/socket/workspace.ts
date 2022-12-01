@@ -1,10 +1,18 @@
 import SOCKET_MESSAGE from '@constants/socket-message';
 import { Server } from 'socket.io';
 
-function signalingSocketServer(io: Server) {
-  const signaling = io.of(/^\/signaling\/\d+$/);
+function workspaceSocketServer(io: Server) {
+  const namespace = io.of(/^\/workspace\/\d+$/);
 
-  signaling.on('connection', (socket) => {
+  namespace.on('connection', (socket) => {
+    socket.on(SOCKET_MESSAGE.WORKSPACE.START_MOM, () => {
+      namespace.emit(SOCKET_MESSAGE.WORKSPACE.START_MOM);
+    });
+
+    socket.on(SOCKET_MESSAGE.WORKSPACE.END_MOM, () => {
+      namespace.emit(SOCKET_MESSAGE.WORKSPACE.END_MOM);
+    });
+
     socket.on(SOCKET_MESSAGE.WORKSPACE.SEND_HELLO, () => {
       const senderId = socket.id;
 
@@ -44,4 +52,4 @@ function signalingSocketServer(io: Server) {
   });
 }
 
-export default signalingSocketServer;
+export default workspaceSocketServer;

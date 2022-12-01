@@ -7,7 +7,7 @@ import StreamButton from './StreamButton';
 import style from './style.module.scss';
 
 function ConfMediaBar() {
-  const { signalingSocket: socket } = useSocketContext();
+  const { workspaceSocket: socket } = useSocketContext();
   const streams = useConfMediaStreams(socket);
 
   const [isMicOn, setIsMicOn] = useState(false);
@@ -18,7 +18,11 @@ function ConfMediaBar() {
       <ul>
         {Array.from(streams).map(([id, stream]) => (
           <li key={id}>
-            <ConfMedia key={id} stream={stream} muted={id === 'me' ? true : false} />
+            <ConfMedia
+              key={id}
+              stream={stream}
+              muted={id === 'me' ? true : false}
+            />
             <StreamButton
               isMicOn={false}
               isCamOn={true} // TODO: 임시로 지정

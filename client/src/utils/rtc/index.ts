@@ -6,7 +6,7 @@ type onMediaDisconnectedCb = (socketId: string) => void;
 
 class RTC {
   static BITRATE = 30000;
-  private signalingServerSocket: Socket;
+  private socket: Socket;
   private iceServerUrls: string[];
   private userMediaStream: MediaStream;
   private connections: Map<string, RTCPeerConnection>;
@@ -15,11 +15,11 @@ class RTC {
   private onMediaDisconnectedCallback: onMediaDisconnectedCb;
 
   constructor(
-    signalingServerSocket: Socket,
+    socket: Socket,
     iceServerUrls: string[],
     userMediaStream: MediaStream,
   ) {
-    this.signalingServerSocket = signalingServerSocket;
+    this.socket = socket;
     this.iceServerUrls = iceServerUrls;
     this.userMediaStream = userMediaStream;
     this.connections = new Map();
@@ -45,7 +45,7 @@ class RTC {
 
     // add event listeners
     pc.addEventListener('icecandidate', (iceEvent) => {
-      this.signalingServerSocket.emit(
+      this.socket.emit(
         SOCKET_MESSAGE.WORKSPACE.SEND_ICE,
         iceEvent.candidate,
         remoteSocketId,
@@ -83,7 +83,7 @@ class RTC {
   }
 
   connect() {
-    this.signalingServerSocket.on(
+    this.socket.on(
       SOCKET_MESSAGE.WORKSPACE.RECEIVE_HELLO,
       async (remoteSocketId) => {
         const pc = this.#createPeerConnection(remoteSocketId);
@@ -92,7 +92,7 @@ class RTC {
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
 
-        this.signalingServerSocket.emit(
+        this.socket.emit(
           SOCKET_MESSAGE.WORKSPACE.SEND_OFFER,
           pc.localDescription,
           remoteSocketId,
@@ -100,7 +100,7 @@ class RTC {
       },
     );
 
-    this.signalingServerSocket.on(
+    this.socket.on(
       SOCKET_MESSAGE.WORKSPACE.RECEIVE_OFFER,
       async (offer, remoteSocketId) => {
         const pc = this.#createPeerConnection(remoteSocketId);
@@ -111,7 +111,7 @@ class RTC {
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
 
-        this.signalingServerSocket.emit(
+        this.socket.emit(
           SOCKET_MESSAGE.WORKSPACE.SEND_ANSWER,
           answer,
           remoteSocketId,
@@ -119,7 +119,7 @@ class RTC {
       },
     );
 
-    this.signalingServerSocket.on(
+    this.socket.on(
       SOCKET_MESSAGE.WORKSPACE.RECEIVE_ANSWER,
       async (answer, remoteSocketId) => {
         const pc = this.connections.get(remoteSocketId);
@@ -131,7 +131,7 @@ class RTC {
       },
     );
 
-    this.signalingServerSocket.on(
+    this.socket.on(
       SOCKET_MESSAGE.WORKSPACE.RECEIVE_ICE,
       (ice, remoteSocketId) => {
         const pc = this.connections.get(remoteSocketId);
@@ -144,17 +144,14 @@ class RTC {
       },
     );
 
-    this.signalingServerSocket.on(
-      SOCKET_MESSAGE.WORKSPACE.RECEIVE_BYE,
-      (remoteSocketId) => {
-        this.connections.delete(remoteSocketId);
-        this.streams.delete(remoteSocketId);
+    this.socket.on(SOCKET_MESSAGE.WORKSPACE.RECEIVE_BYE, (remoteSocketId) => {
+      this.connections.delete(remoteSocketId);
+      this.streams.delete(remoteSocketId);
 
-        this.onMediaDisconnectedCallback(remoteSocketId);
-      },
-    );
+      this.onMediaDisconnectedCallback(remoteSocketId);
+    });
 
-    this.signalingServerSocket.emit(SOCKET_MESSAGE.WORKSPACE.SEND_HELLO);
+    this.socket.emit(SOCKET_MESSAGE.WORKSPACE.SEND_HELLO);
   }
 }
 
