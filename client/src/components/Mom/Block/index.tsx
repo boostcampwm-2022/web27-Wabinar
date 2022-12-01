@@ -2,7 +2,7 @@ import {
   RemoteInsertOperation,
   RemoteDeleteOperation,
 } from '@wabinar/crdt/linked-list';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -11,10 +11,11 @@ import ee from '../EventEmitter';
 
 interface BlockProps {
   id: string;
+  index: number;
   onKeyDown: React.KeyboardEventHandler;
 }
 
-function Block({ id, onKeyDown }: BlockProps) {
+function Block({ id, onKeyDown, index }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const {
@@ -159,6 +160,7 @@ function Block({ id, onKeyDown }: BlockProps) {
   return (
     <p
       ref={blockRef}
+      data-index={index}
       onInput={onInput}
       onCompositionEnd={onCompositionEnd}
       {...offsetHandlers}
@@ -170,4 +172,4 @@ function Block({ id, onKeyDown }: BlockProps) {
   );
 }
 
-export default Block;
+export default memo(Block);

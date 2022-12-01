@@ -123,17 +123,12 @@ function Mom() {
             <div className={style['mom-body']}>
               <Block
                 id={'test'}
-                data-index={0}
+                index={0}
                 onKeyDown={onKeyDown}
                 // 테스트용 고정 블럭
               />
               {blocks.map((id, index) => (
-                <Block
-                  key={id}
-                  id={id}
-                  data-index={index}
-                  onKeyDown={onKeyDown}
-                />
+                <Block key={id} id={id} index={index} onKeyDown={onKeyDown} />
               ))}
             </div>
           </>
