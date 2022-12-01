@@ -13,8 +13,8 @@ function WorkspacePage() {
   const { id } = useParams();
   const [isStart, setIsStart] = useState(false);
 
-  const momSocket = useMemo(() => useSocket(`/sc-workspace/${id}`), []);
-  const signalingSocket = useMemo(() => useSocket(`/signaling/${id}`), []);
+  const momSocket = useMemo(() => useSocket(`/sc-workspace/${id}`), [id]);
+  const signalingSocket = useMemo(() => useSocket(`/signaling/${id}`), [id]);
 
   useEffect(() => {
     momSocket.on('started-mom', () => {
