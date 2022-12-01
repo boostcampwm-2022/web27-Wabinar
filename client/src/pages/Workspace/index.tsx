@@ -3,6 +3,7 @@ import WorkspaceList from 'components/WorkspaceList';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ConfMediaBar from 'src/components/ConfMediaBar';
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 import ConfContext from 'src/contexts/conf';
 import { SocketContext } from 'src/contexts/socket';
 import useSocket from 'src/hooks/useSocket';
@@ -16,11 +17,11 @@ function WorkspacePage() {
   const momSocket = useSocket(`/sc-workspace/${id}`);
 
   useEffect(() => {
-    momSocket.on('started-mom', () => {
+    momSocket.on(SOCKET_MESSAGE.MOM.START_MOM, () => {
       setIsStart(true);
     });
 
-    momSocket.on('stoped-mom', () => {
+    momSocket.on(SOCKET_MESSAGE.MOM.STOP_MOM, () => {
       setIsStart(false);
     });
   }, []);
