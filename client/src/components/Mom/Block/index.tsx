@@ -1,12 +1,21 @@
-import { useEffect, useRef } from 'react';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
+import {
+  RemoteInsertOperation,
+  RemoteDeleteOperation,
+} from '@wabinar/crdt/linked-list';
+import { useEffect, useRef, memo } from 'react';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
 import useSocketContext from 'src/hooks/useSocketContext';
 
-import style from './style.module.scss';
+import ee from '../EventEmitter';
 
-function Editor() {
+interface BlockProps {
+  id: string;
+  index: number;
+  onKeyDown: React.KeyboardEventHandler;
+}
+
+function Block({ id, onKeyDown, index }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const {
@@ -35,7 +44,7 @@ function Editor() {
     if (event.inputType === 'deleteContentBackward') {
       const remoteDeletion = localDeleteCRDT(offsetRef.current);
 
-      socket.emit(SOCKET_MESSAGE.MOM.DELETE, remoteDeletion);
+      socket.emit('text-deletion', id, remoteDeletion);
       return;
     }
 
@@ -45,7 +54,7 @@ function Editor() {
 
     const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-    socket.emit(SOCKET_MESSAGE.MOM.INSERT, remoteInsertion);
+    socket.emit('text-insertion', id, remoteInsertion);
   };
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
@@ -80,18 +89,18 @@ function Editor() {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    socket.emit(SOCKET_MESSAGE.MOM.INIT);
+    socket.emit('block-initialization', id);
 
-    socket.on(SOCKET_MESSAGE.MOM.INIT, (crdt) => {
+    const onInitialize = (crdt: unknown) => {
       syncCRDT(crdt);
 
       if (!blockRef.current) return;
 
       blockRef.current.innerText = readCRDT();
       blockRef.current.contentEditable = 'true';
-    });
+    };
 
-    socket.on(SOCKET_MESSAGE.MOM.INSERT, (op) => {
+    const onInsert = (op: RemoteInsertOperation) => {
       const prevIndex = remoteInsertCRDT(op);
 
       if (!blockRef.current) return;
@@ -101,9 +110,9 @@ function Editor() {
       if (prevIndex === null || offsetRef.current === null) return;
 
       updateCaretPosition(Number(prevIndex < offsetRef.current));
-    });
+    };
 
-    socket.on(SOCKET_MESSAGE.MOM.DELETE, (op) => {
+    const onDelete = (op: RemoteDeleteOperation) => {
       const targetIndex = remoteDeleteCRDT(op);
 
       if (!blockRef.current) return;
@@ -113,11 +122,16 @@ function Editor() {
       if (targetIndex === null || offsetRef.current === null) return;
 
       updateCaretPosition(-Number(targetIndex <= offsetRef.current));
-    });
+    };
+
+    ee.on(`block-initialization-${id}`, onInitialize);
+    ee.on(`text-insertion-${id}`, onInsert);
+    ee.on(`text-deletion-${id}`, onDelete);
 
     return () => {
-      socket.removeAllListeners();
-      socket.disconnect();
+      ee.off(`block-initialization-${id}`, onInitialize);
+      ee.off(`text-insertion-${id}`, onInsert);
+      ee.off(`text-deletion-${id}`, onDelete);
     };
   }, []);
 
@@ -136,27 +150,23 @@ function Editor() {
 
       const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-      socket.emit(SOCKET_MESSAGE.MOM.INSERT, remoteInsertion);
+      socket.emit('text-insertion', id, remoteInsertion);
     });
   };
 
-  // 블럭 한개 가정을 위한 임시 핸들러
-  const onKeyDown: React.KeyboardEventHandler = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-
-      console.log('새 블럭이 생길거에요 ^^');
-    }
+  const onPaste: React.ClipboardEventHandler<HTMLParagraphElement> = (e) => {
+    e.preventDefault();
   };
 
   return (
     <p
       ref={blockRef}
+      data-index={index}
       onInput={onInput}
       onCompositionEnd={onCompositionEnd}
       {...offsetHandlers}
       onKeyDown={onKeyDown}
-      className={style['editor-container']}
+      onPaste={onPaste}
       suppressContentEditableWarning={true}
     >
       {readCRDT()}
@@ -164,4 +174,4 @@ function Editor() {
   );
 }
 
-export default Editor;
+export default memo(Block);

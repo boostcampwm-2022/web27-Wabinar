@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { SelectedMomContext } from 'src/contexts/selected-mom';
 
-export default function useMom() {
+export default function useSelectedMom() {
   const context = useContext(SelectedMomContext);
 
   if (!context) throw new Error('아니요. 없어요.');

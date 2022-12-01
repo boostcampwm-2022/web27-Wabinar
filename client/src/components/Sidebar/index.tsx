@@ -1,24 +1,23 @@
+import useSelectedMom from 'src/hooks/useSelectedMom';
 import { WorkspaceInfo } from 'src/types/workspace';
 
 import ConfButton from './ConfButton';
+import Header from './Header';
 import MemberList from './MemberList';
 import MomList from './MomList';
-import SettingIcon from './SettingIcon';
 import style from './style.module.scss';
-
 interface SidebarProps {
   workspace: WorkspaceInfo;
 }
 
 function Sidebar({ workspace }: SidebarProps) {
+  const { setSelectedMom } = useSelectedMom();
+
   return (
     <div className={style['sidebar-container']}>
-      <div className={style['header']}>
-        <h1>{workspace.name}</h1>
-        <SettingIcon />
-      </div>
+      <Header name={workspace.name} />
       <MemberList members={workspace.members} />
-      <MomList moms={workspace.moms} />
+      <MomList moms={workspace.moms} setSelectedMom={setSelectedMom} />
       <ConfButton />
     </div>
   );

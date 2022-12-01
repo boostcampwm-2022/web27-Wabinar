@@ -29,7 +29,7 @@ const io = new Server({
   cors: {
     origin: env.CLIENT_PATH,
   },
-  path: '/ws', // TODO: '/ws' 환경 변수로 분리 필요
+  path: env.SOCKET_PATH,
 });
 
 momSocketServer(io);
@@ -37,4 +37,6 @@ workspaceSocketServer(io);
 
 io.attach(server);
 
-server.listen(8080); // TODO: 서버 포트 환경 변수로 분리 필요
+server.listen(env.PORT, () => {
+  console.log(`Server listening on port ${env.PORT}`);
+});
