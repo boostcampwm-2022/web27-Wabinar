@@ -9,7 +9,7 @@ interface Block extends LinkedList {
 const blockSchema = new Schema<Block>({
   id: { type: String, required: true },
   head: { type: Object, default: null },
-  nodeMap: { type: Object, default: {} },
+  nodeMap: { type: Object, required: true, default: {} },
 });
 
 const blockModel = mongoose.model('Block', blockSchema);
