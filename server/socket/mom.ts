@@ -20,9 +20,6 @@ async function momSocketServer(io: Server) {
   // 블럭 id : 블럭의 crdt 인스턴스
   const blockMap = new Map<string, CRDT>();
 
-  // 테스트용 블럭
-  blockMap.set('test', new CRDT(-1, new LinkedList()));
-
   workspace.on('connection', async (socket) => {
     const namespace = socket.nsp.name;
     const workspaceId = namespace.match(/\d+/g)[0];
@@ -111,20 +108,25 @@ async function momSocketServer(io: Server) {
       putMom(momId, momCrdt.plainData);
 
       blockMap.set(blockId, crdt);
+
+      socket.emit('block-op-reflected');
       socket.to(momId).emit('block-insertion', op);
     });
 
-    socket.on('block-deletion', async (blockId, op) => {
+    socket.on('block-deletion', async (op) => {
       const momId = socket.data.momId;
-      socket.to(momId).emit('block-deletion', blockId, op);
 
       const momCrdt = momMap.get(momId);
       momCrdt.remoteDelete(op);
       putMom(momId, momCrdt.plainData);
 
       // 회의록에서 삭제된 블럭은 blockMap과 db에서도 삭제
+      const { targetId: blockId } = op;
       blockMap.delete(blockId);
       deleteBlock(blockId);
+
+      socket.emit('block-op-reflected');
+      socket.to(momId).emit('block-deletion', op);
     });
 
     /* crdt for Block */
@@ -155,7 +157,7 @@ async function momSocketServer(io: Server) {
     });
 
     addEventHandlersForQuestionBlock(workspace, socket);
-    
+
     /* 투표 관련 이벤트 */
     socket.on('create-vote', (momId, vote) => {
       const newVote = createVote(momId, vote);
