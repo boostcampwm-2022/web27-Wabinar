@@ -22,15 +22,13 @@ export function useCRDT() {
 
   const crdtRef = useRef<CRDT>(new CRDT(clientId, new LinkedList()));
 
-  let initialized = false;
+  const initializedRef = useRef<boolean>(false);
   const operationSet: RemoteOperation[] = [];
 
   const syncCRDT = (structure: unknown) => {
-    Object.setPrototypeOf(structure, LinkedList.prototype);
+    crdtRef.current = new CRDT(clientId, new LinkedList(structure));
 
-    crdtRef.current = new CRDT(clientId, structure as LinkedList);
-
-    initialized = true;
+    initializedRef.current = true;
     operationSet.forEach(({ type, op }) => {
       switch (type) {
         case OPERATION_TYPE.INSERT:
@@ -46,12 +44,12 @@ export function useCRDT() {
   };
 
   const readCRDT = (): string => {
-    if (!initialized) return '';
+    if (!initializedRef.current) return '';
     return crdtRef.current.read();
   };
 
   const spreadCRDT = (): string[] => {
-    if (!initialized) return [];
+    if (!initializedRef.current) return [];
     return crdtRef.current.spread();
   };
 
@@ -68,7 +66,7 @@ export function useCRDT() {
   };
 
   const remoteInsertCRDT = (op: RemoteInsertOperation) => {
-    if (!initialized) {
+    if (!initializedRef.current) {
       operationSet.push({ type: OPERATION_TYPE.INSERT, op });
       return null;
     }
@@ -79,7 +77,7 @@ export function useCRDT() {
   };
 
   const remoteDeleteCRDT = (op: RemoteDeleteOperation) => {
-    if (!initialized) {
+    if (!initializedRef.current) {
       operationSet.push({ type: OPERATION_TYPE.DELETE, op });
       return null;
     }
