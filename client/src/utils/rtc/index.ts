@@ -1,4 +1,5 @@
 import { Socket } from 'socket.io-client';
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 
 type onMediaConnectedCb = (socketId: string, remoteStream: MediaStream) => void;
 type onMediaDisconnectedCb = (socketId: string) => void;
@@ -13,14 +14,18 @@ class RTC {
   private onMediaConnectedCallback: onMediaConnectedCb;
   private onMediaDisconnectedCallback: onMediaDisconnectedCb;
 
-  constructor(signalingServerSocket: Socket, iceServerUrls: string[], userMediaStream: MediaStream) {
+  constructor(
+    signalingServerSocket: Socket,
+    iceServerUrls: string[],
+    userMediaStream: MediaStream,
+  ) {
     this.signalingServerSocket = signalingServerSocket;
     this.iceServerUrls = iceServerUrls;
     this.userMediaStream = userMediaStream;
     this.connections = new Map();
     this.streams = new Map();
-    this.onMediaConnectedCallback = () => { }; // eslint-disable-line @typescript-eslint/no-empty-function
-    this.onMediaDisconnectedCallback = () => { }; // eslint-disable-line @typescript-eslint/no-empty-function
+    this.onMediaConnectedCallback = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
+    this.onMediaDisconnectedCallback = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
   }
 
   onMediaConnected(callback: onMediaConnectedCb) {
@@ -34,13 +39,17 @@ class RTC {
   #createPeerConnection(remoteSocketId: string) {
     // initialize
     const pcOptions = {
-      iceServers: [ { urls: this.iceServerUrls }],
+      iceServers: [{ urls: this.iceServerUrls }],
     };
     const pc = new RTCPeerConnection(pcOptions);
 
     // add event listeners
-    pc.addEventListener('icecandidate', iceEvent => {
-      this.signalingServerSocket.emit('send_ice', iceEvent.candidate, remoteSocketId);
+    pc.addEventListener('icecandidate', (iceEvent) => {
+      this.signalingServerSocket.emit(
+        SOCKET_MESSAGE.WORKSPACE.SEND_ICE,
+        iceEvent.candidate,
+        remoteSocketId,
+      );
     });
     pc.addEventListener('track', async (event) => {
       if (this.streams.has(remoteSocketId)) {
@@ -54,14 +63,18 @@ class RTC {
     });
 
     // add tracks
-    this.userMediaStream.getTracks().forEach(track => pc.addTrack(track, this.userMediaStream));
+    this.userMediaStream
+      .getTracks()
+      .forEach((track) => pc.addTrack(track, this.userMediaStream));
 
     return pc;
   }
 
   async #setVideoBitrate(pc: RTCPeerConnection, bitrate: number) {
     // fetch video sender
-    const [videoSender] = pc.getSenders().filter(sender => sender!.track!.kind === 'video');
+    const [videoSender] = pc
+      .getSenders()
+      .filter((sender) => sender!.track!.kind === 'video');
 
     // set bitrate
     const params = videoSender.getParameters();
@@ -70,55 +83,78 @@ class RTC {
   }
 
   connect() {
-    this.signalingServerSocket.on('receive_hello', async (remoteSocketId) => {
-      const pc = this.#createPeerConnection(remoteSocketId);
-      this.connections.set(remoteSocketId, pc);
+    this.signalingServerSocket.on(
+      SOCKET_MESSAGE.WORKSPACE.RECEIVE_HELLO,
+      async (remoteSocketId) => {
+        const pc = this.#createPeerConnection(remoteSocketId);
+        this.connections.set(remoteSocketId, pc);
 
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
 
-      this.signalingServerSocket.emit('send_offer', pc.localDescription, remoteSocketId);
-    });
+        this.signalingServerSocket.emit(
+          SOCKET_MESSAGE.WORKSPACE.SEND_OFFER,
+          pc.localDescription,
+          remoteSocketId,
+        );
+      },
+    );
 
-    this.signalingServerSocket.on('receive_offer', async (offer, remoteSocketId) => {
-      const pc = this.#createPeerConnection(remoteSocketId);
-      this.connections.set(remoteSocketId, pc);
+    this.signalingServerSocket.on(
+      SOCKET_MESSAGE.WORKSPACE.RECEIVE_OFFER,
+      async (offer, remoteSocketId) => {
+        const pc = this.#createPeerConnection(remoteSocketId);
+        this.connections.set(remoteSocketId, pc);
 
-      await pc.setRemoteDescription(offer);
+        await pc.setRemoteDescription(offer);
 
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
 
-      this.signalingServerSocket.emit('send_answer', answer, remoteSocketId);
-    });
+        this.signalingServerSocket.emit(
+          SOCKET_MESSAGE.WORKSPACE.SEND_ANSWER,
+          answer,
+          remoteSocketId,
+        );
+      },
+    );
 
-    this.signalingServerSocket.on('receive_answer', async (answer, remoteSocketId) => {
-      const pc = this.connections.get(remoteSocketId);
-      if (!pc) {
-        throw new Error('No RTCPeerConnection on answer received.');
-      }
+    this.signalingServerSocket.on(
+      SOCKET_MESSAGE.WORKSPACE.RECEIVE_ANSWER,
+      async (answer, remoteSocketId) => {
+        const pc = this.connections.get(remoteSocketId);
+        if (!pc) {
+          throw new Error('No RTCPeerConnection on answer received.');
+        }
 
-      await pc.setRemoteDescription(answer);
-    });
+        await pc.setRemoteDescription(answer);
+      },
+    );
 
-    this.signalingServerSocket.on('receive_ice', (ice, remoteSocketId) => {
-      const pc = this.connections.get(remoteSocketId);
-      console.log('received ice');
-      if (!pc) {
-        throw new Error('No RTCPeerConnection on ice candindate received.');
-      }
+    this.signalingServerSocket.on(
+      SOCKET_MESSAGE.WORKSPACE.RECEIVE_ICE,
+      (ice, remoteSocketId) => {
+        const pc = this.connections.get(remoteSocketId);
 
-      pc.addIceCandidate(ice);
-    });
+        if (!pc) {
+          throw new Error('No RTCPeerConnection on ice candindate received.');
+        }
 
-    this.signalingServerSocket.on('receive_bye', remoteSocketId => {
-      this.connections.delete(remoteSocketId);
-      this.streams.delete(remoteSocketId);
+        pc.addIceCandidate(ice);
+      },
+    );
 
-      this.onMediaDisconnectedCallback(remoteSocketId);
-    })
+    this.signalingServerSocket.on(
+      SOCKET_MESSAGE.WORKSPACE.RECEIVE_BYE,
+      (remoteSocketId) => {
+        this.connections.delete(remoteSocketId);
+        this.streams.delete(remoteSocketId);
 
-    this.signalingServerSocket.emit('send_hello');
+        this.onMediaDisconnectedCallback(remoteSocketId);
+      },
+    );
+
+    this.signalingServerSocket.emit(SOCKET_MESSAGE.WORKSPACE.SEND_HELLO);
   }
 }
 

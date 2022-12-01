@@ -4,12 +4,13 @@ import {
   getBlock,
   putBlock,
 } from '@apis/mom/block/service';
-import { createMom, getMom, putMom } from '@apis/mom/service';
-import { createVote, stopVote, updateVote } from '@apis/mom/vote/service';
-import CRDT from '@wabinar/crdt';
-import { Server, Socket, Namespace } from 'socket.io';
-import LinkedList from '@wabinar/crdt/linked-list';
 import * as Questions from '@apis/mom/questions/service';
+import { createMom, getMom, putMom } from '@apis/mom/service';
+import { createVote, endVote, updateVote } from '@apis/mom/vote/service';
+import SOCKET_MESSAGE from '@constants/socket-message';
+import CRDT from '@wabinar/crdt';
+import LinkedList from '@wabinar/crdt/linked-list';
+import { Namespace, Server, Socket } from 'socket.io';
 
 async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
@@ -30,26 +31,26 @@ async function momSocketServer(io: Server) {
     }
 
     // TODO: 회의 시작과 종료, 소켓 관심사 리팩토링
-    socket.on('start-mom', () => {
-      workspace.emit('started-mom');
+    socket.on(SOCKET_MESSAGE.MOM.START, () => {
+      workspace.emit(SOCKET_MESSAGE.MOM.START);
     });
 
-    socket.on('stop-mom', () => {
-      workspace.emit('stoped-mom');
+    socket.on(SOCKET_MESSAGE.MOM.END, () => {
+      workspace.emit(SOCKET_MESSAGE.MOM.END);
     });
 
     /* 회의록 추가하기 */
-    socket.on('create-mom', async () => {
+    socket.on(SOCKET_MESSAGE.MOM.CREATE, async () => {
       const mom = await createMom(workspaceId);
       const { _id, head, nodeMap } = mom;
 
       momMap.set(_id.toString(), new CRDT(-1, { head, nodeMap } as LinkedList));
 
-      workspace.emit('created-mom', mom);
+      workspace.emit(SOCKET_MESSAGE.MOM.CREATE, mom);
     });
 
     /* 회의록 선택하기 */
-    socket.on('select-mom', async (momId) => {
+    socket.on(SOCKET_MESSAGE.MOM.SELECT, async (momId) => {
       // 기존 join 되어있던 room은 leave
       const joinedRooms = [
         ...io.of(namespace).adapter.socketRooms(socket.id),
@@ -88,7 +89,7 @@ async function momSocketServer(io: Server) {
       }
 
       // 선택된 회의록의 정보 전달
-      socket.emit('selected-mom', mom);
+      socket.emit(SOCKET_MESSAGE.MOM.SELECT, mom);
     });
 
     /* crdt for Mom */
@@ -162,23 +163,23 @@ async function momSocketServer(io: Server) {
     });
 
     addEventHandlersForQuestionBlock(workspace, socket);
-    
+
     /* 투표 관련 이벤트 */
-    socket.on('create-vote', (momId, vote) => {
+    socket.on(SOCKET_MESSAGE.MOM.CREATE_VOTE, (momId, vote) => {
       const newVote = createVote(momId, vote);
-      workspace.emit('created-vote', newVote);
+      workspace.emit(SOCKET_MESSAGE.MOM.CREATE_VOTE, newVote);
     });
 
-    socket.on('update-vote', (momId, optionId) => {
+    socket.on(SOCKET_MESSAGE.MOM.UPDATE_VOTE, (momId, optionId) => {
       const res = updateVote(momId, Number(optionId));
       const message = res ? '투표 성공' : '투표 실패';
 
-      socket.emit('updated-vote', message);
+      socket.emit(SOCKET_MESSAGE.MOM.UPDATE_VOTE, message);
     });
 
-    socket.on('stop-vote', (momId) => {
-      const res = stopVote(momId);
-      workspace.emit('stoped-vote', res);
+    socket.on(SOCKET_MESSAGE.MOM.END_VOTE, (momId) => {
+      const res = endVote(momId);
+      workspace.emit(SOCKET_MESSAGE.MOM.END_VOTE, res);
     });
 
     socket.on('error', (err) => {

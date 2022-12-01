@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 import useMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { TMom } from 'src/types/mom';
@@ -16,12 +16,12 @@ function MomList({ moms }: MomListProps) {
   const [momList, setMomList] = useState<TMom[]>(moms);
 
   const onCreateMom = () => {
-    socket.emit('create-mom');
+    socket.emit(SOCKET_MESSAGE.MOM.CREATE);
   };
 
   const onSelect = (targetId: string) => {
     if (selectedMom && selectedMom._id === targetId) return;
-    socket.emit('select-mom', targetId);
+    socket.emit(SOCKET_MESSAGE.MOM.SELECT, targetId);
   };
 
   useEffect(() => {
@@ -32,15 +32,17 @@ function MomList({ moms }: MomListProps) {
 
     setMomList(moms);
 
-    socket.on('created-mom', (mom) => setMomList((prev) => [...prev, mom]));
+    socket.on(SOCKET_MESSAGE.MOM.CREATE, (mom) =>
+      setMomList((prev) => [...prev, mom]),
+    );
 
-    socket.on('selected-mom', (mom) => {
+    socket.on(SOCKET_MESSAGE.MOM.SELECT, (mom) => {
       setSelectedMom(mom);
     });
 
     return () => {
-      socket.off('created-mom');
-      socket.off('selected-mom');
+      socket.off(SOCKET_MESSAGE.MOM.CREATE);
+      socket.off(SOCKET_MESSAGE.MOM.SELECT);
     };
   }, [moms]);
 
