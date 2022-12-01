@@ -162,7 +162,7 @@ async function momSocketServer(io: Server) {
     });
 
     addEventHandlersForQuestionBlock(workspace, socket);
-
+    
     /* 투표 관련 이벤트 */
     socket.on('create-vote', (momId, vote) => {
       const newVote = createVote(momId, vote);
