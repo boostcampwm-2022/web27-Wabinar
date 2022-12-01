@@ -1,13 +1,20 @@
+import {
+  RemoteInsertOperation,
+  RemoteDeleteOperation,
+} from '@wabinar/crdt/linked-list';
 import { useEffect, useRef } from 'react';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
 import useSocketContext from 'src/hooks/useSocketContext';
 
+import ee from '../EventEmitter';
+
 interface BlockProps {
+  id: string;
   onKeyDown: React.KeyboardEventHandler;
 }
 
-function Block({ onKeyDown }: BlockProps) {
+function Block({ id, onKeyDown }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const {
@@ -36,7 +43,7 @@ function Block({ onKeyDown }: BlockProps) {
     if (event.inputType === 'deleteContentBackward') {
       const remoteDeletion = localDeleteCRDT(offsetRef.current);
 
-      socket.emit('mom-deletion', remoteDeletion);
+      socket.emit('text-deletion', id, remoteDeletion);
       return;
     }
 
@@ -46,7 +53,7 @@ function Block({ onKeyDown }: BlockProps) {
 
     const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-    socket.emit('mom-insertion', remoteInsertion);
+    socket.emit('text-insertion', id, remoteInsertion);
   };
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
@@ -81,18 +88,18 @@ function Block({ onKeyDown }: BlockProps) {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    socket.emit('mom-initialization');
+    socket.emit('block-initialization', id);
 
-    socket.on('mom-initialization', (crdt) => {
+    const onInitialize = (crdt: unknown) => {
       syncCRDT(crdt);
 
       if (!blockRef.current) return;
 
       blockRef.current.innerText = readCRDT();
       blockRef.current.contentEditable = 'true';
-    });
+    };
 
-    socket.on('mom-insertion', (op) => {
+    const onInsert = (op: RemoteInsertOperation) => {
       const prevIndex = remoteInsertCRDT(op);
 
       if (!blockRef.current) return;
@@ -102,9 +109,9 @@ function Block({ onKeyDown }: BlockProps) {
       if (prevIndex === null || offsetRef.current === null) return;
 
       updateCaretPosition(Number(prevIndex < offsetRef.current));
-    });
+    };
 
-    socket.on('mom-deletion', (op) => {
+    const onDelete = (op: RemoteDeleteOperation) => {
       const targetIndex = remoteDeleteCRDT(op);
 
       if (!blockRef.current) return;
@@ -114,9 +121,17 @@ function Block({ onKeyDown }: BlockProps) {
       if (targetIndex === null || offsetRef.current === null) return;
 
       updateCaretPosition(-Number(targetIndex <= offsetRef.current));
-    });
+    };
+
+    ee.on(`block-initialization-${id}`, onInitialize);
+    ee.on(`text-insertion-${id}`, onInsert);
+    ee.on(`text-deletion-${id}`, onDelete);
 
     return () => {
+      ee.off(`block-initialization-${id}`, onInitialize);
+      ee.off(`text-insertion-${id}`, onInsert);
+      ee.off(`text-deletion-${id}`, onDelete);
+
       socket.removeAllListeners();
       socket.disconnect();
     };
@@ -137,7 +152,7 @@ function Block({ onKeyDown }: BlockProps) {
 
       const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-      socket.emit('mom-insertion', remoteInsertion);
+      socket.emit('text-insertion', id, remoteInsertion);
     });
   };
 

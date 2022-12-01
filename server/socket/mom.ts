@@ -64,17 +64,17 @@ async function momSocketServer(io: Server) {
       socket.emit('selected-mom', mom);
     });
 
-    /* crdt initialization */
-    socket.on('mom-initialization', async () => {
-      const crdt = momMap.get(socket.data.momId);
+    /* crdt for Block */
+    socket.on('block-initialization', async (blockId) => {
+      const momId = socket.data.momId;
+      const crdt = momMap.get(momId);
 
-      socket.emit('mom-initialization', crdt.data);
+      socket.emit('block-initialization', blockId, crdt.data);
     });
 
-    /* crdt remote insert delete */
-    socket.on('mom-insertion', async (op) => {
+    socket.on('text-insertion', async (blockId, op) => {
       const momId = socket.data.momId;
-      socket.to(momId).emit('mom-insertion', op);
+      socket.to(momId).emit('text-insertion', blockId, op);
 
       const crdt = momMap.get(momId);
       crdt.remoteInsert(op);
@@ -82,9 +82,9 @@ async function momSocketServer(io: Server) {
       putMom(momId, crdt.plainData);
     });
 
-    socket.on('mom-deletion', async (op) => {
+    socket.on('text-deletion', async (blockId, op) => {
       const momId = socket.data.momId;
-      socket.to(momId).emit('mom-deletion', op);
+      socket.to(momId).emit('text-deletion', blockId, op);
 
       const crdt = momMap.get(momId);
       crdt.remoteDelete(op);
