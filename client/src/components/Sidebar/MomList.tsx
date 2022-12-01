@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import useSelectedMom from 'src/hooks/useSelectedMom';
+import { useState, useEffect, memo } from 'react';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { TMom } from 'src/types/mom';
 
@@ -7,10 +6,10 @@ import style from './style.module.scss';
 
 interface MomListProps {
   moms: TMom[];
+  setSelectedMom: React.Dispatch<React.SetStateAction<TMom | null>>;
 }
 
-function MomList({ moms }: MomListProps) {
-  const { selectedMom, setSelectedMom } = useSelectedMom();
+function MomList({ moms, setSelectedMom }: MomListProps) {
   const { momSocket: socket } = useSocketContext();
   const [momList, setMomList] = useState<TMom[]>(moms);
 
@@ -19,14 +18,15 @@ function MomList({ moms }: MomListProps) {
   };
 
   const onSelect = (targetId: string) => {
-    if (selectedMom && selectedMom._id === targetId) return;
     socket.emit('select-mom', targetId);
   };
 
   useEffect(() => {
     setMomList(moms);
 
-    socket.on('created-mom', (mom) => setMomList((prev) => [...prev, mom]));
+    socket.on('created-mom', (mom) => {
+      setMomList((prev) => [...prev, mom]);
+    });
 
     socket.on('selected-mom', (mom) => {
       setSelectedMom(mom);
@@ -53,4 +53,4 @@ function MomList({ moms }: MomListProps) {
   );
 }
 
-export default MomList;
+export default memo(MomList);
