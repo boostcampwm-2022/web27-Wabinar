@@ -23,7 +23,8 @@ function Workspace({ workspaceId }: WorkspaceProps) {
       const workspaceInfo = await getWorkspaceInfo({ id: workspaceId });
 
       setWorkspace(workspaceInfo);
-      setSelectedMom(workspaceInfo.moms[0]);
+
+      if (!workspaceInfo.moms[0]) setSelectedMom(null);
     }
   };
 
