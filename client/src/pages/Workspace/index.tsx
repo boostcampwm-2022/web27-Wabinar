@@ -15,20 +15,20 @@ function WorkspacePage() {
   const [isStart, setIsStart] = useState(false);
 
   const momSocket = useMemo(() => useSocket(`/sc-workspace/${id}`), [id]);
-  const signalingSocket = useMemo(() => useSocket(`/signaling/${id}`), [id]);
+  const workspaceSocket = useMemo(() => useSocket(`/workspace/${id}`), [id]);
 
   useEffect(() => {
-    momSocket.on(SOCKET_MESSAGE.MOM.START, () => {
+    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.START_MEETING, () => {
       setIsStart(true);
     });
 
-    momSocket.on(SOCKET_MESSAGE.MOM.END, () => {
+    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.END_MEETING, () => {
       setIsStart(false);
     });
   }, []);
 
   return (
-    <SocketContext.Provider value={{ momSocket, signalingSocket }}>
+    <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
       <ConfContext.Provider value={{ isStart, setIsStart }}>
         <div className={style.container}>
           <WorkspaceList />

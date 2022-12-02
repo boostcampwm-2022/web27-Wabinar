@@ -1,7 +1,5 @@
 const SOCKET_MESSAGE = {
   MOM: {
-    START: 'start',
-    END: 'end',
     CREATE: 'create',
     SELECT: 'select',
     INIT: 'init',
@@ -12,6 +10,8 @@ const SOCKET_MESSAGE = {
     END_VOTE: 'end-vote',
   },
   WORKSPACE: {
+    START_MEETING: 'start-mom',
+    END_MEETING: 'end-mom',
     SEND_HELLO: 'send-hello',
     RECEIVE_HELLO: 'receive-hello',
     SEND_OFFER: 'send-offer',

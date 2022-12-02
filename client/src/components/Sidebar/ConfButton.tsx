@@ -7,14 +7,18 @@ import color from 'styles/color.module.scss';
 import style from './style.module.scss';
 
 function ConfButton() {
-  const { momSocket: socket } = useSocketContext();
+  const { workspaceSocket: socket } = useSocketContext();
 
   const ConfContext = useConfContext();
   const { isStart, setIsStart } = ConfContext;
 
   const onClick = () => {
     setIsStart(!isStart);
-    socket.emit(isStart ? SOCKET_MESSAGE.MOM.END : SOCKET_MESSAGE.MOM.START);
+    socket.emit(
+      isStart
+        ? SOCKET_MESSAGE.WORKSPACE.END_MEETING
+        : SOCKET_MESSAGE.WORKSPACE.START_MEETING,
+    );
   };
 
   return (

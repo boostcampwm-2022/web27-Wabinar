@@ -54,15 +54,6 @@ async function momSocketServer(io: Server) {
       return;
     }
 
-    // TODO: 회의 시작과 종료, 소켓 관심사 리팩토링
-    socket.on(SOCKET_MESSAGE.MOM.START, () => {
-      workspace.emit(SOCKET_MESSAGE.MOM.START);
-    });
-
-    socket.on(SOCKET_MESSAGE.MOM.END, () => {
-      workspace.emit(SOCKET_MESSAGE.MOM.END);
-    });
-
     /* 회의록 추가하기 */
     socket.on(SOCKET_MESSAGE.MOM.CREATE, async () => {
       const mom = await createMom(workspaceId);

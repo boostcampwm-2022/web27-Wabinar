@@ -1,2 +1,2 @@
 export { default as momSocketServer } from './mom';
-export { default as signalingSocketServer } from './signaling';
+export { default as workspaceSocketServer } from './workspace';
