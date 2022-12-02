@@ -5,12 +5,12 @@ function workspaceSocketServer(io: Server) {
   const namespace = io.of(/^\/workspace\/\d+$/);
 
   namespace.on('connection', (socket) => {
-    socket.on(SOCKET_MESSAGE.WORKSPACE.START_MOM, () => {
-      namespace.emit(SOCKET_MESSAGE.WORKSPACE.START_MOM);
+    socket.on(SOCKET_MESSAGE.WORKSPACE.START_MEETING, () => {
+      namespace.emit(SOCKET_MESSAGE.WORKSPACE.START_MEETING);
     });
 
-    socket.on(SOCKET_MESSAGE.WORKSPACE.END_MOM, () => {
-      namespace.emit(SOCKET_MESSAGE.WORKSPACE.END_MOM);
+    socket.on(SOCKET_MESSAGE.WORKSPACE.END_MEETING, () => {
+      namespace.emit(SOCKET_MESSAGE.WORKSPACE.END_MEETING);
     });
 
     socket.on(SOCKET_MESSAGE.WORKSPACE.SEND_HELLO, () => {

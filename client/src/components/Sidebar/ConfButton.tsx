@@ -16,8 +16,8 @@ function ConfButton() {
     setIsStart(!isStart);
     socket.emit(
       isStart
-        ? SOCKET_MESSAGE.WORKSPACE.END_MOM
-        : SOCKET_MESSAGE.WORKSPACE.START_MOM,
+        ? SOCKET_MESSAGE.WORKSPACE.END_MEETING
+        : SOCKET_MESSAGE.WORKSPACE.START_MEETING,
     );
   };
 

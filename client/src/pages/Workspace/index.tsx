@@ -18,11 +18,11 @@ function WorkspacePage() {
   const workspaceSocket = useMemo(() => useSocket(`/workspace/${id}`), [id]);
 
   useEffect(() => {
-    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.START_MOM, () => {
+    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.START_MEETING, () => {
       setIsStart(true);
     });
 
-    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.END_MOM, () => {
+    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.END_MEETING, () => {
       setIsStart(false);
     });
   }, []);
