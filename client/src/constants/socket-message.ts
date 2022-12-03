@@ -16,8 +16,8 @@ const SOCKET_MESSAGE = {
     DELETE_TEXT: 'delete-text',
   },
   WORKSPACE: {
-    START_MEETING: 'start-mom',
-    END_MEETING: 'end-mom',
+    START_MEETING: 'start-meeting',
+    END_MEETING: 'end-meeting',
     SEND_HELLO: 'send-hello',
     RECEIVE_HELLO: 'receive-hello',
     SEND_OFFER: 'send-offer',
