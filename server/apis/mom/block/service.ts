@@ -20,5 +20,5 @@ export const putBlock = async (id: string, data: LinkedList) => {
 };
 
 export const deleteBlock = async (id: string) => {
-  await blockModel.remove({ id });
+  await blockModel.deleteOne({ id });
 };
