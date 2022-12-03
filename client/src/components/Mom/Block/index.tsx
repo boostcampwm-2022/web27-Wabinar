@@ -161,6 +161,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
   return (
     <p
       ref={blockRef}
+      data-id={id}
       data-index={index}
       onInput={onInput}
       onCompositionEnd={onCompositionEnd}
