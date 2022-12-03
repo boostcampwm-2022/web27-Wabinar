@@ -3,6 +3,7 @@ import {
   RemoteDeleteOperation,
 } from '@wabinar/crdt/linked-list';
 import { useEffect, useRef, memo } from 'react';
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -124,14 +125,14 @@ function Block({ id, onKeyDown, index }: BlockProps) {
       updateCaretPosition(-Number(targetIndex <= offsetRef.current));
     };
 
-    ee.on(`block-initialization-${id}`, onInitialize);
-    ee.on(`text-insertion-${id}`, onInsert);
-    ee.on(`text-deletion-${id}`, onDelete);
+    ee.on(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);
+    ee.on(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, onInsert);
+    ee.on(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, onDelete);
 
     return () => {
-      ee.off(`block-initialization-${id}`, onInitialize);
-      ee.off(`text-insertion-${id}`, onInsert);
-      ee.off(`text-deletion-${id}`, onDelete);
+      ee.off(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);
+      ee.off(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, onInsert);
+      ee.off(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, onDelete);
     };
   }, []);
 
