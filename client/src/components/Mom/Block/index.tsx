@@ -45,7 +45,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     if (event.inputType === 'deleteContentBackward') {
       const remoteDeletion = localDeleteCRDT(offsetRef.current);
 
-      socket.emit('text-deletion', id, remoteDeletion);
+      socket.emit(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, id, remoteDeletion);
       return;
     }
 
@@ -55,7 +55,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
 
     const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-    socket.emit('text-insertion', id, remoteInsertion);
+    socket.emit(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, id, remoteInsertion);
   };
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
@@ -90,7 +90,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    socket.emit('block-initialization', id);
+    socket.emit(SOCKET_MESSAGE.BLOCK.INIT, id);
 
     const onInitialize = (crdt: unknown) => {
       syncCRDT(crdt);
