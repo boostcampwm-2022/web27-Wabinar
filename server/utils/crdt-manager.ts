@@ -100,17 +100,12 @@ export default class CrdtManager {
 
     const blockIds = momCRDT.spread();
 
-    const blockMapInsertions = blockIds.map((id) => {
-      return new Promise<void>(async (resolve) => {
-        const { head, nodeMap } = await getBlock(id);
+    for await (const id of blockIds) {
+      const { head, nodeMap } = await getBlock(id);
 
-        const blockCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
+      const blockCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
 
-        this.blockMap.set(id, blockCRDT);
-        resolve();
-      });
-    });
-
-    await Promise.all(blockMapInsertions);
+      this.blockMap.set(id, blockCRDT);
+    }
   }
 }
