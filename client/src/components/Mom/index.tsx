@@ -127,7 +127,7 @@ function Mom() {
                 suppressContentEditableWarning={true}
                 onInput={onTitleChange}
               >
-                {selectedMom.name}
+                {selectedMom.title}
               </h1>
               <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
             </div>
