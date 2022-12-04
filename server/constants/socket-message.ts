@@ -2,6 +2,7 @@ const SOCKET_MESSAGE = {
   MOM: {
     CREATE: 'create',
     SELECT: 'select',
+    UPDATE_TITLE: 'update-mom-title',
     INIT: 'init-mom',
     INSERT_BLOCK: 'insert-block',
     DELETE_BLOCK: 'delete-block',

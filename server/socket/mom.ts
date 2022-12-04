@@ -1,4 +1,5 @@
 import * as Questions from '@apis/mom/questions/service';
+import { putMomTitle } from '@apis/mom/service';
 import { createVote, endVote, updateVote } from '@apis/mom/vote/service';
 import SOCKET_MESSAGE from '@constants/socket-message';
 import CrdtManager from '@utils/crdt-manager';
@@ -42,6 +43,14 @@ async function momSocketServer(io: Server) {
 
       // 선택된 회의록의 정보 전달
       socket.emit(SOCKET_MESSAGE.MOM.SELECT, mom);
+    });
+
+    socket.on(SOCKET_MESSAGE.MOM.UPDATE_TITLE, async (title: string) => {
+      const momId = socket.data.momId;
+
+      await putMomTitle(momId, title);
+
+      socket.to(momId).emit(SOCKET_MESSAGE.MOM.UPDATE_TITLE, title);
     });
 
     /* crdt for Mom */
