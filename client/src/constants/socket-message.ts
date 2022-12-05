@@ -2,12 +2,19 @@ const SOCKET_MESSAGE = {
   MOM: {
     CREATE: 'create',
     SELECT: 'select',
-    INIT: 'init',
-    INSERT: 'insert',
-    DELETE: 'delete',
+    UPDATE_TITLE: 'update-mom-title',
+    INIT: 'init-mom',
+    INSERT_BLOCK: 'insert-block',
+    DELETE_BLOCK: 'delete-block',
+    UPDATED: 'updated-mom',
     CREATE_VOTE: 'create-vote',
     UPDATE_VOTE: 'update-vote',
     END_VOTE: 'end-vote',
+  },
+  BLOCK: {
+    INIT: 'init-block',
+    INSERT_TEXT: 'insert-text',
+    DELETE_TEXT: 'delete-text',
   },
   WORKSPACE: {
     START_MEETING: 'start-meeting',

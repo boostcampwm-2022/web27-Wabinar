@@ -5,13 +5,13 @@ import autoIncrement from 'mongoose-auto-increment';
 
 export interface Mom extends LinkedList {
   id: number;
-  name: string;
+  title: string;
   createdAt: Date;
 }
 
 const momSchema = new Schema<Mom>({
   id: { type: Number, required: true },
-  name: { type: String, default: '제목 없음' },
+  title: { type: String, default: '제목 없음' },
   createdAt: { type: Date, default: new Date() },
   head: { type: Object, default: null },
   nodeMap: { type: Object, default: {} },

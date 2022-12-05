@@ -3,6 +3,7 @@ import {
   RemoteDeleteOperation,
 } from '@wabinar/crdt/linked-list';
 import { useEffect, useRef, memo } from 'react';
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -44,7 +45,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     if (event.inputType === 'deleteContentBackward') {
       const remoteDeletion = localDeleteCRDT(offsetRef.current);
 
-      socket.emit('text-deletion', id, remoteDeletion);
+      socket.emit(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, id, remoteDeletion);
       return;
     }
 
@@ -54,7 +55,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
 
     const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-    socket.emit('text-insertion', id, remoteInsertion);
+    socket.emit(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, id, remoteInsertion);
   };
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
@@ -89,7 +90,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    socket.emit('block-initialization', id);
+    socket.emit(SOCKET_MESSAGE.BLOCK.INIT, id);
 
     const onInitialize = (crdt: unknown) => {
       syncCRDT(crdt);
@@ -124,14 +125,14 @@ function Block({ id, onKeyDown, index }: BlockProps) {
       updateCaretPosition(-Number(targetIndex <= offsetRef.current));
     };
 
-    ee.on(`block-initialization-${id}`, onInitialize);
-    ee.on(`text-insertion-${id}`, onInsert);
-    ee.on(`text-deletion-${id}`, onDelete);
+    ee.on(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);
+    ee.on(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, onInsert);
+    ee.on(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, onDelete);
 
     return () => {
-      ee.off(`block-initialization-${id}`, onInitialize);
-      ee.off(`text-insertion-${id}`, onInsert);
-      ee.off(`text-deletion-${id}`, onDelete);
+      ee.off(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);
+      ee.off(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, onInsert);
+      ee.off(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, onDelete);
     };
   }, []);
 
@@ -161,6 +162,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
   return (
     <p
       ref={blockRef}
+      data-id={id}
       data-index={index}
       onInput={onInput}
       onCompositionEnd={onCompositionEnd}
