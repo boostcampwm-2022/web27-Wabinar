@@ -1,14 +1,14 @@
 import { BsQuestionCircleFill } from '@react-icons/all-files/bs/BsQuestionCircleFill';
 import React, { useState } from 'react';
 
-import Message from './Message';
+import Message from './GuideMessage';
 import style from './style.module.scss';
 
-interface GuideMessageProps {
+interface GuideIconProps {
   children: React.ReactNode;
 }
 
-function GuideMessage({ children }: GuideMessageProps) {
+function GuideIcon({ children }: GuideIconProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const onToggle = () => {
@@ -26,4 +26,4 @@ function GuideMessage({ children }: GuideMessageProps) {
   );
 }
 
-export default GuideMessage;
+export default GuideIcon;
