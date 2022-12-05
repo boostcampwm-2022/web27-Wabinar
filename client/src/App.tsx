@@ -15,7 +15,8 @@ function App() {
   const location = useLocation();
 
   const autoLogin = async () => {
-    const { user, workspaces } = await getAuth();
+    const authorizedUser = await getAuth();
+    const { user, workspaces } = authorizedUser;
 
     setIsLoaded(true);
 
@@ -24,7 +25,12 @@ function App() {
       return;
     }
 
-    setUserInfo({ user, workspaces });
+    setUserInfo(authorizedUser);
+
+    if (!workspaces.length) {
+      navigate('/workspace');
+      return;
+    }
 
     const { id } = workspaces[0];
     navigate(`/workspace/${id}`);
@@ -39,7 +45,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/oauth" element={<OAuthPage />} />
-        <Route path="/workspace/:id" element={<WorkspacePage />} />
+        <Route path="/workspace/*" element={<WorkspacePage />} />
       </Routes>
     </UserContext.Provider>
   ) : (

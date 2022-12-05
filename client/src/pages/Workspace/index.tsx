@@ -1,7 +1,7 @@
 import Workspace from 'components/Workspace';
 import WorkspaceList from 'components/WorkspaceList';
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Route, Routes } from 'react-router-dom';
 import ConfMediaBar from 'src/components/ConfMediaBar';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
 import ConfContext from 'src/contexts/conf';
@@ -28,15 +28,23 @@ function WorkspacePage() {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
-      <ConfContext.Provider value={{ isStart, setIsStart }}>
-        <div className={style.container}>
-          <WorkspaceList />
-          <Workspace workspaceId={id} />
-          {isStart && <ConfMediaBar />}
-        </div>
-      </ConfContext.Provider>
-    </SocketContext.Provider>
+    <Routes>
+      <Route
+        path="/:id"
+        element={
+          <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
+            <ConfContext.Provider value={{ isStart, setIsStart }}>
+              <div className={style.container}>
+                <WorkspaceList />
+                <Workspace workspaceId={id} />
+                {isStart && <ConfMediaBar />}
+              </div>
+            </ConfContext.Provider>
+          </SocketContext.Provider>
+        }
+      />
+      <Route path="/" element={<div>만들어질 예정인 예외 페이지</div>} />
+    </Routes>
   );
 }
 

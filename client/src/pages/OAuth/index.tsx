@@ -22,7 +22,15 @@ function OAuthPage() {
 
       userContext.setUserInfo(authorizedUser);
 
-      const id = authorizedUser.workspaces[0].id;
+      const { workspaces } = authorizedUser;
+
+      if (!workspaces.length) {
+        navigate('/workspace');
+        return;
+      }
+
+      // 첫번째 워크스페이스를 디폴트로 설정
+      const id = workspaces[0].id;
       navigate(`/workspace/${id}`);
     } catch (e) {
       navigate('/');
