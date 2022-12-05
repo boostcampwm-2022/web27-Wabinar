@@ -16,9 +16,9 @@ function MicButton({ isOn, setIsMicOn }: MicButtonProps) {
   return (
     <button onClick={onClick}>
       {isOn ? (
-        <MdMicOff color={color.red} size={20} />
-      ) : (
         <MdMic color={color.green} size={20} />
+      ) : (
+        <MdMicOff color={color.red} size={20} />
       )}
     </button>
   );
