@@ -53,15 +53,13 @@ function Mom() {
     if (e.key === 'Backspace') {
       if (target.innerText.length) return;
 
+      const { id } = target.dataset;
+
       e.preventDefault();
 
-      /**
-       * block deletion은 버그가 있어 주석 처리
-       *
-       * const remoteDeletion = localDeleteCRDT(Number(index));
-       *
-       * socket.emit('block-deletion', remoteDeletion);
-       */
+      const remoteDeletion = localDeleteCRDT(Number(index));
+
+      socket.emit('block-deletion', id, remoteDeletion);
     }
   };
 
