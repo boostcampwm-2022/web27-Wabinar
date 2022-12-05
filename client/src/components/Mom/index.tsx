@@ -7,6 +7,7 @@ import useSocketContext from 'src/hooks/useSocketContext';
 import { v4 as uuid } from 'uuid';
 
 import Block from './Block';
+import DefaultMom from './DefaultMom';
 import ee from './EventEmitter';
 import style from './style.module.scss';
 
@@ -126,33 +127,29 @@ function Mom() {
     };
   }, []);
 
-  return (
+  return selectedMom ? (
     <div className={style['mom-container']}>
       <div className={style['mom']}>
-        {selectedMom ? (
-          <>
-            <div className={style['mom-header']}>
-              <h1
-                ref={titleRef}
-                contentEditable={true}
-                suppressContentEditableWarning={true}
-                onInput={onTitleUpdate}
-              >
-                {selectedMom.title}
-              </h1>
-              <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
-            </div>
-            <div className={style['mom-body']}>
-              {blocks.map((id, index) => (
-                <Block key={id} id={id} index={index} onKeyDown={onKeyDown} />
-              ))}
-            </div>
-          </>
-        ) : (
-          <h1>아직 회의록이 없어요. 만들어 보세요^^</h1>
-        )}
+        <div className={style['mom-header']}>
+          <h1
+            ref={titleRef}
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+            onInput={onTitleUpdate}
+          >
+            {selectedMom.title}
+          </h1>
+          <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
+        </div>
+        <div className={style['mom-body']}>
+          {blocks.map((id, index) => (
+            <Block key={id} id={id} index={index} onKeyDown={onKeyDown} />
+          ))}
+        </div>
       </div>
     </div>
+  ) : (
+    <DefaultMom />
   );
 }
 

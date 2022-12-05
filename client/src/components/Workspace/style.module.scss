@@ -1,7 +1,6 @@
 @import 'styles/color.module';
 
 .container {
-
   display: flex;
   position: relative;
   flex-direction: column;
@@ -11,7 +10,6 @@
   width: 100%;
 
   .message {
-
     margin: 20px;
     color: $primary-100;
     font-size: 20px;
