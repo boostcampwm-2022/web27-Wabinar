@@ -14,19 +14,11 @@ function ConfMediaBar() {
   const [isCamOn, setIsCamOn] = useState(true);
 
   useEffect(() => {
-    if (isMicOn) {
-      setMyTrack('audio', true);
-    } else {
-      setMyTrack('audio', false);
-    }
+    setMyTrack('audio', isMicOn);
   }, [isMicOn]);
 
   useEffect(() => {
-    if (isCamOn) {
-      setMyTrack('video', true);
-    } else {
-      setMyTrack('video', false);
-    }
+    setMyTrack('video', isCamOn);
   }, [isCamOn]);
 
   return (
