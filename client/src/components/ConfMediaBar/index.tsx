@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useConfMediaStreams } from 'src/hooks/useConfMediaStreams';
 import useSocketContext from 'src/hooks/useSocketContext';
 
@@ -8,10 +8,18 @@ import style from './style.module.scss';
 
 function ConfMediaBar() {
   const { workspaceSocket: socket } = useSocketContext();
-  const streams = useConfMediaStreams(socket);
+  const [streams, setMyTrack] = useConfMediaStreams(socket);
 
-  const [isMicOn, setIsMicOn] = useState(false);
-  const [isCamOn, setIsCamOn] = useState(false);
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [isCamOn, setIsCamOn] = useState(true);
+
+  useEffect(() => {
+    setMyTrack('audio', isMicOn);
+  }, [isMicOn]);
+
+  useEffect(() => {
+    setMyTrack('video', isCamOn);
+  }, [isCamOn]);
 
   return (
     <div className={style['conf-bar']}>
