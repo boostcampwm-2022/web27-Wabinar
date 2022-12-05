@@ -16,7 +16,7 @@ export const getWorkspaces = async (userId: number, targetUserId?: number) => {
     {
       id: { $in: user.workspaces },
     },
-    { _id: 0, id: 1, name: 1 },
+    { _id: 0, id: 1, name: 1, code: 1 },
   );
 
   return workspaces;
