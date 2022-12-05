@@ -41,9 +41,7 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "ts-jest": "^29.0.3",
-    "typescript": "^4.6.4"
-  },
-  "dependencies": {
+    "typescript": "^4.6.4",
     "dotenv-vault": "^1.16.3",
     "tsc-alias": "^1.7.1"
   }
