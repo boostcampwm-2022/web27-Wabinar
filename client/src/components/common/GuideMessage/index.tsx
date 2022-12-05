@@ -1,14 +1,14 @@
 import { BsQuestionCircleFill } from '@react-icons/all-files/bs/BsQuestionCircleFill';
 import React, { useState } from 'react';
 
-import InformationText from './InformationText';
+import Message from './Message';
 import style from './style.module.scss';
 
-interface InformationProps {
+interface GuideMessageProps {
   children: React.ReactNode;
 }
 
-function Information({ children }: InformationProps) {
+function GuideMessage({ children }: GuideMessageProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const onToggle = () => {
@@ -21,9 +21,9 @@ function Information({ children }: InformationProps) {
         className={style['question-icon']}
         onClick={onToggle}
       />
-      {isOpen && <InformationText>{children}</InformationText>}
+      {isOpen && <Message>{children}</Message>}
     </div>
   );
 }
 
-export default Information;
+export default GuideMessage;

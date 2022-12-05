@@ -2,12 +2,12 @@ import React from 'react';
 
 import style from './style.module.scss';
 
-interface InformationTextProps {
+interface MessageProps {
   children: React.ReactNode;
 }
 
-function InformationText({ children }: InformationTextProps) {
+function Message({ children }: MessageProps) {
   return <div className={style['text-container']}>{children}</div>;
 }
 
-export default InformationText;
+export default Message;
