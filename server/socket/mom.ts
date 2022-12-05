@@ -23,7 +23,7 @@ async function momSocketServer(io: Server) {
     socket.on(SOCKET_MESSAGE.MOM.CREATE, async () => {
       const mom = await crdtManager.onCreateMom(workspaceId);
 
-      workspace.emit(SOCKET_MESSAGE.MOM.CREATE, mom);
+      io.of(namespace).emit(SOCKET_MESSAGE.MOM.CREATE, mom);
     });
 
     /* 회의록 선택하기 */
