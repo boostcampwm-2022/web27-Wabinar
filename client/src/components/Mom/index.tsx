@@ -3,6 +3,7 @@ import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
+import { debounce } from 'src/utils/debounce';
 import { v4 as uuid } from 'uuid';
 
 import Block from './Block';
@@ -24,13 +25,16 @@ function Mom() {
 
   const titleRef = useRef<HTMLHeadingElement>(null);
 
-  const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = (e) => {
-    if (!titleRef.current) return;
+  const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = debounce(
+    (e) => {
+      if (!titleRef.current) return;
 
-    const title = titleRef.current.innerText;
+      const title = titleRef.current.innerText;
 
-    socket.emit(SOCKET_MESSAGE.MOM.UPDATE_TITLE, title);
-  };
+      socket.emit(SOCKET_MESSAGE.MOM.UPDATE_TITLE, title);
+    },
+    500,
+  );
 
   const [blocks, setBlocks] = useState<string[]>([]);
 
