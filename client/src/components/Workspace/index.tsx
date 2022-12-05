@@ -25,7 +25,10 @@ function Workspace() {
   const loadWorkspaceInfo = async () => {
     if (id) {
       const workspaceInfo = await getWorkspaceInfo({ id });
+
       setWorkspace(workspaceInfo);
+
+      if (!workspaceInfo.moms[0]) setSelectedMom(null);
     }
   };
 
