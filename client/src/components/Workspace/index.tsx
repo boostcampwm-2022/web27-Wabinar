@@ -6,6 +6,8 @@ import { SelectedMomContext } from 'src/contexts/selected-mom';
 import { TMom } from 'src/types/mom';
 import { WorkspaceInfo } from 'src/types/workspace';
 
+import DefaultWorkspace from './DefaultWorkspace';
+
 interface WorkspaceProps {
   workspaceId?: string;
 }
@@ -28,13 +30,13 @@ function Workspace({ workspaceId }: WorkspaceProps) {
     }
   };
 
-  return (
-    workspace && (
-      <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
-        <Sidebar workspace={workspace} />
-        <Mom />
-      </SelectedMomContext.Provider>
-    )
+  return workspace ? (
+    <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
+      <Sidebar workspace={workspace} />
+      <Mom />
+    </SelectedMomContext.Provider>
+  ) : (
+    <DefaultWorkspace />
   );
 }
 
