@@ -17,8 +17,11 @@ interface RemoteOperation {
 }
 
 export function useCRDT() {
-  const userContext = useUserContext();
-  const clientId = userContext.userInfo?.user.id;
+  const { user } = useUserContext();
+
+  if (!user) throw new Error('인증되지 않은 유저에요 ^^');
+
+  const { id: clientId } = user;
 
   const crdtRef = useRef<CRDT>(new CRDT(clientId, new LinkedList()));
 

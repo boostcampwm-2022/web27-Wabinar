@@ -16,9 +16,9 @@ function CamButton({ isOn, setIsCamOn }: CamButtonProps) {
   return (
     <button onClick={onClick}>
       {isOn ? (
-        <MdVideocamOff color={color.red} size={20} />
-      ) : (
         <MdVideocam color={color.green} size={20} />
+      ) : (
+        <MdVideocamOff color={color.red} size={20} />
       )}
     </button>
   );

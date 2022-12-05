@@ -1,10 +1,10 @@
 import { memo } from 'react';
-import { TUser } from 'src/types/user';
+import { User } from 'src/types/user';
 
 import style from './style.module.scss';
 
 interface MemberListProps {
-  members: TUser[];
+  members: User[];
 }
 
 function MemberList({ members }: MemberListProps) {

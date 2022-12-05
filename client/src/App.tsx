@@ -3,20 +3,19 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
 import UserContext from 'src/contexts/user';
 import { LoadingPage, LoginPage, OAuthPage, WorkspacePage } from 'src/pages';
-import { UserInfo } from 'src/types/user';
+import { User } from 'src/types/user';
 
 import 'styles/reset.scss';
 
 function App() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const autoLogin = async () => {
-    const authorizedUser = await getAuth();
-    const { user, workspaces } = authorizedUser;
+    const { user } = await getAuth();
 
     setIsLoaded(true);
 
@@ -25,17 +24,8 @@ function App() {
       return;
     }
 
-    setUserInfo(authorizedUser);
-
-    if (!workspaces.length) {
-      navigate('/workspace');
-      return;
-    }
-
-    const defaultWorkspace = workspaces[0];
-    const { id } = defaultWorkspace;
-
-    navigate(`/workspace/${id}`);
+    setUser(user);
+    navigate('/workspace');
   };
 
   useEffect(() => {
@@ -43,7 +33,7 @@ function App() {
   }, []);
 
   return isLoaded ? (
-    <UserContext.Provider value={{ userInfo, setUserInfo }}>
+    <UserContext.Provider value={{ user, setUser }}>
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/oauth" element={<OAuthPage />} />

@@ -1,3 +1,9 @@
+export interface Workspace {
+  id: number;
+  name: string;
+  code: string;
+}
+
 export interface PostParams {
   name: string;
 }
