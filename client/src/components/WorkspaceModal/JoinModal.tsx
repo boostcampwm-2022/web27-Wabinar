@@ -2,7 +2,7 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { useState } from 'react';
 import { postWorkspaceJoin } from 'src/apis/workspace';
-import useWorkspaceContext from 'src/hooks/useWorkspaceContext';
+import useWorkspacesContext from 'src/hooks/useWorkspacesContext';
 
 import FormModal, { ModalContents } from './FormModal';
 
@@ -14,7 +14,7 @@ interface JoinModalProps {
 function JoinModal({ modalContents, onClose }: JoinModalProps) {
   const [inputValue, setInputValue] = useState<string>('');
 
-  const { setWorkspaces } = useWorkspaceContext();
+  const { setWorkspaces } = useWorkspacesContext();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(
     undefined,
   );
