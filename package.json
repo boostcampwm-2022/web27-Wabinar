@@ -23,7 +23,8 @@
     ]
   },
   "workspaces": [
-    "./*"
+    "./*",
+    "@wabinar/*"
   ],
   "devDependencies": {
     "@types/eslint": "^8",
