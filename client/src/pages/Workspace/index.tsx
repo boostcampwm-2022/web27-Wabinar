@@ -1,15 +1,19 @@
 import Workspace from 'components/Workspace';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Route, Routes } from 'react-router-dom';
 import { getWorkspaces } from 'src/apis/user';
 import DefaultWorkspace from 'src/components/Workspace/DefaultWorkspace';
+import WorkspacesContext from 'src/contexts/workspaces';
 import { useUserContext } from 'src/hooks/useUserContext';
+import { Workspace as TWorkspace } from 'src/types/workspace';
 
 import Layout from './Layout';
 
 function WorkspacePage() {
   const { user } = useUserContext();
   const navigate = useNavigate();
+
+  const [workspaces, setWorkspaces] = useState<TWorkspace[]>([]);
 
   const loadWorkspaces = async () => {
     if (!user) {
@@ -19,14 +23,18 @@ function WorkspacePage() {
 
     const { id: userId } = user;
 
-    const { workspaces } = await getWorkspaces({ id: userId });
+    const { workspaces: userWorkspaces } = await getWorkspaces({
+      id: userId,
+    });
 
-    if (!workspaces.length) {
+    setWorkspaces(userWorkspaces);
+
+    if (!userWorkspaces.length) {
       navigate('/workspace');
       return;
     }
 
-    const defaultWorkspace = workspaces[0];
+    const defaultWorkspace = userWorkspaces[0];
     const { id: workspaceId } = defaultWorkspace;
 
     navigate(`/workspace/${workspaceId}`);
@@ -37,12 +45,14 @@ function WorkspacePage() {
   }, []);
 
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<DefaultWorkspace />} />
-        <Route path="/:id" element={<Workspace />} />
-      </Route>
-    </Routes>
+    <WorkspacesContext.Provider value={{ workspaces, setWorkspaces }}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<DefaultWorkspace />} />
+          <Route path="/:id" element={<Workspace />} />
+        </Route>
+      </Routes>
+    </WorkspacesContext.Provider>
   );
 }
 
