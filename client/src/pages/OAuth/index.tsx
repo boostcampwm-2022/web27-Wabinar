@@ -29,8 +29,9 @@ function OAuthPage() {
         return;
       }
 
-      // 첫번째 워크스페이스를 디폴트로 설정
-      const id = workspaces[0].id;
+      const defaultWorkspace = workspaces[0];
+      const { id } = defaultWorkspace;
+
       navigate(`/workspace/${id}`);
     } catch (e) {
       navigate('/');

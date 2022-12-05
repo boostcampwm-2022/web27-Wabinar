@@ -32,7 +32,9 @@ function App() {
       return;
     }
 
-    const { id } = workspaces[0];
+    const defaultWorkspace = workspaces[0];
+    const { id } = defaultWorkspace;
+
     navigate(`/workspace/${id}`);
   };
 
