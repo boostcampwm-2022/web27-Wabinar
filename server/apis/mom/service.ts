@@ -32,6 +32,10 @@ export const createMom = async (workspaceId: string) => {
   return mom;
 };
 
+export const putMomTitle = async (id: string, title: string) => {
+  await momModel.updateOne({ _id: id }, { title });
+};
+
 export const putMom = async (id: string, data: LinkedList) => {
   await momModel.updateOne(
     { _id: id },

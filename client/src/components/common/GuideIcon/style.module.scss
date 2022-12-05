@@ -1,0 +1,47 @@
+@import 'styles/color.module';
+
+.information-container {
+
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .question-icon {
+    color: $primary-100;
+    cursor: pointer;
+  }
+
+  .text-container {
+    position: absolute;
+
+    top: 25px;
+    left: 50%;
+    min-width: 200px;
+
+    padding: 12px;
+    transform: translate(-50%, 0);
+    border-radius: 12px;
+
+    background-color: $primary-100;
+    box-shadow: 1px 1px 12px $gray-100;
+
+    color: $white;
+    font-size: 12px;
+    font-weight: 500;
+
+    &::after {
+
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translate(-50%, 0);
+      border-top: 0 solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid $primary-100;
+      border-left: 10px solid transparent;
+    }
+  }
+}

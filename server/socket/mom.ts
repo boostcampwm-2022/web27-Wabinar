@@ -1,49 +1,14 @@
-import {
-  createBlock,
-  deleteBlock,
-  getBlock,
-  putBlock,
-} from '@apis/mom/block/service';
-import { Mom } from '@apis/mom/model';
 import * as Questions from '@apis/mom/questions/service';
-import { createMom, getMom, putMom } from '@apis/mom/service';
+import { putMomTitle } from '@apis/mom/service';
 import { createVote, endVote, updateVote } from '@apis/mom/vote/service';
 import SOCKET_MESSAGE from '@constants/socket-message';
-import CRDT from '@wabinar/crdt';
-import LinkedList from '@wabinar/crdt/linked-list';
+import CrdtManager from '@utils/crdt-manager';
 import { Namespace, Server, Socket } from 'socket.io';
 
 async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
 
-  // 회의록 id : 회의록의 crdt 인스턴스
-  const momMap = new Map<string, CRDT>();
-
-  // 블럭 id : 블럭의 crdt 인스턴스
-  const blockMap = new Map<string, CRDT>();
-
-  const initMapEntry = async (momId: string, mom: Mom) => {
-    const { head, nodeMap } = mom;
-
-    const momCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
-
-    momMap.set(momId, momCRDT);
-
-    const blockIds = momCRDT.spread();
-
-    const blockMapInsertions = blockIds.map((id) => {
-      return new Promise<void>(async (resolve) => {
-        const { head, nodeMap } = await getBlock(id);
-
-        const blockCRDT = new CRDT(-1, { head, nodeMap } as LinkedList);
-
-        blockMap.set(id, blockCRDT);
-        resolve();
-      });
-    });
-
-    await Promise.all(blockMapInsertions);
-  };
+  const crdtManager = new CrdtManager();
 
   workspace.on('connection', async (socket) => {
     const namespace = socket.nsp.name;
@@ -56,9 +21,7 @@ async function momSocketServer(io: Server) {
 
     /* 회의록 추가하기 */
     socket.on(SOCKET_MESSAGE.MOM.CREATE, async () => {
-      const mom = await createMom(workspaceId);
-
-      await initMapEntry(mom._id.toString(), mom);
+      const mom = await crdtManager.onCreateMom(workspaceId);
 
       workspace.emit(SOCKET_MESSAGE.MOM.CREATE, mom);
     });
@@ -76,85 +39,68 @@ async function momSocketServer(io: Server) {
       socket.join(momId);
       socket.data.momId = momId;
 
-      const mom = await getMom(momId);
-
-      // 서버에 선택된 회의록의 crdt가 없다면 생성
-      if (!momMap.has(momId)) {
-        await initMapEntry(momId, mom);
-      }
+      const mom = await crdtManager.onSelectMom(momId);
 
       // 선택된 회의록의 정보 전달
       socket.emit(SOCKET_MESSAGE.MOM.SELECT, mom);
     });
 
+    socket.on(SOCKET_MESSAGE.MOM.UPDATE_TITLE, async (title: string) => {
+      const momId = socket.data.momId;
+
+      await putMomTitle(momId, title);
+
+      socket.to(momId).emit(SOCKET_MESSAGE.MOM.UPDATE_TITLE, title);
+    });
+
     /* crdt for Mom */
-    socket.on('mom-initialization', async () => {
+    socket.on(SOCKET_MESSAGE.MOM.INIT, async () => {
       const momId = socket.data.momId;
 
-      const crdt = momMap.get(momId);
+      const momCrdt = await crdtManager.getMomCRDT(momId);
 
-      socket.emit('mom-initialization', crdt.data);
+      socket.emit(SOCKET_MESSAGE.MOM.INIT, momCrdt.data);
     });
 
-    socket.on('block-insertion', async (blockId, op) => {
+    socket.on(SOCKET_MESSAGE.MOM.INSERT_BLOCK, async (blockId, op) => {
       const momId = socket.data.momId;
 
-      // 새로운 블럭 db에 만들고
-      const { head, nodeMap } = await createBlock(blockId);
-      const crdt = new CRDT(-1, { head, nodeMap } as LinkedList);
+      await crdtManager.onInsertBlock(momId, blockId, op);
 
-      // momMap crdt에 remoteInsert 반영
-      const momCrdt = momMap.get(momId);
-      momCrdt.remoteInsert(op);
-      putMom(momId, momCrdt.plainData);
-
-      blockMap.set(blockId, crdt);
-
-      socket.emit('block-op-reflected');
-      socket.to(momId).emit('block-insertion', op);
+      socket.emit(SOCKET_MESSAGE.MOM.UPDATED);
+      socket.to(momId).emit(SOCKET_MESSAGE.MOM.INSERT_BLOCK, op);
     });
 
-    socket.on('block-deletion', async (op) => {
+    socket.on(SOCKET_MESSAGE.MOM.DELETE_BLOCK, async (blockId, op) => {
       const momId = socket.data.momId;
 
-      const momCrdt = momMap.get(momId);
-      momCrdt.remoteDelete(op);
-      putMom(momId, momCrdt.plainData);
+      await crdtManager.onDeleteBlock(momId, blockId, op);
 
-      // 회의록에서 삭제된 블럭은 blockMap과 db에서도 삭제
-      const { targetId: blockId } = op;
-      blockMap.delete(blockId);
-      deleteBlock(blockId);
-
-      socket.emit('block-op-reflected');
-      socket.to(momId).emit('block-deletion', op);
+      socket.emit(SOCKET_MESSAGE.MOM.UPDATED);
+      socket.to(momId).emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, op);
     });
 
     /* crdt for Block */
-    socket.on('block-initialization', async (blockId) => {
-      const crdt = blockMap.get(blockId);
+    socket.on(SOCKET_MESSAGE.BLOCK.INIT, async (blockId) => {
+      const blockCrdt = await crdtManager.getBlockCRDT(blockId);
 
-      socket.emit('block-initialization', blockId, crdt.data);
+      socket.emit(SOCKET_MESSAGE.BLOCK.INIT, blockId, blockCrdt.data);
     });
 
-    socket.on('text-insertion', async (blockId, op) => {
+    socket.on(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, async (blockId, op) => {
       const momId = socket.data.momId;
-      socket.to(momId).emit('text-insertion', blockId, op);
 
-      const crdt = blockMap.get(blockId);
-      crdt.remoteInsert(op);
+      await crdtManager.onInsertText(blockId, op);
 
-      putBlock(blockId, crdt.plainData);
+      socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, blockId, op);
     });
 
-    socket.on('text-deletion', async (blockId, op) => {
+    socket.on(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, async (blockId, op) => {
       const momId = socket.data.momId;
-      socket.to(momId).emit('text-deletion', blockId, op);
 
-      const crdt = blockMap.get(blockId);
-      crdt.remoteDelete(op);
+      await crdtManager.onDeleteText(blockId, op);
 
-      putBlock(blockId, crdt.plainData);
+      socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, blockId, op);
     });
 
     addEventHandlersForQuestionBlock(workspace, socket);
