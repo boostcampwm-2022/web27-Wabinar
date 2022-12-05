@@ -4,8 +4,8 @@ const getAllTracks = async (stream: MediaStream) => {
   if (!stream) {
     return;
   }
+  
   const tracks = stream.getTracks();
-
   return tracks;
 }
 
@@ -15,8 +15,7 @@ const getTrack = async (stream: MediaStream, kind: TrackKind) => {
     return;
   }
 
-  const [track] = tracks.filter(track => track.kind === kind);
-
+  const track = tracks.find(track => track.kind === kind);
   return track;
 }
 
