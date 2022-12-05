@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
+import useDebounce from 'src/hooks/useDebounce';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
-import { debounce } from 'src/utils/debounce';
 import { v4 as uuid } from 'uuid';
 
 import Block from './Block';
@@ -25,7 +25,7 @@ function Mom() {
 
   const titleRef = useRef<HTMLHeadingElement>(null);
 
-  const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = debounce(
+  const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
     (e) => {
       if (!titleRef.current) return;
 
