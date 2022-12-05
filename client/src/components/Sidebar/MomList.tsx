@@ -47,9 +47,9 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
     <div className={style['mom-list-container']}>
       <h2>회의록</h2>
       <ul className={style['mom-list']}>
-        {momList.map(({ _id: id, name }) => (
+        {momList.map(({ _id: id, title }) => (
           <li key={id} onClick={() => onSelect(id)}>
-            {name}
+            {title}
           </li>
         ))}
       </ul>
