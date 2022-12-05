@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
+import useDebounce from 'src/hooks/useDebounce';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { v4 as uuid } from 'uuid';
 
 import Block from './Block';
+import DefaultMom from './DefaultMom';
 import ee from './EventEmitter';
 import style from './style.module.scss';
 
@@ -21,16 +24,18 @@ function Mom() {
     remoteDeleteCRDT,
   } = useCRDT();
 
-  const onTitleChange: React.FormEventHandler<HTMLHeadingElement> = (e) => {
-    /*
-      제목 변경하는 요청
-      const title = e.target as HTMLHeadingElement;
-      title.innerText
-      OR
-      titleRef.current.innerText
-    */
-    const title = e.target as HTMLHeadingElement;
-  };
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
+  const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
+    (e) => {
+      if (!titleRef.current) return;
+
+      const title = titleRef.current.innerText;
+
+      socket.emit(SOCKET_MESSAGE.MOM.UPDATE_TITLE, title);
+    },
+    500,
+  );
 
   const [blocks, setBlocks] = useState<string[]>([]);
 
@@ -46,99 +51,105 @@ function Mom() {
 
       const remoteInsertion = localInsertCRDT(Number(index), blockId);
 
-      socket.emit('block-insertion', blockId, remoteInsertion);
+      socket.emit(SOCKET_MESSAGE.MOM.INSERT_BLOCK, blockId, remoteInsertion);
       return;
     }
 
     if (e.key === 'Backspace') {
       if (target.innerText.length) return;
 
+      const { id } = target.dataset;
+
       e.preventDefault();
 
-      /**
-       * block deletion은 버그가 있어 주석 처리
-       *
-       * const remoteDeletion = localDeleteCRDT(Number(index));
-       *
-       * socket.emit('block-deletion', remoteDeletion);
-       */
+      const remoteDeletion = localDeleteCRDT(Number(index));
+
+      socket.emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, id, remoteDeletion);
     }
   };
 
   useEffect(() => {
     if (!selectedMom) return;
 
-    socket.emit('mom-initialization', selectedMom._id);
+    socket.emit(SOCKET_MESSAGE.MOM.INIT, selectedMom._id);
 
-    socket.on('mom-initialization', (crdt) => {
+    socket.on(SOCKET_MESSAGE.MOM.INIT, (crdt) => {
       syncCRDT(crdt);
       setBlocks(spreadCRDT());
     });
 
     return () => {
-      socket.off('mom-initialization');
+      socket.off(SOCKET_MESSAGE.MOM.INIT);
     };
   }, [selectedMom]);
 
   useEffect(() => {
-    socket.on('block-op-reflected', () => setBlocks(spreadCRDT()));
+    socket.on(SOCKET_MESSAGE.MOM.UPDATE_TITLE, (title) => {
+      if (!titleRef.current) return;
 
-    socket.on('block-insertion', (op) => {
+      titleRef.current.innerText = title;
+    });
+
+    socket.on(SOCKET_MESSAGE.MOM.UPDATED, () => setBlocks(spreadCRDT()));
+
+    socket.on(SOCKET_MESSAGE.MOM.INSERT_BLOCK, (op) => {
       remoteInsertCRDT(op);
       setBlocks(spreadCRDT());
     });
 
-    socket.on('block-deletion', (op) => {
+    socket.on(SOCKET_MESSAGE.MOM.DELETE_BLOCK, (op) => {
       remoteDeleteCRDT(op);
       setBlocks(spreadCRDT());
     });
 
-    socket.on('block-initialization', (id, crdt) => {
-      ee.emit(`block-initialization-${id}`, crdt);
+    socket.on(SOCKET_MESSAGE.BLOCK.INIT, (id, crdt) => {
+      ee.emit(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, crdt);
     });
 
-    socket.on('text-insertion', (id, op) => {
-      ee.emit(`text-insertion-${id}`, op);
+    socket.on(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, (id, op) => {
+      ee.emit(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, op);
     });
 
-    socket.on('text-deletion', (id, op) => {
-      ee.emit(`text-deletion-${id}`, op);
+    socket.on(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, (id, op) => {
+      ee.emit(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, op);
     });
 
     return () => {
-      socket.off('block-op-reflected');
-      socket.off('block-initialization');
-      socket.off('text-insertion');
-      socket.off('text-deletion');
+      [
+        SOCKET_MESSAGE.MOM.UPDATE_TITLE,
+        SOCKET_MESSAGE.MOM.UPDATED,
+        SOCKET_MESSAGE.MOM.INSERT_BLOCK,
+        SOCKET_MESSAGE.MOM.DELETE_BLOCK,
+        SOCKET_MESSAGE.BLOCK.INIT,
+        SOCKET_MESSAGE.BLOCK.INSERT_TEXT,
+        SOCKET_MESSAGE.BLOCK.DELETE_TEXT,
+      ].forEach((event) => socket.off(event));
     };
   }, []);
 
-  return (
+  return selectedMom ? (
     <div className={style['mom-container']}>
       <div className={style['mom']}>
-        {selectedMom ? (
-          <>
-            <div className={style['mom-header']}>
-              <h1
-                contentEditable={true}
-                suppressContentEditableWarning={true}
-                onInput={onTitleChange}
-              >
-                {selectedMom.name}
-              </h1>
-              <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
-            </div>
-            <div className={style['mom-body']}>
-              {blocks.map((id, index) => (
-                <Block key={id} id={id} index={index} onKeyDown={onKeyDown} />
-              ))}
-            </div>
-          </>
-        ) : (
-          <h1>아직 회의록이 없어요. 만들어 보세요^^</h1>
-        )}
+        <div className={style['mom-header']}>
+          <h1
+            ref={titleRef}
+            contentEditable={true}
+            suppressContentEditableWarning={true}
+            onInput={onTitleUpdate}
+          >
+            {selectedMom.title}
+          </h1>
+          <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
+        </div>
+        <div className={style['mom-body']}>
+          {blocks.map((id, index) => (
+            <Block key={id} id={id} index={index} onKeyDown={onKeyDown} />
+          ))}
+        </div>
       </div>
     </div>
+  ) : (
+    <DefaultMom />
   );
 }
 

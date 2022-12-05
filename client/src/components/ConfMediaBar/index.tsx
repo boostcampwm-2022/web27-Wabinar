@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useConfMediaStreams } from 'src/hooks/useConfMediaStreams';
 import useSocketContext from 'src/hooks/useSocketContext';
 
@@ -7,18 +7,30 @@ import StreamButton from './StreamButton';
 import style from './style.module.scss';
 
 function ConfMediaBar() {
-  const { signalingSocket: socket } = useSocketContext();
-  const streams = useConfMediaStreams(socket);
+  const { workspaceSocket: socket } = useSocketContext();
+  const [streams, setMyTrack] = useConfMediaStreams(socket);
 
-  const [isMicOn, setIsMicOn] = useState(false);
-  const [isCamOn, setIsCamOn] = useState(false);
+  const [isMicOn, setIsMicOn] = useState(true);
+  const [isCamOn, setIsCamOn] = useState(true);
+
+  useEffect(() => {
+    setMyTrack('audio', isMicOn);
+  }, [isMicOn]);
+
+  useEffect(() => {
+    setMyTrack('video', isCamOn);
+  }, [isCamOn]);
 
   return (
     <div className={style['conf-bar']}>
       <ul>
         {Array.from(streams).map(([id, stream]) => (
           <li key={id}>
-            <ConfMedia key={id} stream={stream} muted={id === 'me' ? true : false} />
+            <ConfMedia
+              key={id}
+              stream={stream}
+              muted={id === 'me' ? true : false}
+            />
             <StreamButton
               isMicOn={false}
               isCamOn={true} // TODO: 임시로 지정

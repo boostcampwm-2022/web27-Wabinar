@@ -18,12 +18,11 @@ function OAuthPage() {
 
   const login = async (code: string) => {
     try {
-      const authorizedUser = await postAuthLogin({ code });
+      const { user } = await postAuthLogin({ code });
 
-      userContext.setUserInfo(authorizedUser);
+      userContext.setUser(user);
 
-      const id = authorizedUser.workspaces[0].id;
-      navigate(`/workspace/${id}`);
+      navigate('/workspace');
     } catch (e) {
       navigate('/');
     }

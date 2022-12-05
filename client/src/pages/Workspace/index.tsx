@@ -1,42 +1,58 @@
 import Workspace from 'components/Workspace';
-import WorkspaceList from 'components/WorkspaceList';
-import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import ConfMediaBar from 'src/components/ConfMediaBar';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
-import ConfContext from 'src/contexts/conf';
-import { SocketContext } from 'src/contexts/socket';
-import useSocket from 'src/hooks/useSocket';
+import { useEffect, useState } from 'react';
+import { useNavigate, Route, Routes } from 'react-router-dom';
+import { getWorkspaces } from 'src/apis/user';
+import DefaultWorkspace from 'src/components/Workspace/DefaultWorkspace';
+import WorkspacesContext from 'src/contexts/workspaces';
+import { useUserContext } from 'src/hooks/useUserContext';
+import { Workspace as TWorkspace } from 'src/types/workspace';
 
-import style from './style.module.scss';
+import Layout from './Layout';
 
 function WorkspacePage() {
-  const { id } = useParams();
-  const [isStart, setIsStart] = useState(false);
+  const { user } = useUserContext();
+  const navigate = useNavigate();
 
-  const momSocket = useMemo(() => useSocket(`/sc-workspace/${id}`), [id]);
-  const signalingSocket = useMemo(() => useSocket(`/signaling/${id}`), [id]);
+  const [workspaces, setWorkspaces] = useState<TWorkspace[]>([]);
+
+  const loadWorkspaces = async () => {
+    if (!user) {
+      navigate('/');
+      return;
+    }
+
+    const { id: userId } = user;
+
+    const { workspaces: userWorkspaces } = await getWorkspaces({
+      id: userId,
+    });
+
+    setWorkspaces(userWorkspaces);
+
+    if (!userWorkspaces.length) {
+      navigate('/workspace');
+      return;
+    }
+
+    const defaultWorkspace = userWorkspaces[0];
+    const { id: workspaceId } = defaultWorkspace;
+
+    navigate(`/workspace/${workspaceId}`);
+  };
 
   useEffect(() => {
-    momSocket.on(SOCKET_MESSAGE.MOM.START, () => {
-      setIsStart(true);
-    });
-
-    momSocket.on(SOCKET_MESSAGE.MOM.END, () => {
-      setIsStart(false);
-    });
+    loadWorkspaces();
   }, []);
 
   return (
-    <SocketContext.Provider value={{ momSocket, signalingSocket }}>
-      <ConfContext.Provider value={{ isStart, setIsStart }}>
-        <div className={style.container}>
-          <WorkspaceList />
-          <Workspace workspaceId={id} />
-          {isStart && <ConfMediaBar />}
-        </div>
-      </ConfContext.Provider>
-    </SocketContext.Provider>
+    <WorkspacesContext.Provider value={{ workspaces, setWorkspaces }}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<DefaultWorkspace />} />
+          <Route path="/:id" element={<Workspace />} />
+        </Route>
+      </Routes>
+    </WorkspacesContext.Provider>
   );
 }
 
