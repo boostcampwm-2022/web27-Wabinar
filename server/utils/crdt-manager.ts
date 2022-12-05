@@ -56,7 +56,7 @@ export default class CrdtManager {
     const momCrdt = this.momMap.get(momId);
     momCrdt.remoteInsert(remoteInsertion);
 
-    putMom(momId, momCrdt.plainData);
+    await putMom(momId, momCrdt.plainData);
   }
 
   async onDeleteBlock(
@@ -67,10 +67,10 @@ export default class CrdtManager {
     const momCrdt = this.momMap.get(momId);
     momCrdt.remoteDelete(remoteDeletion);
 
-    putMom(momId, momCrdt.plainData);
+    await putMom(momId, momCrdt.plainData);
 
     this.blockMap.delete(blockId);
-    deleteBlock(blockId);
+    await deleteBlock(blockId);
   }
 
   async getBlockCRDT(blockId: string) {
@@ -81,14 +81,14 @@ export default class CrdtManager {
     const crdt = this.blockMap.get(blockId);
     crdt.remoteInsert(remoteInsertion);
 
-    putBlock(blockId, crdt.plainData);
+    await putBlock(blockId, crdt.plainData);
   }
 
   async onDeleteText(blockId: string, remoteDeletion: RemoteDeleteOperation) {
     const crdt = this.blockMap.get(blockId);
     crdt.remoteDelete(remoteDeletion);
 
-    putBlock(blockId, crdt.plainData);
+    await putBlock(blockId, crdt.plainData);
   }
 
   private async initMapEntry(momId: string, mom: Mom) {
