@@ -60,7 +60,7 @@ export const info = async (workspaceId: number) => {
     )) || [];
 
   const moms: string[] = momsIds.length
-    ? await momModel.find({ id: { $in: momsIds } }, { name: 1 })
+    ? await momModel.find({ id: { $in: momsIds } }, { title: 1 })
     : [];
 
   return { name, members, moms };

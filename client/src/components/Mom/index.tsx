@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
+import useDebounce from 'src/hooks/useDebounce';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { v4 as uuid } from 'uuid';
@@ -22,16 +23,18 @@ function Mom() {
     remoteDeleteCRDT,
   } = useCRDT();
 
-  const onTitleChange: React.FormEventHandler<HTMLHeadingElement> = (e) => {
-    /*
-      제목 변경하는 요청
-      const title = e.target as HTMLHeadingElement;
-      title.innerText
-      OR
-      titleRef.current.innerText
-    */
-    const title = e.target as HTMLHeadingElement;
-  };
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
+  const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
+    (e) => {
+      if (!titleRef.current) return;
+
+      const title = titleRef.current.innerText;
+
+      socket.emit(SOCKET_MESSAGE.MOM.UPDATE_TITLE, title);
+    },
+    500,
+  );
 
   const [blocks, setBlocks] = useState<string[]>([]);
 
@@ -80,6 +83,12 @@ function Mom() {
   }, [selectedMom]);
 
   useEffect(() => {
+    socket.on(SOCKET_MESSAGE.MOM.UPDATE_TITLE, (title) => {
+      if (!titleRef.current) return;
+
+      titleRef.current.innerText = title;
+    });
+
     socket.on(SOCKET_MESSAGE.MOM.UPDATED, () => setBlocks(spreadCRDT()));
 
     socket.on(SOCKET_MESSAGE.MOM.INSERT_BLOCK, (op) => {
@@ -106,6 +115,7 @@ function Mom() {
 
     return () => {
       [
+        SOCKET_MESSAGE.MOM.UPDATE_TITLE,
         SOCKET_MESSAGE.MOM.UPDATED,
         SOCKET_MESSAGE.MOM.INSERT_BLOCK,
         SOCKET_MESSAGE.MOM.DELETE_BLOCK,
@@ -123,11 +133,12 @@ function Mom() {
           <>
             <div className={style['mom-header']}>
               <h1
+                ref={titleRef}
                 contentEditable={true}
                 suppressContentEditableWarning={true}
-                onInput={onTitleChange}
+                onInput={onTitleUpdate}
               >
-                {selectedMom.name}
+                {selectedMom.title}
               </h1>
               <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
             </div>
