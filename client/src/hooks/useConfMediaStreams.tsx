@@ -2,17 +2,29 @@ import { useEffect, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
 import { STUN_SERVER } from 'src/constants/rtc';
 import RTC from 'src/utils/rtc';
+import { setTrack, TrackKind } from 'src/utils/trackSetter';
 
-export function useConfMediaStreams(socket: Socket) {
+export function useConfMediaStreams(socket: Socket):
+    [Map<string, MediaStream>, (kind: TrackKind, turnOn: boolean) => void] {
   const [mediaStreams, setMediaStreams] = useState<Map<string, MediaStream>>(
     new Map(),
   );
+  const [myStream, setMyStream] = useState<MediaStream>();
+
+  const setMyTrack = async (kind: TrackKind, turnOn: boolean) => {
+    if (!myStream) {
+      return;
+    }
+    setTrack(myStream, kind, turnOn);
+  };
 
   const initRTC = async () => {
     const userMedia = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
     });
+    
+    setMyStream(userMedia);
     setMediaStreams((prev) =>
       copyMapWithOperation(prev, (map) => map.set('me', userMedia)),
     );
@@ -38,7 +50,7 @@ export function useConfMediaStreams(socket: Socket) {
     initRTC();
   }, []);
 
-  return mediaStreams;
+  return [mediaStreams, setMyTrack];
 }
 
 // TODO: 코드 반복때문에 만든 함수. 더 좋은 방법 있으면 고치기
