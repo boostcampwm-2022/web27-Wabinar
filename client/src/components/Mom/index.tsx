@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -46,7 +47,7 @@ function Mom() {
 
       const remoteInsertion = localInsertCRDT(Number(index), blockId);
 
-      socket.emit('block-insertion', blockId, remoteInsertion);
+      socket.emit(SOCKET_MESSAGE.MOM.INSERT_BLOCK, blockId, remoteInsertion);
       return;
     }
 
@@ -59,55 +60,59 @@ function Mom() {
 
       const remoteDeletion = localDeleteCRDT(Number(index));
 
-      socket.emit('block-deletion', id, remoteDeletion);
+      socket.emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, id, remoteDeletion);
     }
   };
 
   useEffect(() => {
     if (!selectedMom) return;
 
-    socket.emit('mom-initialization', selectedMom._id);
+    socket.emit(SOCKET_MESSAGE.MOM.INIT, selectedMom._id);
 
-    socket.on('mom-initialization', (crdt) => {
+    socket.on(SOCKET_MESSAGE.MOM.INIT, (crdt) => {
       syncCRDT(crdt);
       setBlocks(spreadCRDT());
     });
 
     return () => {
-      socket.off('mom-initialization');
+      socket.off(SOCKET_MESSAGE.MOM.INIT);
     };
   }, [selectedMom]);
 
   useEffect(() => {
-    socket.on('block-op-reflected', () => setBlocks(spreadCRDT()));
+    socket.on(SOCKET_MESSAGE.MOM.UPDATED, () => setBlocks(spreadCRDT()));
 
-    socket.on('block-insertion', (op) => {
+    socket.on(SOCKET_MESSAGE.MOM.INSERT_BLOCK, (op) => {
       remoteInsertCRDT(op);
       setBlocks(spreadCRDT());
     });
 
-    socket.on('block-deletion', (op) => {
+    socket.on(SOCKET_MESSAGE.MOM.DELETE_BLOCK, (op) => {
       remoteDeleteCRDT(op);
       setBlocks(spreadCRDT());
     });
 
-    socket.on('block-initialization', (id, crdt) => {
-      ee.emit(`block-initialization-${id}`, crdt);
+    socket.on(SOCKET_MESSAGE.BLOCK.INIT, (id, crdt) => {
+      ee.emit(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, crdt);
     });
 
-    socket.on('text-insertion', (id, op) => {
-      ee.emit(`text-insertion-${id}`, op);
+    socket.on(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, (id, op) => {
+      ee.emit(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, op);
     });
 
-    socket.on('text-deletion', (id, op) => {
-      ee.emit(`text-deletion-${id}`, op);
+    socket.on(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, (id, op) => {
+      ee.emit(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, op);
     });
 
     return () => {
-      socket.off('block-op-reflected');
-      socket.off('block-initialization');
-      socket.off('text-insertion');
-      socket.off('text-deletion');
+      [
+        SOCKET_MESSAGE.MOM.UPDATED,
+        SOCKET_MESSAGE.MOM.INSERT_BLOCK,
+        SOCKET_MESSAGE.MOM.DELETE_BLOCK,
+        SOCKET_MESSAGE.BLOCK.INIT,
+        SOCKET_MESSAGE.BLOCK.INSERT_TEXT,
+        SOCKET_MESSAGE.BLOCK.DELETE_TEXT,
+      ].forEach((event) => socket.off(event));
     };
   }, []);
 

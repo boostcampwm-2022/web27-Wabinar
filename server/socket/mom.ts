@@ -45,53 +45,53 @@ async function momSocketServer(io: Server) {
     });
 
     /* crdt for Mom */
-    socket.on('mom-initialization', async () => {
+    socket.on(SOCKET_MESSAGE.MOM.INIT, async () => {
       const momId = socket.data.momId;
 
       const momCrdt = await crdtManager.getMomCRDT(momId);
 
-      socket.emit('mom-initialization', momCrdt.data);
+      socket.emit(SOCKET_MESSAGE.MOM.INIT, momCrdt.data);
     });
 
-    socket.on('block-insertion', async (blockId, op) => {
+    socket.on(SOCKET_MESSAGE.MOM.INSERT_BLOCK, async (blockId, op) => {
       const momId = socket.data.momId;
 
       await crdtManager.onInsertBlock(momId, blockId, op);
 
-      socket.emit('block-op-reflected');
-      socket.to(momId).emit('block-insertion', op);
+      socket.emit(SOCKET_MESSAGE.MOM.UPDATED);
+      socket.to(momId).emit(SOCKET_MESSAGE.MOM.INSERT_BLOCK, op);
     });
 
-    socket.on('block-deletion', async (blockId, op) => {
+    socket.on(SOCKET_MESSAGE.MOM.DELETE_BLOCK, async (blockId, op) => {
       const momId = socket.data.momId;
 
       await crdtManager.onDeleteBlock(momId, blockId, op);
 
-      socket.emit('block-op-reflected');
-      socket.to(momId).emit('block-deletion', op);
+      socket.emit(SOCKET_MESSAGE.MOM.UPDATED);
+      socket.to(momId).emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, op);
     });
 
     /* crdt for Block */
-    socket.on('block-initialization', async (blockId) => {
+    socket.on(SOCKET_MESSAGE.BLOCK.INIT, async (blockId) => {
       const blockCrdt = await crdtManager.getBlockCRDT(blockId);
 
-      socket.emit('block-initialization', blockId, blockCrdt.data);
+      socket.emit(SOCKET_MESSAGE.BLOCK.INIT, blockId, blockCrdt.data);
     });
 
-    socket.on('text-insertion', async (blockId, op) => {
+    socket.on(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, async (blockId, op) => {
       const momId = socket.data.momId;
 
       await crdtManager.onInsertText(blockId, op);
 
-      socket.to(momId).emit('text-insertion', blockId, op);
+      socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, blockId, op);
     });
 
-    socket.on('text-deletion', async (blockId, op) => {
+    socket.on(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, async (blockId, op) => {
       const momId = socket.data.momId;
 
       await crdtManager.onDeleteText(blockId, op);
 
-      socket.to(momId).emit('text-deletion', blockId, op);
+      socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, blockId, op);
     });
 
     addEventHandlersForQuestionBlock(workspace, socket);
