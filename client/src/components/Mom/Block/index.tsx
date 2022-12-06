@@ -159,6 +159,13 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     e.preventDefault();
   };
 
+  const onKeyDownComposite: React.KeyboardEventHandler<HTMLParagraphElement> = (
+    e,
+  ) => {
+    offsetHandlers.onKeyDown(e);
+    onKeyDown(e);
+  };
+
   return (
     <p
       ref={blockRef}
@@ -167,7 +174,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
       onInput={onInput}
       onCompositionEnd={onCompositionEnd}
       {...offsetHandlers}
-      onKeyDown={onKeyDown}
+      onKeyDown={onKeyDownComposite}
       onPaste={onPaste}
       suppressContentEditableWarning={true}
     >
