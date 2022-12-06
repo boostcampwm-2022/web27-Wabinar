@@ -78,12 +78,6 @@ function Mom() {
       setBlocks(spreadCRDT());
     });
 
-    return () => {
-      socket.off(SOCKET_MESSAGE.MOM.INIT);
-    };
-  }, [selectedMom]);
-
-  useEffect(() => {
     socket.on(SOCKET_MESSAGE.MOM.UPDATE_TITLE, (title) => {
       if (!titleRef.current) return;
 
@@ -116,6 +110,7 @@ function Mom() {
 
     return () => {
       [
+        SOCKET_MESSAGE.MOM.INIT,
         SOCKET_MESSAGE.MOM.UPDATE_TITLE,
         SOCKET_MESSAGE.MOM.UPDATED,
         SOCKET_MESSAGE.MOM.INSERT_BLOCK,
@@ -125,7 +120,7 @@ function Mom() {
         SOCKET_MESSAGE.BLOCK.DELETE_TEXT,
       ].forEach((event) => socket.off(event));
     };
-  }, []);
+  }, [selectedMom]);
 
   return selectedMom ? (
     <div className={style['mom-container']}>
