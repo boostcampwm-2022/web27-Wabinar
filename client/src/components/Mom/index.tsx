@@ -64,6 +64,8 @@ function Mom() {
 
       e.preventDefault();
 
+      if (index === 0) return;
+
       const remoteDeletion = localDeleteCRDT(index);
 
       socket.emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, id, remoteDeletion);
