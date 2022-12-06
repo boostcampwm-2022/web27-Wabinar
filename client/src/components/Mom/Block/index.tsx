@@ -39,8 +39,6 @@ function Block({ id, onKeyDown, index }: BlockProps) {
 
     if (offsetRef.current === null) return;
 
-    console.log('input', offsetRef.current);
-
     const event = e.nativeEvent as InputEvent;
 
     if (event.isComposing) return; // 한글 입력 무시
@@ -53,8 +51,6 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     }
 
     const letter = event.data as string;
-
-    if (!letter) return;
 
     const previousLetterIndex = offsetRef.current - 2;
 
@@ -164,11 +160,9 @@ function Block({ id, onKeyDown, index }: BlockProps) {
 
   const onPaste: React.ClipboardEventHandler<HTMLParagraphElement> = (e) => {
     e.preventDefault();
-    const target = e.target as HTMLParagraphElement;
-    if (offsetRef.current === null) return;
-    if (!blockRef.current) return;
 
-    console.log('붙여넣기 전', offsetRef.current);
+    setOffset();
+    if (offsetRef.current === null || !blockRef.current) return;
 
     let previousLetterIndex = offsetRef.current - 1;
     const previousText = blockRef.current.innerText.slice(
@@ -176,8 +170,6 @@ function Block({ id, onKeyDown, index }: BlockProps) {
       previousLetterIndex + 1,
     );
     const nextText = blockRef.current.innerText.slice(previousLetterIndex + 1);
-
-    console.log(previousText, ':', nextText);
 
     const pastedText = e.clipboardData.getData('text/plain');
     const remoteInsertions = pastedText
@@ -189,7 +181,6 @@ function Block({ id, onKeyDown, index }: BlockProps) {
 
     blockRef.current.innerText = previousText + pastedText + nextText;
     updateCaretPosition(pastedText.length);
-    console.log('붙여넣기 후', offsetRef.current);
   };
 
   const onKeyDownComposite: React.KeyboardEventHandler<HTMLParagraphElement> = (
