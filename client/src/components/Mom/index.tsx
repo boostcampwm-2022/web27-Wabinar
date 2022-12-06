@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
+import useBlockFocus from 'src/hooks/useBlockFocus';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
 import useSelectedMom from 'src/hooks/useSelectedMom';
@@ -40,6 +41,8 @@ function Mom() {
   const [blocks, setBlocks] = useState<string[]>([]);
   const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
 
+  const { updateFocus, setFocus } = useBlockFocus(blockRefs);
+
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
 
@@ -52,6 +55,8 @@ function Mom() {
       const blockId = uuid();
 
       const remoteInsertion = localInsertCRDT(index, blockId);
+
+      updateFocus(index + 1);
 
       socket.emit(SOCKET_MESSAGE.MOM.INSERT_BLOCK, blockId, remoteInsertion);
       return;
@@ -67,6 +72,8 @@ function Mom() {
       if (index === 0) return;
 
       const remoteDeletion = localDeleteCRDT(index);
+
+      updateFocus(index - 1);
 
       socket.emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, id, remoteDeletion);
     }
@@ -125,6 +132,10 @@ function Mom() {
       ].forEach((event) => socket.off(event));
     };
   }, [selectedMom]);
+
+  useEffect(() => {
+    setFocus();
+  }, [blocks]);
 
   return selectedMom ? (
     <div className={style['mom-container']}>
