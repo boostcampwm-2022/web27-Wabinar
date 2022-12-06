@@ -9,7 +9,9 @@ export function useOffset() {
     if (selection?.rangeCount) {
       const range = selection.getRangeAt(0);
 
-      offsetRef.current = range.startOffset + offset;
+      const nextOffset = range.startOffset + offset;
+
+      offsetRef.current = Math.max(0, nextOffset);
     }
   };
 
