@@ -1,17 +1,26 @@
 import { useRef } from 'react';
 
-export function useOffset() {
+export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
   const offsetRef = useRef<number | null>(null);
 
   const setOffset = (offset = 0) => {
+    if (!blockRef.current) return;
+
     const selection = window.getSelection();
 
     if (selection?.rangeCount) {
       const range = selection.getRangeAt(0);
 
+      const preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(
+        blockRef.current as HTMLParagraphElement,
+      );
+      preCaretRange.setEnd(range.endContainer, range.endOffset);
+      const maxOffset = preCaretRange.toString().length;
+
       const nextOffset = range.startOffset + offset;
 
-      offsetRef.current = Math.max(0, nextOffset);
+      offsetRef.current = Math.min(maxOffset, Math.max(0, nextOffset));
     }
   };
 

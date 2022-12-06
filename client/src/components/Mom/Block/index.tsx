@@ -28,9 +28,10 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     remoteDeleteCRDT,
   } = useCRDT();
 
-  const { offsetRef, setOffset, clearOffset, offsetHandlers } = useOffset();
-
   const blockRef = useRef<HTMLParagraphElement>(null);
+
+  const { offsetRef, setOffset, clearOffset, offsetHandlers } =
+    useOffset(blockRef);
 
   // 로컬에서 일어나는 작성 - 삽입과 삭제 연산
   const onInput: React.FormEventHandler = (e) => {
