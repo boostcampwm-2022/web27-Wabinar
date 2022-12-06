@@ -103,6 +103,18 @@ async function momSocketServer(io: Server) {
       socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, blockId, op);
     });
 
+    socket.on(SOCKET_MESSAGE.BLOCK.UPDATE_TEXT, async (blockId, ops) => {
+      const momId = socket.data.momId;
+
+      for await (const op of ops) {
+        await crdtManager.onInsertText(blockId, op);
+      }
+
+      const blockCrdt = await crdtManager.getBlockCRDT(blockId);
+
+      socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.INIT, blockId, blockCrdt.data);
+    });
+
     addEventHandlersForQuestionBlock(workspace, socket);
 
     /* 투표 관련 이벤트 */

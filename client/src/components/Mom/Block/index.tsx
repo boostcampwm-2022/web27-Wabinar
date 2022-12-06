@@ -126,11 +126,13 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     };
 
     ee.on(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);
+    ee.on(`${SOCKET_MESSAGE.BLOCK.UPDATE_TEXT}-${id}`, onInitialize);
     ee.on(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, onInsert);
     ee.on(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, onDelete);
 
     return () => {
       ee.off(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);
+      ee.off(`${SOCKET_MESSAGE.BLOCK.UPDATE_TEXT}-${id}`, onInitialize);
       ee.off(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, onInsert);
       ee.off(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, onDelete);
     };
@@ -157,6 +159,16 @@ function Block({ id, onKeyDown, index }: BlockProps) {
 
   const onPaste: React.ClipboardEventHandler<HTMLParagraphElement> = (e) => {
     e.preventDefault();
+    setOffset();
+    if (offsetRef.current === null) return;
+
+    let previousLetterIndex = offsetRef.current - 1;
+    const pastedText = e.clipboardData.getData('text/plain');
+    const remoteInsertions = pastedText
+      .split('')
+      .map((letter) => localInsertCRDT(previousLetterIndex++, letter));
+
+    socket.emit(SOCKET_MESSAGE.BLOCK.UPDATE_TEXT, id, remoteInsertions);
   };
 
   return (
