@@ -14,9 +14,10 @@ interface BlockProps {
   id: string;
   index: number;
   onKeyDown: React.KeyboardEventHandler;
+  onRegisterRef: (arg: React.RefObject<HTMLElement>) => void;
 }
 
-function Block({ id, onKeyDown, index }: BlockProps) {
+function Block({ id, index, onKeyDown, onRegisterRef }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const {
@@ -29,6 +30,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
   } = useCRDT();
 
   const blockRef = useRef<HTMLParagraphElement>(null);
+  onRegisterRef(blockRef);
 
   const { offsetRef, setOffset, clearOffset, offsetHandlers } =
     useOffset(blockRef);

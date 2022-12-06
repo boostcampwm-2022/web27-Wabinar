@@ -38,6 +38,7 @@ function Mom() {
   );
 
   const [blocks, setBlocks] = useState<string[]>([]);
+  const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
 
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
@@ -138,7 +139,15 @@ function Mom() {
         </div>
         <div className={style['mom-body']}>
           {blocks.map((id, index) => (
-            <Block key={id} id={id} index={index} onKeyDown={onKeyDown} />
+            <Block
+              key={id}
+              id={id}
+              index={index}
+              onKeyDown={onKeyDown}
+              onRegisterRef={(ref: React.RefObject<HTMLElement>) => {
+                blockRefs.current[index] = ref;
+              }}
+            />
           ))}
         </div>
       </div>
