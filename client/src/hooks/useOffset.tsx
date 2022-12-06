@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 
 export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
   const offsetRef = useRef<number | null>(null);
@@ -54,8 +54,10 @@ export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
   };
 
   const offsetHandlers = {
-    onFocus: setOffset,
-    onClick: setOffset,
+    onFocus:
+      setOffset as unknown as React.FocusEventHandler<HTMLParagraphElement>,
+    onClick:
+      setOffset as unknown as React.MouseEventHandler<HTMLParagraphElement>,
     onBlur: clearOffset,
     onKeyDown,
     onKeyUp,
