@@ -10,8 +10,7 @@
       "@middlewares/*": ["middlewares/*"],
       "@utils/*": ["utils/*"],
       "@params/*": ["../types/params/*"],
-      "@socket": ["socket"],
-      "@wabinar/crdt": ["../@wabinar-crdt"]
+      "@socket": ["socket"]
     }
   }
 }
