@@ -15,6 +15,7 @@ const SOCKET_MESSAGE = {
     INIT: 'init-block',
     INSERT_TEXT: 'insert-text',
     DELETE_TEXT: 'delete-text',
+    UPDATE_TEXT: 'update-text',
   },
   WORKSPACE: {
     START_MEETING: 'start-meeting',
