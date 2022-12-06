@@ -43,14 +43,15 @@ function Mom() {
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
 
-    const { index } = target.dataset;
+    const { index: indexString } = target.dataset;
+    const index = Number(indexString);
 
     if (e.key === 'Enter') {
       e.preventDefault();
 
       const blockId = uuid();
 
-      const remoteInsertion = localInsertCRDT(Number(index), blockId);
+      const remoteInsertion = localInsertCRDT(index, blockId);
 
       socket.emit(SOCKET_MESSAGE.MOM.INSERT_BLOCK, blockId, remoteInsertion);
       return;
@@ -63,7 +64,7 @@ function Mom() {
 
       e.preventDefault();
 
-      const remoteDeletion = localDeleteCRDT(Number(index));
+      const remoteDeletion = localDeleteCRDT(index);
 
       socket.emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, id, remoteDeletion);
     }
