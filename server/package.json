@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node-dev index.ts",
     "test": "jest",
-    "build": "tsc && tsc-alias"
+    "build": "tsc --build && tsc-alias"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",
