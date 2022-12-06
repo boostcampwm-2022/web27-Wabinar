@@ -112,7 +112,9 @@ async function momSocketServer(io: Server) {
 
       const blockCrdt = await crdtManager.getBlockCRDT(blockId);
 
-      socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.INIT, blockId, blockCrdt.data);
+      socket
+        .to(momId)
+        .emit(SOCKET_MESSAGE.BLOCK.UPDATE_TEXT, blockId, blockCrdt.data);
     });
 
     addEventHandlersForQuestionBlock(workspace, socket);
