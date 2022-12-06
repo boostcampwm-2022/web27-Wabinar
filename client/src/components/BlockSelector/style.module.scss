@@ -1,0 +1,26 @@
+@import 'styles/color.module';
+
+.block-selector {
+  height: 100%;
+  overflow: hidden;
+
+  .block-is-view {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    max-height: 280px;
+    padding: 5px;
+    overflow: auto;
+    border-radius: 4px;
+    background-color: $white;
+    box-shadow: rgb(15 15 15 / 5%) 0px 0px 0px 1px,
+      $gray-300-transparent 0px 3px 6px, $gray-300-transparent 0px 9px 24px;
+
+    strong {
+      margin-bottom: 5px;
+      margin-left: 5px;
+      color: $gray-100;
+      font-size: 12px;
+    }
+  }
+}
