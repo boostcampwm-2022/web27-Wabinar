@@ -152,7 +152,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
 
       const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-      socket.emit('text-insertion', id, remoteInsertion);
+      socket.emit(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, id, remoteInsertion);
     });
   };
 
