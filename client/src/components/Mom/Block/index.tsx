@@ -28,9 +28,10 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     remoteDeleteCRDT,
   } = useCRDT();
 
-  const { offsetRef, setOffset, clearOffset, offsetHandlers } = useOffset();
-
   const blockRef = useRef<HTMLParagraphElement>(null);
+
+  const { offsetRef, setOffset, clearOffset, offsetHandlers } =
+    useOffset(blockRef);
 
   // 로컬에서 일어나는 작성 - 삽입과 삭제 연산
   const onInput: React.FormEventHandler = (e) => {
@@ -171,6 +172,13 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     socket.emit(SOCKET_MESSAGE.BLOCK.UPDATE_TEXT, id, remoteInsertions);
   };
 
+  const onKeyDownComposite: React.KeyboardEventHandler<HTMLParagraphElement> = (
+    e,
+  ) => {
+    offsetHandlers.onKeyDown(e);
+    onKeyDown(e);
+  };
+
   return (
     <p
       ref={blockRef}
@@ -179,7 +187,7 @@ function Block({ id, onKeyDown, index }: BlockProps) {
       onInput={onInput}
       onCompositionEnd={onCompositionEnd}
       {...offsetHandlers}
-      onKeyDown={onKeyDown}
+      onKeyDown={onKeyDownComposite}
       onPaste={onPaste}
       suppressContentEditableWarning={true}
     >
