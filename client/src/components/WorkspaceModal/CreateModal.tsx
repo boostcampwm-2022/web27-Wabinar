@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { postWorkspace, postWorkspaceJoin } from 'src/apis/workspace';
 import { MENU } from 'src/constants/workspace';
 import useWorkspacesContext from 'src/hooks/useWorkspacesContext';
+import { Workspace } from 'src/types/workspace';
 
 import FormModal, { ModalContents } from './FormModal';
 
@@ -9,14 +10,14 @@ interface CreateModalProps {
   modalContents: ModalContents;
   onClose: () => void;
   setSelectedMenu: React.Dispatch<React.SetStateAction<number>>;
-  setCode: React.Dispatch<React.SetStateAction<string>>;
+  setWorkspace: React.Dispatch<React.SetStateAction<Workspace | undefined>>;
 }
 
 function CreateModal({
   modalContents,
   onClose,
   setSelectedMenu,
-  setCode,
+  setWorkspace,
 }: CreateModalProps) {
   const { setWorkspaces } = useWorkspacesContext();
 
@@ -29,7 +30,7 @@ function CreateModal({
     await postWorkspaceJoin({ code });
 
     setWorkspaces((workspaces) => [...workspaces, workspace]);
-    setCode(code);
+    setWorkspace(workspace);
     setSelectedMenu(MENU.CREATE_SUCCESS);
 
     return;
