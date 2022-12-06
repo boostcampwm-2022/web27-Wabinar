@@ -35,9 +35,9 @@ function WorkspaceSettingModal({ title, onClose }: WorkspaceSettingModalProps) {
         <label className={style['input-label']}>
           <BiCodeBlock className={style['code-block-icon']} />
           <span className={style['label-title']}>참여코드</span>
+          <CopyButton className={style['copy-icon']} target={code} />
         </label>
         <div className={style['input-section']}>
-          <CopyButton className={style['copy-icon']} target={code} />
           <input
             className={style.input}
             type="text"

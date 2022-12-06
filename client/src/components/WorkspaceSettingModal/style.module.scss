@@ -1,31 +1,21 @@
-@import 'styles/color.module.scss';
+@import 'styles/color.module';
 
 .text {
   font-size: 14px;
 }
 
 .input-section {
-  position: relative;
   width: 270px;
-  text-align: center;
   margin-bottom: 12px;
-
-  .copy-icon {
-    position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-    right: 42px;
-    cursor: pointer;
-    color: $white;
-  }
+  text-align: center;
 
   .input {
     width: calc(100% - 6rem);
+    padding: 10px;
     border: 1px solid $white;
     border-radius: 10px;
-    padding: 10px;
-    font-size: 14px;
     color: $white;
+    font-size: 14px;
 
     &:disabled {
       background-color: $primary-100;
@@ -34,10 +24,11 @@
 }
 
 .input-label {
-  width: 192px;
   display: flex;
-  justify-content: start;
+  position: relative;
   align-items: center;
+  justify-content: start;
+  width: 192px;
   padding: 4px;
 
   .code-block-icon {
@@ -48,13 +39,27 @@
   .label-title {
     color: $white;
   }
+
+  .copy-icon {
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    margin-left: 12px;
+    padding: 2px;
+    transform: translate(0, -50%);
+    border-radius: 4px;
+
+    background-color: $off-white;
+    color: $primary-100;
+    cursor: pointer;
+  }
 }
 
 .button {
   display: flex;
   justify-content: center;
-  background-color: $red;
-  height: 40px;
   max-width: 270px;
+  height: 40px;
   border-radius: 10px;
+  background-color: $red;
 }
