@@ -2,7 +2,8 @@ import {
   RemoteInsertOperation,
   RemoteDeleteOperation,
 } from '@wabinar/crdt/linked-list';
-import { useEffect, useRef, memo } from 'react';
+import { useEffect, useRef, memo, useState } from 'react';
+import BlockSelector from 'src/components/BlockSelector';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
@@ -22,6 +23,7 @@ interface BlockProps {
 
 function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const {
     syncCRDT,
@@ -40,6 +42,14 @@ function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
   // 로컬에서 일어나는 작성 - 삽입과 삭제 연산
   const onInput: React.FormEventHandler = (e) => {
     setOffset();
+
+    if (!blockRef.current) return;
+
+    if (blockRef.current.innerText === '/') {
+      setIsOpen(true);
+    } else if (isOpen) {
+      setIsOpen(false);
+    }
 
     if (offsetRef.current === null) return;
 
@@ -92,6 +102,10 @@ function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
     // 변경된 offset 반영
     setOffset();
   };
+
+  useEffect(() => {
+    updateCaretPosition();
+  }, [isOpen]);
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
@@ -240,15 +254,18 @@ function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
       );
     default:
       return (
-        <p
-          ref={blockRef}
-          data-id={id}
-          data-index={index}
-          {...commonHandlers}
-          suppressContentEditableWarning={true}
-        >
-          {readCRDT()}
-        </p>
+        <>
+          <p
+            ref={blockRef}
+            data-id={id}
+            data-index={index}
+            {...commonHandlers}
+            suppressContentEditableWarning={true}
+          >
+            {readCRDT()}
+          </p>
+          {isOpen && <BlockSelector />}
+        </>
       );
   }
 }
