@@ -14,10 +14,10 @@ interface BlockProps {
   id: string;
   index: number;
   onKeyDown: React.KeyboardEventHandler;
-  onRegisterRef: (arg: React.RefObject<HTMLElement>) => void;
+  registerRef: (arg: React.RefObject<HTMLElement>) => void;
 }
 
-function Block({ id, index, onKeyDown, onRegisterRef }: BlockProps) {
+function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const {
@@ -30,7 +30,6 @@ function Block({ id, index, onKeyDown, onRegisterRef }: BlockProps) {
   } = useCRDT();
 
   const blockRef = useRef<HTMLParagraphElement>(null);
-  onRegisterRef(blockRef);
 
   const { offsetRef, setOffset, clearOffset, offsetHandlers } =
     useOffset(blockRef);
@@ -93,6 +92,8 @@ function Block({ id, index, onKeyDown, onRegisterRef }: BlockProps) {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
+    registerRef(blockRef);
+
     socket.emit(SOCKET_MESSAGE.BLOCK.INIT, id);
 
     const onInitialize = (crdt: unknown) => {

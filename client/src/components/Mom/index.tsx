@@ -162,7 +162,7 @@ function Mom() {
               id={id}
               index={index}
               onKeyDown={onKeyDown}
-              onRegisterRef={(ref: React.RefObject<HTMLElement>) => {
+              registerRef={(ref: React.RefObject<HTMLElement>) => {
                 blockRefs.current[index] = ref;
               }}
             />
