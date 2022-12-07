@@ -1,6 +1,6 @@
 import { CREATED, OK } from '@constants/http-status';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
-import { PostLoginParams } from '@params/auth';
+import { PostLoginParams } from '@wabinar/api-types/auth';
 import asyncWrapper from '@utils/async-wrapper';
 import express, { Request, Response } from 'express';
 import * as userService from '../user/service';

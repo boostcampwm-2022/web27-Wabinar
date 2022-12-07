@@ -1,4 +1,7 @@
-import { GetWorkspaceParams, GetWorkspacesResBody } from 'params/user';
+import {
+  GetWorkspaceParams,
+  GetWorkspacesResBody,
+} from '@wabinar/api-types/user';
 
 import { http } from './http';
 import { OK } from './http-status';
