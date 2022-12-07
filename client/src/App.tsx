@@ -1,11 +1,14 @@
 import { Suspense, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import UserContext from 'src/contexts/user';
-import { LoginPage, OAuthPage, WorkspacePage } from 'src/pages';
+import {
+  LoadingPage,
+  LoginPage,
+  NotFoundPage,
+  OAuthPage,
+  WorkspacePage,
+} from 'src/pages';
 import { User } from 'src/types/user';
-
-import Loader from './components/common/Loader';
-import NotFoundPage from './pages/404';
 
 import 'styles/reset.scss';
 
@@ -13,7 +16,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
 
   return (
-    <Suspense fallback={<Loader size={100} />}>
+    <Suspense fallback={<LoadingPage />}>
       <UserContext.Provider value={{ user, setUser }}>
         <Routes>
           <Route path="/" element={<LoginPage />} />

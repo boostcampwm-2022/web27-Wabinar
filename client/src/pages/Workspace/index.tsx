@@ -1,6 +1,6 @@
 import Workspace from 'components/Workspace';
 import { useEffect, useState } from 'react';
-import { useNavigate, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { getWorkspaces } from 'src/apis/user';
 import DefaultWorkspace from 'src/components/Workspace/DefaultWorkspace';
 import WorkspacesContext from 'src/contexts/workspaces';
