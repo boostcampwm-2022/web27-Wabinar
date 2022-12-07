@@ -2,8 +2,7 @@ import mongoose from '@db';
 import { Schema } from 'mongoose';
 import { Vote } from '../vote/service';
 import { Question } from '../questions/service';
-
-export type BlockType = 'h1' | 'h2' | 'h3' | 'p' | 'vote' | 'question';
+import { BlockType } from '@wabinar/api-types/block';
 
 interface Block {
   id: string;
@@ -16,7 +15,7 @@ interface Block {
 
 const blockSchema = new Schema<Block>({
   id: { type: String, required: true },
-  type: { type: String, required: true },
+  type: { type: Number, required: true },
   head: { type: Object, default: null },
   nodeMap: { type: Object, default: {} },
   voteProperties: { type: Object, default: {} },

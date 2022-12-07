@@ -1,5 +1,6 @@
 import LinkedList from '@wabinar/crdt/linked-list';
-import blockModel, { BlockType } from './model';
+import { BlockType } from '@wabinar/api-types/block';
+import blockModel from './model';
 
 export const getBlock = async (id: string) => {
   const block = await blockModel.findOne({ id });
@@ -13,7 +14,7 @@ export const getBlockType = async (id: string) => {
 };
 
 export const createBlock = async (id: string) => {
-  const block = await blockModel.create({ id, type: 'p' });
+  const block = await blockModel.create({ id, type: BlockType.P });
 
   return block;
 };
@@ -28,18 +29,18 @@ export const putBlock = async (
   data: LinkedList,
 ) => {
   switch (type) {
-    case 'h1':
-    case 'h2':
-    case 'h3':
-    case 'p':
+    case BlockType.H1:
+    case BlockType.H2:
+    case BlockType.H3:
+    case BlockType.P:
       await blockModel.updateOne(
         { id },
         { head: data.head, nodeMap: data.nodeMap },
       );
       break;
-    case 'vote':
+    case BlockType.VOTE:
       break;
-    case 'question':
+    case BlockType.QUESTION:
       break;
     default:
       return;
