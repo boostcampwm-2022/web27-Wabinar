@@ -95,15 +95,21 @@ function Mom() {
       titleRef.current.innerText = title;
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.UPDATED, () => setBlocks(spreadCRDT()));
+    socket.on(SOCKET_MESSAGE.MOM.UPDATED, () => {
+      setBlocks(spreadCRDT());
+    });
 
     socket.on(SOCKET_MESSAGE.MOM.INSERT_BLOCK, (op) => {
       remoteInsertCRDT(op);
+
+      updateFocus(undefined);
       setBlocks(spreadCRDT());
     });
 
     socket.on(SOCKET_MESSAGE.MOM.DELETE_BLOCK, (op) => {
       remoteDeleteCRDT(op);
+
+      updateFocus(undefined);
       setBlocks(spreadCRDT());
     });
 

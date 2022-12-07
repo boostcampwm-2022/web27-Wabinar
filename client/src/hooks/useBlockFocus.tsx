@@ -5,7 +5,7 @@ function useBlockFocus(
 ) {
   const focusIndex = useRef<number>();
 
-  const updateFocus = (idx: number) => {
+  const updateFocus = (idx: number | undefined) => {
     focusIndex.current = idx;
   };
 
