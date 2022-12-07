@@ -54,9 +54,9 @@ export const updateVote = (momId: number, optionId: number, userId: number) => {
 
   vote.participants.set(userId, optionId);
 
-  const participantCnt = vote.participants.size;
+  const participantCount = vote.participants.size;
 
-  return participantCnt;
+  return participantCount;
 };
 
 export const endVote = (momId: number) => {
@@ -67,14 +67,14 @@ export const endVote = (momId: number) => {
 
   votes[momId].isDoing = false;
 
-  const participantCnt = vote.participants.size;
+  const participantCount = vote.participants.size;
 
   const result = {
     options: [...vote.options].map(([id, rest]) => ({
       id,
       ...rest,
     })),
-    participantCnt,
+    participantCount,
   };
 
   return result;

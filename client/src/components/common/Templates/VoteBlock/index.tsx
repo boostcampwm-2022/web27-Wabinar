@@ -39,7 +39,7 @@ function VoteBlockTemplate({
   const { selectedMom } = useSelectedMom();
 
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
-  const [participantCnt, setParticipantCnt] = useState(0);
+  const [participantCount, setParticipantCount] = useState(0);
 
   const debouncedSetOptions = useDebounceInput(setOptions);
 
@@ -49,30 +49,24 @@ function VoteBlockTemplate({
   };
 
   const getIsDuplicate = (arr: string[]) => {
-    return arr.some((value) => arr.indexOf(value) !== arr.lastIndexOf(value));
+    return new Set(arr).size !== arr.length;
   };
 
   const onRegister = () => {
-    const slicedEmptyOptions = options.filter(({ text }) => text);
-    if (!slicedEmptyOptions.length) {
+    const validOptions = options.filter(({ text }) => text);
+    if (!validOptions.length) {
       return toast('투표 항목은 최소 1개에요 ^^', { type: 'info' });
     }
 
-    const isDuplicate = getIsDuplicate(
-      slicedEmptyOptions.map(({ text }) => text),
-    );
+    const isDuplicate = getIsDuplicate(validOptions.map(({ text }) => text));
     if (isDuplicate) {
       return toast('중복된 항목이 있어요 ^^', { type: 'info' });
     }
 
-    setOptions(slicedEmptyOptions);
+    setOptions(validOptions);
     setVoteMode('registered');
 
-    socket.emit(
-      SOCKET_MESSAGE.MOM.CREATE_VOTE,
-      selectedMom?._id,
-      slicedEmptyOptions,
-    );
+    socket.emit(SOCKET_MESSAGE.MOM.CREATE_VOTE, selectedMom?._id, validOptions);
 
     toast('투표 등록 완료 ^^', { type: 'info' });
   };
@@ -123,14 +117,14 @@ function VoteBlockTemplate({
   };
 
   useEffect(() => {
-    socket.on(SOCKET_MESSAGE.MOM.UPDATE_VOTE, (participantCnt) => {
-      setParticipantCnt(participantCnt);
+    socket.on(SOCKET_MESSAGE.MOM.UPDATE_VOTE, (participantCount) => {
+      setParticipantCount(participantCount);
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.END_VOTE, ({ options, participantCnt }) => {
+    socket.on(SOCKET_MESSAGE.MOM.END_VOTE, ({ options, participantCount }) => {
       setVoteMode('end');
       setOptions(options);
-      setParticipantCnt(participantCnt);
+      setParticipantCount(participantCount);
       toast('투표가 종료되었어요 ^^');
     });
 
@@ -138,14 +132,14 @@ function VoteBlockTemplate({
       socket.off(SOCKET_MESSAGE.MOM.UPDATE_VOTE);
       socket.off(SOCKET_MESSAGE.MOM.END_VOTE);
     };
-  }, [setParticipantCnt]);
+  }, [setParticipantCount]);
 
   return (
     <div className={style['vote-container']}>
       <h3 className={style.title}>투표</h3>
       {(isRegisteredMode || isEndMode) && (
         <span className={style['participant-cnt']}>
-          {participantCnt}명 참여
+          {participantCount}명 참여
         </span>
       )}
 

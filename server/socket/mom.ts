@@ -131,11 +131,11 @@ async function momSocketServer(io: Server) {
     });
 
     socket.on(SOCKET_MESSAGE.MOM.UPDATE_VOTE, (momId, optionId, userId) => {
-      const participantCnt = updateVote(momId, Number(optionId), userId);
+      const participantCount = updateVote(momId, Number(optionId), userId);
 
       io.of(namespace)
         .to(momId)
-        .emit(SOCKET_MESSAGE.MOM.UPDATE_VOTE, participantCnt);
+        .emit(SOCKET_MESSAGE.MOM.UPDATE_VOTE, participantCount);
     });
 
     socket.on(SOCKET_MESSAGE.MOM.END_VOTE, (momId) => {
