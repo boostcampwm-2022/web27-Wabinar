@@ -1,9 +1,17 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useRef } from 'react';
 import useSocketContext from 'src/hooks/useSocketContext';
 
+import ee from '../EventEmitter';
 import TextBlock from './TextBlock';
 
-type BlockType = 'h1' | 'h2' | 'h3' | 'p' | 'vote' | 'question';
+export enum BlockType {
+  H1,
+  H2,
+  H3,
+  P,
+  VOTE,
+  QUESTION,
+}
 
 interface BlockProps {
   id: string;
@@ -15,23 +23,40 @@ function Block({ id, index, onKeyDown }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const [type, setType] = useState<BlockType>();
+  const localUpdateFlagRef = useRef<boolean>(false);
 
   useEffect(() => {
     socket.emit('load-type', id, (type: BlockType) => setType(type));
+
+    ee.on(`update-type-${id}`, (type) => {
+      setType(type);
+      localUpdateFlagRef.current = false;
+    });
   }, []);
 
+  useEffect(() => {
+    if (localUpdateFlagRef.current) {
+      socket.emit('update-type', id, type);
+    }
+  }, [type]);
+
+  const onSelect = (id: BlockType) => {
+    localUpdateFlagRef.current = true;
+    setType(id);
+  };
+
   switch (type) {
-    case 'h1':
-    case 'h2':
-    case 'h3':
-    case 'p':
+    case BlockType.H1:
+    case BlockType.H2:
+    case BlockType.H3:
+    case BlockType.P:
       return (
         <TextBlock
           id={id}
           index={index}
           onKeyDown={onKeyDown}
           type={type}
-          setType={setType}
+          onSelect={onSelect}
         />
       );
     default:
