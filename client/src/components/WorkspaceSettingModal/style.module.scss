@@ -5,7 +5,8 @@
 }
 
 .input-section {
-  width: 270px;
+  position: relative;
+  width: 380px;
   margin-bottom: 12px;
   text-align: center;
 
@@ -21,14 +22,22 @@
       background-color: $primary-100;
     }
   }
+
+  .copy-icon {
+    position: absolute;
+    top: 50%;
+    right: 42px;
+    transform: translate(0, -50%);
+    color: $white;
+    cursor: pointer;
+  }
 }
 
 .input-label {
   display: flex;
-  position: relative;
   align-items: center;
   justify-content: start;
-  width: 192px;
+  width: 300px;
   padding: 4px;
 
   .code-block-icon {
@@ -37,28 +46,15 @@
   }
 
   .label-title {
+    transform: translateY(-2px);
     color: $white;
-  }
-
-  .copy-icon {
-    position: absolute;
-    top: 50%;
-    right: 4px;
-    margin-left: 12px;
-    padding: 2px;
-    transform: translate(0, -50%);
-    border-radius: 4px;
-
-    background-color: $off-white;
-    color: $primary-100;
-    cursor: pointer;
   }
 }
 
 .button {
   display: flex;
   justify-content: center;
-  max-width: 270px;
+  width: 300px;
   height: 40px;
   border-radius: 10px;
   background-color: $red;
