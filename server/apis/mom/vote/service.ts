@@ -4,7 +4,7 @@ interface Option {
   count: number;
 }
 
-interface Vote {
+export interface Vote {
   _id: string;
   title: string;
   options: Option[];

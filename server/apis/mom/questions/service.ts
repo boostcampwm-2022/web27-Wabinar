@@ -1,4 +1,4 @@
-interface Question {
+export interface Question {
   id: number;
   isResolved: boolean;
   text: string;
