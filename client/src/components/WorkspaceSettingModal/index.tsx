@@ -1,7 +1,9 @@
 import { BiCodeBlock } from '@react-icons/all-files/bi/BiCodeBlock';
+import { useParams } from 'react-router-dom';
 import Button from 'src/components/common/Button';
 import CopyButton from 'src/components/common/CopyButton';
 import Modal from 'src/components/common/Modal';
+import useWorkspacesContext from 'src/hooks/useWorkspacesContext';
 
 import style from './style.module.scss';
 
@@ -11,7 +13,16 @@ interface WorkspaceSettingModalProps {
 }
 
 function WorkspaceSettingModal({ title, onClose }: WorkspaceSettingModalProps) {
-  const code = '1234';
+  const { workspaces } = useWorkspacesContext();
+  const { id } = useParams();
+
+  const workspace = workspaces.find((workspace) => workspace.id === Number(id));
+
+  if (!workspace) {
+    throw new Error('일어날 수 없는 일이 일어났어요 ^^');
+  }
+
+  const { code } = workspace;
 
   const onClick = () => {
     onClose();
