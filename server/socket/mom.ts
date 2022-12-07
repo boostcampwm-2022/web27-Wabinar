@@ -76,7 +76,6 @@ async function momSocketServer(io: Server) {
 
       await crdtManager.onDeleteBlock(momId, blockId, op);
 
-      socket.emit(SOCKET_MESSAGE.MOM.UPDATED);
       socket.to(momId).emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, op);
     });
 

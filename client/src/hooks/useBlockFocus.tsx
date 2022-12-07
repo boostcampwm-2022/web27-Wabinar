@@ -21,7 +21,20 @@ function useBlockFocus(
     targetBlock.current.focus();
   };
 
-  return { updateFocus, setFocus };
+  const setCaretToEnd = () => {
+    const selection = getSelection();
+
+    if (!selection) return;
+
+    const range = selection.getRangeAt(0);
+
+    if (!range) return;
+
+    range.selectNodeContents(range.startContainer);
+    range.collapse();
+  };
+
+  return { updateFocus, setFocus, setCaretToEnd };
 }
 
 export default useBlockFocus;

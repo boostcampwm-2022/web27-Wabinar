@@ -41,7 +41,7 @@ function Mom() {
   const [blocks, setBlocks] = useState<string[]>([]);
   const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
 
-  const { updateFocus, setFocus } = useBlockFocus(blockRefs);
+  const { updateFocus, setFocus, setCaretToEnd } = useBlockFocus(blockRefs);
 
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
@@ -74,6 +74,10 @@ function Mom() {
       const remoteDeletion = localDeleteCRDT(index);
 
       updateFocus(index - 1);
+
+      setBlocks(spreadCRDT());
+      setFocus();
+      setCaretToEnd();
 
       socket.emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, id, remoteDeletion);
     }
