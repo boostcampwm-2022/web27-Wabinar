@@ -4,7 +4,7 @@ import {
   GetInfoParams,
   PostJoinParams,
   PostParams,
-} from '@wabinar/api-types//workspace';
+} from '@wabinar/api-types/workspace';
 import asyncWrapper from '@utils/async-wrapper';
 import express, { Request, Response } from 'express';
 import * as workspaceService from './service';
