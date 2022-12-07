@@ -23,18 +23,18 @@ export const putBlock = async (
   data: LinkedList,
 ) => {
   switch (type) {
-    case 'h1':
-    case 'h2':
-    case 'h3':
-    case 'p':
+    case BlockType.H1:
+    case BlockType.H2:
+    case BlockType.H3:
+    case BlockType.P:
       await blockModel.updateOne(
         { id },
         { head: data.head, nodeMap: data.nodeMap },
       );
       break;
-    case 'vote':
+    case BlockType.VOTE:
       break;
-    case 'question':
+    case BlockType.QUESTION:
       break;
     default:
       return;
