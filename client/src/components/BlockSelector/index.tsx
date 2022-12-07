@@ -6,7 +6,7 @@ import style from './style.module.scss';
 function BlockSelector() {
   return (
     <div className={style['block-selector']}>
-      <div className={style['block-is-view']}>
+      <div className={style['block-displayed']}>
         <strong>블록</strong>
 
         <ul className={style['block-list']}>
