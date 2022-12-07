@@ -31,6 +31,7 @@
     "@types/jest": "^29.2.3",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
+    "dotenv-vault": "^1.16.3",
     "eslint": "latest",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^3.5.2",
@@ -42,8 +43,6 @@
     "prettier": "^2.7.1",
     "ts-jest": "^29.0.3",
     "typescript": "^4.6.4",
-    "dotenv-vault": "^1.16.3",
-    "tsc-alias": "^1.7.1",
     "vite": "^3.2.3",
     "vite-tsconfig-paths": "^3.5.2"
   }
