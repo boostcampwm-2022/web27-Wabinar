@@ -1,6 +1,8 @@
 import { BiX } from '@react-icons/all-files/bi/BiX';
 import classNames from 'classnames/bind';
-import React, { useState, useRef } from 'react';
+import { ChangeEventHandler, useState } from 'react';
+import { toast } from 'react-toastify';
+import useDebounceInput from 'src/hooks/useDebounceInput';
 
 import Button from '../common/Button';
 import style from './style.module.scss';
@@ -9,42 +11,35 @@ const cx = classNames.bind(style);
 
 interface Option {
   id: number;
-  option: string;
+  text: string;
 }
 
-const initialOption: Option[] = [
-  { id: 1, option: '짜장면' },
-  {
-    id: 2,
-    option: '짬뽕',
-  },
-];
+const initialOption: Option[] = [{ id: 1, text: '' }];
 
 function VoteBlock() {
   const [options, setOptions] = useState<Option[]>(initialOption);
-  const [isUnRegisterd, setIsUnRegisterd] = useState<boolean>(true);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [isStartedVote, setIsStartedVote] = useState<boolean>(false); // 투표 종료를 했는데 isRegister로 구분해주는게 어색해서 시작했는지 아닌지로 구분
+
+  const getNextId = () => {
+    const lastId = options.at(-1)?.id;
+    return lastId !== undefined ? lastId + 1 : 0;
+  };
 
   const onRegister = () => {
-    if (!options.length) throw new Error('투표 항목은 최소 1개에요 ^^');
+    const slicedEmptyOptions = options.filter(({ text }) => text);
 
-    if (!isUnRegisterd) return;
+    if (!slicedEmptyOptions.length) {
+      return toast('투표 항목은 최소 1개에요 ^^', { type: 'info' });
+    }
 
-    setIsUnRegisterd(false);
+    setOptions(slicedEmptyOptions);
+    setIsStartedVote(true);
   };
 
   const onAdd = () => {
-    if (!inputRef.current || !inputRef.current.value) return;
-
-    const { value: option } = inputRef.current;
-
-    const lastId = options.at(-1)?.id;
-    const nextId = lastId !== undefined ? lastId + 1 : 0;
-    const newOption: Option = { id: nextId, option };
-
+    const nextId = getNextId();
+    const newOption: Option = { id: nextId, text: '' };
     setOptions([...options, newOption]);
-
-    inputRef.current.value = '';
   };
 
   const onDelete = (targetId: number) => {
@@ -55,23 +50,43 @@ function VoteBlock() {
     setOptions(filteredOptions);
   };
 
-  const onClose = () => {
-    alert('투표 종료..!');
-    /**투표 결과 보여줘야함 */
-    setIsUnRegisterd(true);
+  const onEnd = () => {
+    toast('투표가 종료되었어요 ^^');
+    setIsStartedVote(false);
+  };
+
+  const debouncedSetOptions = useDebounceInput(setOptions);
+
+  const onChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
+    const { id } = target.dataset;
+    const value = target.value;
+
+    const newOption = options.map((option) => {
+      if (option.id === Number(id)) {
+        return { ...option, text: value };
+      }
+      return option;
+    });
+
+    debouncedSetOptions(newOption);
   };
 
   return (
     <div className={style['vote-container']}>
       <h3 className={style.title}>투표</h3>
       <ul>
-        {options.map(({ id, option }, index) => (
-          <li className={style['option-item']} key={id} id={id.toString()}>
+        {options.map(({ id }, index) => (
+          <li className={style['option-item']} key={id} data-id={id}>
             <div className={style['box-fill']}>{index + 1}</div>
-            <p className={style.option}>{option}</p>
-            {isUnRegisterd && (
+            <input
+              type="text"
+              placeholder="항목을 입력해주세요"
+              onChange={onChange}
+              data-id={id}
+            />
+            {!isStartedVote && (
               <div
-                className={cx('box-fill', { 'position-right': true })}
+                className={cx('box-fill', 'position-right')}
                 onClick={() => onDelete(id)}
               >
                 <BiX size="20" />
@@ -80,24 +95,14 @@ function VoteBlock() {
           </li>
         ))}
       </ul>
-      {isUnRegisterd && (
-        <div className={style['option-item']}>
-          <div className={style['box-fill']}></div>
-          <input
-            ref={inputRef}
-            className={style['option-input']}
-            placeholder="항목을 입력해주세요"
-          ></input>
-        </div>
-      )}
       <div className={style['vote-buttons']}>
-        {isUnRegisterd ? (
+        {isStartedVote ? (
+          <Button onClick={onEnd} text="투표 종료" />
+        ) : (
           <>
             <Button onClick={onAdd} text="항목 추가" />
             <Button onClick={onRegister} text="투표 등록" />
           </>
-        ) : (
-          <Button onClick={onClose} text="투표 종료" />
         )}
       </div>
     </div>
