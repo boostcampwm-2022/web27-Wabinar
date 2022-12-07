@@ -108,6 +108,10 @@ function Mom() {
       ee.emit(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, op);
     });
 
+    socket.on(SOCKET_MESSAGE.BLOCK.UPDATE_TEXT, (id, crdt) => {
+      ee.emit(`${SOCKET_MESSAGE.BLOCK.UPDATE_TEXT}-${id}`, crdt);
+    });
+
     return () => {
       [
         SOCKET_MESSAGE.MOM.INIT,
