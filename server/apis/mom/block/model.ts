@@ -15,7 +15,7 @@ interface Block {
 
 const blockSchema = new Schema<Block>({
   id: { type: String, required: true },
-  type: { type: String, required: true },
+  type: { type: Number, required: true },
   head: { type: Object, default: null },
   nodeMap: { type: Object, default: {} },
   voteProperties: { type: Object, default: {} },

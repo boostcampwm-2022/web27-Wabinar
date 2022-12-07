@@ -11,7 +11,7 @@ import LinkedList, {
   RemoteDeleteOperation,
   RemoteInsertOperation,
 } from '@wabinar/crdt/linked-list';
-import BlockType from '@wabinar/api-types/block';
+import { BlockType } from '@wabinar/api-types/block';
 
 export default class CrdtManager {
   momMap;
