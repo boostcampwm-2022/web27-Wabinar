@@ -77,17 +77,19 @@ function Workspace() {
   }, [workspaceSocket]);
 
   return (
-    <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
-      <ConfContext.Provider value={{ isStart, setIsStart }}>
-        {workspace && (
-          <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
-            <Sidebar workspace={workspace} />
-            <Mom />
-          </SelectedMomContext.Provider>
-        )}
-        {isStart && <ConfMediaBar />}
-      </ConfContext.Provider>
-    </SocketContext.Provider>
+    (momSocket !== null && workspaceSocket !== null) ?
+      <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
+        <ConfContext.Provider value={{ isStart, setIsStart }}>
+          {workspace && (
+            <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
+              <Sidebar workspace={workspace} />
+              <Mom />
+            </SelectedMomContext.Provider>
+          )}
+          {isStart && <ConfMediaBar />}
+        </ConfContext.Provider>
+      </SocketContext.Provider>
+    : <></>
   );
 }
 
