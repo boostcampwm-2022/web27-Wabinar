@@ -32,7 +32,7 @@ function WorkspaceSettingModal({ title, onClose }: WorkspaceSettingModalProps) {
   return (
     <Modal title={title} isDark={true} onClose={onClose}>
       <>
-        <label className={style['input-label']}>
+        <label className={style['input-label']} htmlFor="code">
           <BiCodeBlock className={style['code-block-icon']} />
           <span className={style['label-title']}>참여코드</span>
         </label>
@@ -40,6 +40,7 @@ function WorkspaceSettingModal({ title, onClose }: WorkspaceSettingModalProps) {
           <CopyButton className={style['copy-icon']} target={code} />
           <input
             className={style.input}
+            id="code"
             type="text"
             value={code}
             disabled={true}
@@ -49,7 +50,7 @@ function WorkspaceSettingModal({ title, onClose }: WorkspaceSettingModalProps) {
           className={style.button}
           text="워크스페이스 탈퇴"
           onClick={onClick}
-        ></Button>
+        />
       </>
     </Modal>
   );

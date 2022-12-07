@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { TMom } from 'src/types/mom';
@@ -48,7 +48,7 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
       <h2>회의록</h2>
       <ul className={style['mom-list']}>
         {momList.map(({ _id: id, title }) => (
-          <li key={id} onClick={() => onSelect(id)}>
+          <li key={id} onClick={() => onSelect(id)} role="button" tabIndex={0}>
             {title}
           </li>
         ))}

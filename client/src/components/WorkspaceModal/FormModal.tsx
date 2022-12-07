@@ -60,6 +60,7 @@ function FormModal({
             value={inputValue}
             onChange={onChange}
             disabled={isDisabled}
+            autoFocus
           />
         </div>
 

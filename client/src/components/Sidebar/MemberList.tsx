@@ -12,7 +12,7 @@ function MemberList({ members }: MemberListProps) {
     <ul className={style['member-list']}>
       {members.map((item) => (
         <li key={item.id} className={style['member-item']}>
-          <img src={item.avatarUrl} />
+          <img src={item.avatarUrl} alt={item.name + '의 프로필 사진'} />
           <span>{item.name}</span>
         </li>
       ))}
