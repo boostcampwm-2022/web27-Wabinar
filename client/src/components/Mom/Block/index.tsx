@@ -171,9 +171,8 @@ function Block({ id, onKeyDown, index }: BlockProps) {
     );
     const nextText = blockRef.current.innerText.slice(previousLetterIndex + 1);
 
-    const pastedText = e.clipboardData.getData('text/plain');
+    const pastedText = e.clipboardData.getData('text/plain').replace('\n', '');
     const remoteInsertions = pastedText
-      .replace('\n', '')
       .split('')
       .map((letter) => localInsertCRDT(previousLetterIndex++, letter));
 
