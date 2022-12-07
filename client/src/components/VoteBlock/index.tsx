@@ -18,7 +18,7 @@ const initialOption: Option[] = [{ id: 1, text: '' }];
 
 function VoteBlock() {
   const [options, setOptions] = useState<Option[]>(initialOption);
-  const [isStartedVote, setIsStartedVote] = useState<boolean>(false); // 투표 종료를 했는데 isRegister로 구분해주는게 어색해서 시작했는지 아닌지로 구분
+  const [isStartedVote, setIsStartedVote] = useState<boolean>(false);
 
   const getNextId = () => {
     const lastId = options.at(-1)?.id;
