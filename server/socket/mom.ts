@@ -23,7 +23,7 @@ async function momSocketServer(io: Server) {
     socket.on(SOCKET_MESSAGE.MOM.CREATE, async () => {
       const mom = await crdtManager.onCreateMom(workspaceId);
 
-      workspace.emit(SOCKET_MESSAGE.MOM.CREATE, mom);
+      io.of(namespace).emit(SOCKET_MESSAGE.MOM.CREATE, mom);
     });
 
     /* 회의록 선택하기 */
@@ -101,6 +101,20 @@ async function momSocketServer(io: Server) {
       await crdtManager.onDeleteText(blockId, op);
 
       socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, blockId, op);
+    });
+
+    socket.on(SOCKET_MESSAGE.BLOCK.UPDATE_TEXT, async (blockId, ops) => {
+      const momId = socket.data.momId;
+
+      for await (const op of ops) {
+        await crdtManager.onInsertText(blockId, op);
+      }
+
+      const blockCrdt = await crdtManager.getBlockCRDT(blockId);
+
+      socket
+        .to(momId)
+        .emit(SOCKET_MESSAGE.BLOCK.UPDATE_TEXT, blockId, blockCrdt.data);
     });
 
     addEventHandlersForQuestionBlock(workspace, socket);

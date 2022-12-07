@@ -5,9 +5,8 @@
   "scripts": {
     "dev": "node-dev index.ts",
     "test": "jest",
-    "build": "tsc && tsc-alias"
+    "build": "tsc --build && tsc-alias"
   },
-  "packageManager": "yarn@3.2.4",
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",
     "@types/express": "^4.17.14",
