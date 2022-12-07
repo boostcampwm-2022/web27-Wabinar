@@ -1,29 +1,21 @@
 {
   "extends": "./tsconfig.path.json",
-  "ts-node": {
-    "files": true,
-    "transpileOnly": true,
-    "require": [
-      "typescript-transform-paths/register",
-      "tsconfig-paths/register"
-    ]
-  },
+  "include": ["./**/*"],
+  "exclude": ["*/test.ts", "./dist"],
   "compilerOptions": {
     "target": "ESNext",
     "module": "CommonJS",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "downlevelIteration": true,
-    "typeRoots": ["../node_modules/@types", "./@types"],
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "skipLibCheck": true,
     "outDir": "./dist",
-    "plugins": [
-      {
-        "transform": "typescript-transform-paths"
-      }
-    ]
-  }
+    "typeRoots": ["../node_modules/@types", "./@types"],
+    "isolatedModules": true,
+    "disableSourceOfProjectReferenceRedirect": true
+  },
+  "references": [
+    { "path": "../@wabinar/crdt" },
+    { "path": "../@wabinar/api-types" }
+  ]
 }
