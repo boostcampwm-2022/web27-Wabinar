@@ -40,7 +40,7 @@ function Block({ id, index, onKeyDown }: BlockProps) {
     }
   }, [type]);
 
-  const onSelect = (id: BlockType) => {
+  const setBlockType = (id: BlockType) => {
     localUpdateFlagRef.current = true;
     setType(id);
   };
@@ -56,7 +56,7 @@ function Block({ id, index, onKeyDown }: BlockProps) {
           index={index}
           onKeyDown={onKeyDown}
           type={type}
-          onSelect={onSelect}
+          setType={setBlockType}
         />
       );
     default:

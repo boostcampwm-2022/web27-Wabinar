@@ -17,10 +17,10 @@ interface BlockProps {
   index: number;
   onKeyDown: React.KeyboardEventHandler;
   type: BlockType;
-  onSelect: (arg: BlockType) => void;
+  setType: (arg: BlockType) => void;
 }
 
-function TextBlock({ id, index, onKeyDown, type, onSelect }: BlockProps) {
+function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -221,6 +221,11 @@ function TextBlock({ id, index, onKeyDown, type, onSelect }: BlockProps) {
   const BLOCK_TYPES = Object.values(BlockType)
     .filter((el) => typeof el === 'string')
     .map((el) => (el as string).toLocaleLowerCase());
+
+  const onSelect = (id: BlockType) => {
+    setType(id);
+    setIsOpen(false);
+  };
 
   return (
     <>
