@@ -156,6 +156,10 @@ function TextBlock({ id, index, onKeyDown, type, onSelect }: BlockProps) {
     };
   }, []);
 
+  useEffect(() => {
+    socket.emit(SOCKET_MESSAGE.BLOCK.INIT, id);
+  }, [type]);
+
   // 한글 입력 핸들링
   const onCompositionEnd: React.CompositionEventHandler = (e) => {
     const event = e.nativeEvent as CompositionEvent;
