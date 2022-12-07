@@ -44,6 +44,7 @@ function Workspace() {
     });
     
     loadWorkspaceInfo();
+    setIsStart(false);
 
     return () => {
       setMomSocket(prev => {
