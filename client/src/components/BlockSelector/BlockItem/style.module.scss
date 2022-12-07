@@ -1,0 +1,31 @@
+@import 'styles/color.module';
+
+.block-item {
+  display: flex;
+  margin: 5px;
+  padding: 5px;
+  font-size: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $gray-300-transparent;
+  }
+
+  img {
+    width: 46px;
+    height: 46px;
+    background-color: $white;
+    box-shadow: rgb(15 15 15 / 10%) 0px 0px 0px 1px;
+  }
+
+  .text {
+    flex: 1 1 auto;
+    margin-left: 6px;
+    .name {
+      color: $black;
+    }
+    .desc {
+      color: $gray-100;
+    }
+  }
+}
