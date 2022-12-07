@@ -2,8 +2,7 @@ import mongoose from '@db';
 import { Schema } from 'mongoose';
 import { Vote } from '../vote/service';
 import { Question } from '../questions/service';
-
-export type BlockType = 'h1' | 'h2' | 'h3' | 'p' | 'vote' | 'question';
+import { BlockType } from '@wabinar/api-types/block';
 
 interface Block {
   id: string;
