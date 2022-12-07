@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
-import useBlockFocus from 'src/hooks/useBlockFocus';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
 import useSelectedMom from 'src/hooks/useSelectedMom';
@@ -39,9 +38,38 @@ function Mom() {
   );
 
   const [blocks, setBlocks] = useState<string[]>([]);
-  const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
 
-  const { updateFocus, setFocus, setCaretToEnd } = useBlockFocus(blockRefs);
+  const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
+  const focusIndex = useRef<number>();
+
+  const updateBlockFocus = (idx: number | undefined) => {
+    focusIndex.current = idx;
+  };
+
+  const setBlockFocus = () => {
+    if (!blockRefs.current || focusIndex.current === undefined) return;
+
+    const idx = focusIndex.current;
+
+    const targetBlock = blockRefs.current[idx];
+
+    if (!targetBlock || !targetBlock.current) return;
+
+    targetBlock.current.focus();
+  };
+
+  const setCaretToEnd = () => {
+    const selection = getSelection();
+
+    if (!selection) return;
+
+    const range = selection.getRangeAt(0);
+
+    if (!range) return;
+
+    range.selectNodeContents(range.startContainer);
+    range.collapse();
+  };
 
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
@@ -56,7 +84,7 @@ function Mom() {
 
       const remoteInsertion = localInsertCRDT(index, blockId);
 
-      updateFocus(index + 1);
+      updateBlockFocus(index + 1);
 
       socket.emit(SOCKET_MESSAGE.MOM.INSERT_BLOCK, blockId, remoteInsertion);
       return;
@@ -73,15 +101,19 @@ function Mom() {
 
       const remoteDeletion = localDeleteCRDT(index);
 
-      updateFocus(index - 1);
+      updateBlockFocus(index - 1);
 
       setBlocks(spreadCRDT());
-      setFocus();
+      setBlockFocus();
       setCaretToEnd();
 
       socket.emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, id, remoteDeletion);
     }
   };
+
+  useEffect(() => {
+    setBlockFocus();
+  }, [blocks]);
 
   useEffect(() => {
     if (!selectedMom) return;
@@ -106,14 +138,14 @@ function Mom() {
     socket.on(SOCKET_MESSAGE.MOM.INSERT_BLOCK, (op) => {
       remoteInsertCRDT(op);
 
-      updateFocus(undefined);
+      updateBlockFocus(undefined);
       setBlocks(spreadCRDT());
     });
 
     socket.on(SOCKET_MESSAGE.MOM.DELETE_BLOCK, (op) => {
       remoteDeleteCRDT(op);
 
-      updateFocus(undefined);
+      updateBlockFocus(undefined);
       setBlocks(spreadCRDT());
     });
 
@@ -146,10 +178,6 @@ function Mom() {
       ].forEach((event) => socket.off(event));
     };
   }, [selectedMom]);
-
-  useEffect(() => {
-    setFocus();
-  }, [blocks]);
 
   return selectedMom ? (
     <div className={style['mom-container']}>
