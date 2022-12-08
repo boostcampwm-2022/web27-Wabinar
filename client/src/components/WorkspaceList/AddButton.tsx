@@ -6,7 +6,11 @@ interface AddButtonProps {
   onClick: React.MouseEventHandler;
 }
 function AddButton({ onClick }: AddButtonProps) {
-  return <MdAdd onClick={onClick} className={style.button} size={20} />;
+  return (
+    <button className={style.button} onClick={onClick} aria-label="추가">
+      <MdAdd size={20} color="white" />
+    </button>
+  );
 }
 
 export default AddButton;
