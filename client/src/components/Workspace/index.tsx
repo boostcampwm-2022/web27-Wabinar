@@ -1,12 +1,11 @@
+import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import Mom from 'components/Mom';
 import Sidebar from 'components/Sidebar';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Socket } from 'socket.io-client';
 import { getWorkspaceInfo } from 'src/apis/workspace';
-import ConfMediaBar from 'src/components/ConfMediaBar';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
-import ConfContext from 'src/contexts/conf';
+import MeetingMediaBar from 'src/components/MeetingMediaBar';
+import MeetingContext from 'src/contexts/meeting';
 import { SelectedMomContext } from 'src/contexts/selected-mom';
 import { SocketContext } from 'src/contexts/socket';
 import useSocket from 'src/hooks/useSocket';
@@ -15,13 +14,13 @@ import { WorkspaceInfo } from 'src/types/workspace';
 
 function Workspace() {
   const { id } = useParams();
-  const [isStart, setIsStart] = useState(false);
+  const [isOnGoing, setIsOnGoing] = useState(false);
 
   const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
 
-  const [momSocket, setMomSocket] = useState<Socket | null>(null);
-  const [workspaceSocket, setWorkspaceSocket] = useState<Socket | null>(null);
+  const momSocket = useSocket(`/sc-workspace/${id}`);
+  const workspaceSocket = useSocket(`/workspace/${id}`);
 
   const loadWorkspaceInfo = async () => {
     if (id) {
@@ -34,28 +33,8 @@ function Workspace() {
   };
 
   useEffect(() => {
-    setMomSocket(prev => {
-      prev?.disconnect();
-      return useSocket(`/sc-workspace/${id}`)
-    });
-    setWorkspaceSocket(prev => {
-      prev?.disconnect();
-      return useSocket(`/workspace/${id}`)
-    });
-    
     loadWorkspaceInfo();
-    setIsStart(false);
-
-    return () => {
-      setMomSocket(prev => {
-        prev?.disconnect();
-        return null;
-      });
-      setWorkspaceSocket(prev => {
-        prev?.disconnect();
-        return null;
-      });
-    }
+    setIsOnGoing(false);
   }, [id]);
 
   useEffect(() => {
@@ -63,34 +42,34 @@ function Workspace() {
       return;
     }
 
-    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.START_MEETING, () => {
-      setIsStart(true);
+    workspaceSocket.on(WORKSPACE_EVENT.START_MEETING, () => {
+      setIsOnGoing(true);
     });
 
-    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.END_MEETING, () => {
-      setIsStart(false);
+    workspaceSocket.on(WORKSPACE_EVENT.END_MEETING, () => {
+      setIsOnGoing(false);
     });
 
     return () => {
-      workspaceSocket.off(SOCKET_MESSAGE.WORKSPACE.START_MEETING);
-      workspaceSocket.off(SOCKET_MESSAGE.WORKSPACE.END_MEETING);
-    }
+      workspaceSocket.off(WORKSPACE_EVENT.START_MEETING);
+      workspaceSocket.off(WORKSPACE_EVENT.END_MEETING);
+    };
   }, [workspaceSocket]);
 
+  if (!momSocket || !workspaceSocket) return <></>;
+
   return (
-    (momSocket !== null && workspaceSocket !== null) ?
-      <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
-        <ConfContext.Provider value={{ isStart, setIsStart }}>
-          {workspace && (
-            <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
-              <Sidebar workspace={workspace} />
-              <Mom />
-            </SelectedMomContext.Provider>
-          )}
-          {isStart && <ConfMediaBar />}
-        </ConfContext.Provider>
-      </SocketContext.Provider>
-    : <></>
+    <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
+      <MeetingContext.Provider value={{ isOnGoing, setIsOnGoing }}>
+        {workspace && (
+          <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
+            <Sidebar workspace={workspace} />
+            <Mom />
+          </SelectedMomContext.Provider>
+        )}
+        {isOnGoing && <MeetingMediaBar />}
+      </MeetingContext.Provider>
+    </SocketContext.Provider>
   );
 }
 

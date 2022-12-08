@@ -6,6 +6,7 @@ import env from 'config';
 import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
+import WabinarIcon from 'src/components/common/Icon/Wabinar';
 import { useUserContext } from 'src/hooks/useUserContext';
 
 import style from './style.module.scss';
@@ -39,12 +40,10 @@ function LoginPage() {
         <LogoIcon className={style.logo} />
         <BubblesIcon className={style.bubbles} />
       </div>
-
       <div className={style.copy}>
-        <p>회의와 기록을 한번에</p>
-        <p>원툴 웨비나</p>
+        <WabinarIcon />
+        <p>💻 회의와 기록을 한번에 📝</p>
       </div>
-
       <Button
         className={style['login-btn']}
         text="로그인"

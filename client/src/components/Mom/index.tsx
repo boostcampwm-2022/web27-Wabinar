@@ -1,15 +1,12 @@
-import VoteBlockTemplate from 'common/Templates/VoteBlock';
+import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
+import Block from 'components/Block';
 import { useEffect, useRef, useState } from 'react';
-import { VOTE_MODE } from 'src/constants/block';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
-import { Option, VoteMode } from 'src/types/block';
 import { v4 as uuid } from 'uuid';
 
-import Block from './Block';
 import DefaultMom from './DefaultMom';
 import ee from './EventEmitter';
 import style from './style.module.scss';
@@ -17,8 +14,6 @@ import style from './style.module.scss';
 function Mom() {
   const { selectedMom } = useSelectedMom();
   const { momSocket: socket } = useSocketContext();
-
-  const [voteMode, setVoteMode] = useState<VoteMode | null>(null);
 
   const {
     syncCRDT,
@@ -37,7 +32,7 @@ function Mom() {
 
       const title = titleRef.current.innerText;
 
-      socket.emit(SOCKET_MESSAGE.MOM.UPDATE_TITLE, title);
+      socket.emit(MOM_EVENT.UPDATE_TITLE, title);
     },
     500,
   );
@@ -91,7 +86,7 @@ function Mom() {
 
       updateBlockFocus(index + 1);
 
-      socket.emit(SOCKET_MESSAGE.MOM.INSERT_BLOCK, blockId, remoteInsertion);
+      socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
       return;
     }
 
@@ -112,12 +107,9 @@ function Mom() {
       setBlockFocus();
       setCaretToEnd();
 
-      socket.emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, id, remoteDeletion);
+      socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
     }
   };
-
-  const initialOption: Option[] = [{ id: 1, text: '', count: 0 }];
-  const [options, setOptions] = useState<Option[]>(initialOption);
 
   useEffect(() => {
     setBlockFocus();
@@ -126,74 +118,68 @@ function Mom() {
   useEffect(() => {
     if (!selectedMom) return;
 
-    socket.emit(SOCKET_MESSAGE.MOM.INIT, selectedMom._id);
+    socket.emit(MOM_EVENT.INIT, selectedMom._id);
 
-    socket.on(SOCKET_MESSAGE.MOM.INIT, (crdt) => {
+    socket.on(MOM_EVENT.INIT, (crdt) => {
       syncCRDT(crdt);
       setBlocks(spreadCRDT());
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.UPDATE_TITLE, (title) => {
+    socket.on(MOM_EVENT.UPDATE_TITLE, (title) => {
       if (!titleRef.current) return;
 
       titleRef.current.innerText = title;
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.UPDATED, () => {
+    socket.on(MOM_EVENT.UPDATED, () => {
       setBlocks(spreadCRDT());
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.INSERT_BLOCK, (op) => {
+    socket.on(MOM_EVENT.INSERT_BLOCK, (op) => {
       remoteInsertCRDT(op);
 
       updateBlockFocus(undefined);
       setBlocks(spreadCRDT());
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.DELETE_BLOCK, (op) => {
+    socket.on(MOM_EVENT.DELETE_BLOCK, (op) => {
       remoteDeleteCRDT(op);
 
       updateBlockFocus(undefined);
       setBlocks(spreadCRDT());
     });
 
-    socket.on(SOCKET_MESSAGE.BLOCK.INIT, (id, crdt) => {
-      ee.emit(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, crdt);
+    socket.on(BLOCK_EVENT.INIT, (id, crdt) => {
+      ee.emit(`${BLOCK_EVENT.INIT}-${id}`, crdt);
     });
 
-    socket.on(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, (id, op) => {
-      ee.emit(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, op);
+    socket.on(BLOCK_EVENT.INSERT_TEXT, (id, op) => {
+      ee.emit(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, op);
     });
 
-    socket.on(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, (id, op) => {
-      ee.emit(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, op);
+    socket.on(BLOCK_EVENT.DELETE_TEXT, (id, op) => {
+      ee.emit(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, op);
     });
 
-    socket.on(SOCKET_MESSAGE.BLOCK.UPDATE_TEXT, (id, crdt) => {
-      ee.emit(`${SOCKET_MESSAGE.BLOCK.UPDATE_TEXT}-${id}`, crdt);
+    socket.on(BLOCK_EVENT.UPDATE_TEXT, (id, crdt) => {
+      ee.emit(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, crdt);
     });
 
-    socket.on(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, (id, type) => {
-      ee.emit(`${SOCKET_MESSAGE.BLOCK.UPDATE_TYPE}-${id}`, type);
-    });
-
-    socket.on(SOCKET_MESSAGE.MOM.CREATE_VOTE, (options) => {
-      setVoteMode(VOTE_MODE.REGISTERED as VoteMode);
-      setOptions(options);
+    socket.on(BLOCK_EVENT.UPDATE_TYPE, (id, type) => {
+      ee.emit(`${BLOCK_EVENT.UPDATE_TYPE}-${id}`, type);
     });
 
     return () => {
       [
-        SOCKET_MESSAGE.MOM.INIT,
-        SOCKET_MESSAGE.MOM.UPDATE_TITLE,
-        SOCKET_MESSAGE.MOM.UPDATED,
-        SOCKET_MESSAGE.MOM.INSERT_BLOCK,
-        SOCKET_MESSAGE.MOM.DELETE_BLOCK,
-        SOCKET_MESSAGE.BLOCK.INIT,
-        SOCKET_MESSAGE.BLOCK.INSERT_TEXT,
-        SOCKET_MESSAGE.BLOCK.DELETE_TEXT,
-        SOCKET_MESSAGE.BLOCK.UPDATE_TYPE,
-        SOCKET_MESSAGE.MOM.CREATE_VOTE,
+        MOM_EVENT.INIT,
+        MOM_EVENT.UPDATE_TITLE,
+        MOM_EVENT.UPDATED,
+        MOM_EVENT.INSERT_BLOCK,
+        MOM_EVENT.DELETE_BLOCK,
+        BLOCK_EVENT.INIT,
+        BLOCK_EVENT.INSERT_TEXT,
+        BLOCK_EVENT.DELETE_TEXT,
+        BLOCK_EVENT.UPDATE_TYPE,
       ].forEach((event) => socket.off(event));
     };
   }, [selectedMom]);
@@ -226,16 +212,6 @@ function Mom() {
             />
           ))}
         </div>
-        {/* TODO: 임시로 놓은 투표 블록임 */}
-        <button onClick={() => setVoteMode('create')}>투표 등록</button>
-        {voteMode && (
-          <VoteBlockTemplate
-            mode={voteMode}
-            setVoteMode={setVoteMode}
-            options={options}
-            setOptions={setOptions}
-          />
-        )}
       </div>
     </div>
   ) : (

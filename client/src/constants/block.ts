@@ -37,8 +37,8 @@ export const BLOCKS_TYPE = [
   },
 ];
 
-export const VOTE_MODE = {
-  CREATE: 'create',
-  REGISTERED: 'registered',
-  END: 'end',
-};
+export enum VoteMode {
+  CREATE,
+  REGISTERED,
+  END,
+}

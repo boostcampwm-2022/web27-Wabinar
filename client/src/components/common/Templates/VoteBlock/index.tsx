@@ -1,42 +1,43 @@
 import { BiX } from '@react-icons/all-files/bi/BiX';
+import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import classNames from 'classnames/bind';
 import Button from 'common/Button';
 import { ChangeEventHandler, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { VOTE_MODE } from 'src/constants/block';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
+import { VoteMode } from 'src/constants/block';
 import useDebounceInput from 'src/hooks/useDebounceInput';
-import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { useUserContext } from 'src/hooks/useUserContext';
-import { Option, VoteMode } from 'src/types/block';
+import { Option } from 'src/types/block';
+import color from 'styles/color.module.scss';
 
 import style from './style.module.scss';
 
 const cx = classNames.bind(style);
 
 interface VoteBlockProps {
+  id: string;
   mode: VoteMode;
-  setVoteMode: React.Dispatch<React.SetStateAction<VoteMode | null>>;
+  setVoteMode: React.Dispatch<React.SetStateAction<VoteMode>>;
   options: Option[];
   setOptions: React.Dispatch<React.SetStateAction<Option[]>>;
 }
 
 function VoteBlockTemplate({
+  id,
   mode,
   setVoteMode,
   options,
   setOptions,
 }: VoteBlockProps) {
   const [isCreateMode, isRegisteredMode, isEndMode] = [
-    mode === VOTE_MODE.CREATE,
-    mode === VOTE_MODE.REGISTERED,
-    mode === VOTE_MODE.END,
+    mode === VoteMode.CREATE,
+    mode === VoteMode.REGISTERED,
+    mode === VoteMode.END,
   ];
 
   const { user } = useUserContext();
   const { momSocket: socket } = useSocketContext();
-  const { selectedMom } = useSelectedMom();
 
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
   const [participantCount, setParticipantCount] = useState(0);
@@ -64,9 +65,9 @@ function VoteBlockTemplate({
     }
 
     setOptions(validOptions);
-    setVoteMode('registered');
+    setVoteMode(VoteMode.REGISTERED);
 
-    socket.emit(SOCKET_MESSAGE.MOM.CREATE_VOTE, selectedMom?._id, validOptions);
+    socket.emit(BLOCK_EVENT.CREATE_VOTE, validOptions);
 
     toast('투표 등록 완료 ^^', { type: 'info' });
   };
@@ -86,7 +87,7 @@ function VoteBlockTemplate({
   };
 
   const onEnd = () => {
-    socket.emit(SOCKET_MESSAGE.MOM.END_VOTE, selectedMom?._id);
+    socket.emit(BLOCK_EVENT.END_VOTE);
   };
 
   const onChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
@@ -108,31 +109,34 @@ function VoteBlockTemplate({
 
     setSelectedOptionId(targetId);
 
-    socket.emit(
-      SOCKET_MESSAGE.MOM.UPDATE_VOTE,
-      selectedMom?._id,
-      targetId,
-      user?.id,
-    );
+    socket.emit(BLOCK_EVENT.UPDATE_VOTE, targetId, user?.id);
   };
 
   useEffect(() => {
-    socket.on(SOCKET_MESSAGE.MOM.UPDATE_VOTE, (participantCount) => {
+    socket.on(BLOCK_EVENT.UPDATE_VOTE, (participantCount) => {
       setParticipantCount(participantCount);
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.END_VOTE, ({ options, participantCount }) => {
-      setVoteMode('end');
+    socket.on(BLOCK_EVENT.END_VOTE, ({ options, participantCount }) => {
+      setVoteMode(VoteMode.END);
       setOptions(options);
       setParticipantCount(participantCount);
       toast('투표가 종료되었어요 ^^');
     });
 
     return () => {
-      socket.off(SOCKET_MESSAGE.MOM.UPDATE_VOTE);
-      socket.off(SOCKET_MESSAGE.MOM.END_VOTE);
+      socket.off(BLOCK_EVENT.UPDATE_VOTE);
+      socket.off(BLOCK_EVENT.END_VOTE);
     };
   }, [setParticipantCount]);
+
+  const getPercent = (count: number) => {
+    return (count / participantCount) * 100;
+  };
+
+  const getVoteResultText = (count: number) => {
+    return `(${count}/${participantCount}) ${getPercent(count).toFixed(2)}%`;
+  };
 
   return (
     <div className={style['vote-container']}>
@@ -144,7 +148,7 @@ function VoteBlockTemplate({
       )}
 
       <ul>
-        {options.map(({ id, text }, index) => (
+        {options.map(({ id, text, count }, index) => (
           <li
             className={cx('option-item', {
               'selected-item':
@@ -153,6 +157,16 @@ function VoteBlockTemplate({
             key={id}
             onClick={() => onSelect(id)}
           >
+            {isEndMode && (
+              <div
+                className={style['vote-result-bar']}
+                style={{
+                  width: `${getPercent(count)}%`,
+                  backgroundColor: color.highlight100,
+                }}
+              ></div>
+            )}
+
             <div className={style['box-fill']}>{index + 1}</div>
             <input
               type="text"
@@ -171,6 +185,11 @@ function VoteBlockTemplate({
                 ariaLabel="항목 삭제"
                 onClick={() => onDelete(id)}
               />
+            )}
+            {isEndMode && (
+              <div className={style['vote-result-text']}>
+                {getVoteResultText(count)}
+              </div>
             )}
           </li>
         ))}

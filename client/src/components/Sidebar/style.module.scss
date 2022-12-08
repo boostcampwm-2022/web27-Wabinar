@@ -1,21 +1,35 @@
-@import 'styles/color.module.scss';
+@import 'styles/color.module';
+
+@mixin container {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+  width: 100%;
+  padding: 25px;
+  gap: 15px;
+}
 
 .sidebar-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  width: 252px;
+  min-width: 240px;
   height: 100vh;
+  overflow: hidden;
 }
 
-@mixin container {
+.sidebar-container__scrollable {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 100%;
   box-sizing: border-box;
-  padding: 25px;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: calc(100vh - 127px);
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
 }
 
 .header {
@@ -31,6 +45,11 @@
     font-size: 20px;
     font-weight: 500;
   }
+
+  & > svg {
+    stroke: $gray-200;
+    fill: $gray-200;
+  }
 }
 
 .member-list {
@@ -39,12 +58,12 @@
 }
 
 .member-item {
-  width: 100%;
   display: flex;
   flex-direction: row;
-  gap: 20px;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
+  gap: 20px;
 
   & > img {
     width: 40px;
@@ -59,23 +78,52 @@
 
 .mom-list-container {
   @include container;
+}
+
+.mom-list-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 
   & > h2 {
+    color: $black;
     font-size: 18px;
     font-weight: 500;
-    color: $black;
   }
+}
 
-  & > button {
-    font-size: 16px;
-    text-align: start;
-    color: $gray-100;
+.mom-add-icon {
+  stroke: $gray-200;
+  fill: $gray-200;
+  cursor: pointer;
+}
+
+.mom-add-icon__highlighted {
+  transform: scale(2);
+  animation: highlight 0.5s ease-in infinite;
+  stroke: $primary-100;
+  fill: $primary-100;
+}
+
+@keyframes highlight {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(7deg);
+  }
+  75% {
+    transform: rotate(-7deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
 
 .mom-list {
-  font-size: 16px;
   color: $gray-100;
+  font-size: 16px;
 
   & > li {
     margin-top: 15px;
@@ -87,9 +135,9 @@
   }
 }
 
-.conf-button {
+.meeting-button {
   position: absolute;
-  bottom: 20px;
+  bottom: 15px;
   width: 80px;
   height: 25px;
   border-radius: 13px;
