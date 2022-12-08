@@ -127,9 +127,21 @@ function TextBlock({
     };
   }, []);
 
+  useEffect(() => {
+    updateCaretPosition();
+  }, [isOpen]);
+
   // 로컬에서 일어나는 작성 - 삽입과 삭제 연산
   const onInput: React.FormEventHandler = (e) => {
     setOffset();
+
+    if (!blockRef.current) return;
+
+    if (blockRef.current.innerText === '/') {
+      setIsOpen(true);
+    } else if (isOpen) {
+      setIsOpen(false);
+    }
 
     if (offsetRef.current === null) return;
 
