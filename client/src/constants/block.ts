@@ -2,20 +2,20 @@ export const BLOCKS_TYPE = [
   {
     id: 0,
     name: '제목 1',
-    desc: '질문할 때 사용해보세요',
-    thumbnail: 'https://www.notion.so/images/blocks/text/ko-KR.png',
+    desc: '섹션 제목(대)',
+    thumbnail: 'https://www.notion.so/images/blocks/header.57a7576a.png',
   },
   {
     id: 1,
     name: '제목 2',
-    desc: '질문할 때 사용해보세요',
-    thumbnail: 'https://www.notion.so/images/blocks/text/ko-KR.png',
+    desc: '섹션 제목(중)',
+    thumbnail: 'https://www.notion.so/images/blocks/subheader.9aab4769.png',
   },
   {
     id: 2,
     name: '제목 3',
-    desc: '질문할 때 사용해보세요',
-    thumbnail: 'https://www.notion.so/images/blocks/text/ko-KR.png',
+    desc: '섹션 제목(소)',
+    thumbnail: 'https://www.notion.so/images/blocks/subsubheader.d0ed0bb3.png',
   },
   {
     id: 3,
