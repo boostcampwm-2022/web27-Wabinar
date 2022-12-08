@@ -15,7 +15,11 @@ function CopyButton({ target, className }: CopyButtonProps) {
     }
   };
 
-  return <BiCopy className={className} onClick={onCopy} />;
+  return (
+    <button className={className} onClick={onCopy} aria-label="참여코드 복사">
+      <BiCopy />
+    </button>
+  );
 }
 
 export default CopyButton;

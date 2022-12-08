@@ -36,3 +36,9 @@ export const BLOCKS_TYPE = [
     thumbnail: 'https://www.notion.so/images/blocks/to-do.f8d20542.png',
   },
 ];
+
+export const VOTE_MODE = {
+  CREATE: 'create',
+  REGISTERED: 'registered',
+  END: 'end',
+};

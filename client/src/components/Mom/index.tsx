@@ -1,9 +1,12 @@
+import VoteBlockTemplate from 'common/Templates/VoteBlock';
 import { useEffect, useRef, useState } from 'react';
+import { VOTE_MODE } from 'src/constants/block';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
+import { Option, VoteMode } from 'src/types/block';
 import { v4 as uuid } from 'uuid';
 
 import Block from './Block';
@@ -14,6 +17,8 @@ import style from './style.module.scss';
 function Mom() {
   const { selectedMom } = useSelectedMom();
   const { momSocket: socket } = useSocketContext();
+
+  const [voteMode, setVoteMode] = useState<VoteMode | null>(null);
 
   const {
     syncCRDT,
@@ -68,6 +73,9 @@ function Mom() {
     }
   };
 
+  const initialOption: Option[] = [{ id: 1, text: '', count: 0 }];
+  const [options, setOptions] = useState<Option[]>(initialOption);
+
   useEffect(() => {
     if (!selectedMom) return;
 
@@ -116,6 +124,11 @@ function Mom() {
       ee.emit(`${SOCKET_MESSAGE.BLOCK.UPDATE_TYPE}-${id}`, type);
     });
 
+    socket.on(SOCKET_MESSAGE.MOM.CREATE_VOTE, (options) => {
+      setVoteMode(VOTE_MODE.REGISTERED as VoteMode);
+      setOptions(options);
+    });
+
     return () => {
       [
         SOCKET_MESSAGE.MOM.INIT,
@@ -127,6 +140,7 @@ function Mom() {
         SOCKET_MESSAGE.BLOCK.INSERT_TEXT,
         SOCKET_MESSAGE.BLOCK.DELETE_TEXT,
         SOCKET_MESSAGE.BLOCK.UPDATE_TYPE,
+        SOCKET_MESSAGE.MOM.CREATE_VOTE,
       ].forEach((event) => socket.off(event));
     };
   }, [selectedMom]);
@@ -145,11 +159,22 @@ function Mom() {
           </h1>
           <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
         </div>
+
         <div className={style['mom-body']}>
           {blocks.map((id, index) => (
             <Block key={id} id={id} index={index} onKeyDown={onKeyDown} />
           ))}
         </div>
+        {/* TODO: 임시로 놓은 투표 블록임 */}
+        <button onClick={() => setVoteMode('create')}>투표 등록</button>
+        {voteMode && (
+          <VoteBlockTemplate
+            mode={voteMode}
+            setVoteMode={setVoteMode}
+            options={options}
+            setOptions={setOptions}
+          />
+        )}
       </div>
     </div>
   ) : (
