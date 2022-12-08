@@ -12,7 +12,7 @@ interface VoteBlockProps {
 function VoteBlock({ id }: VoteBlockProps) {
   const { momSocket: socket } = useSocketContext();
 
-  const [voteMode, setVoteMode] = useState<VoteMode>();
+  const [voteMode, setVoteMode] = useState<VoteMode>(VoteMode.CREATE);
   const initialOption: Option[] = [{ id: 1, text: '', count: 0 }];
   const [options, setOptions] = useState<Option[]>(initialOption);
 
@@ -21,11 +21,9 @@ function VoteBlock({ id }: VoteBlockProps) {
       setVoteMode(VoteMode.REGISTERED as VoteMode);
       setOptions(options);
     });
-
-    setVoteMode(VoteMode.CREATE);
   }, []);
 
-  return voteMode ? (
+  return (
     <VoteBlockTemplate
       id={id}
       mode={voteMode}
@@ -33,8 +31,6 @@ function VoteBlock({ id }: VoteBlockProps) {
       options={options}
       setOptions={setOptions}
     />
-  ) : (
-    <></>
   );
 }
 

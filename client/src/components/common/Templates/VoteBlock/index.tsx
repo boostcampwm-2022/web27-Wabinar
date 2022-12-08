@@ -18,7 +18,7 @@ const cx = classNames.bind(style);
 interface VoteBlockProps {
   id: string;
   mode: VoteMode;
-  setVoteMode: React.Dispatch<React.SetStateAction<VoteMode | undefined>>;
+  setVoteMode: React.Dispatch<React.SetStateAction<VoteMode>>;
   options: Option[];
   setOptions: React.Dispatch<React.SetStateAction<Option[]>>;
 }
