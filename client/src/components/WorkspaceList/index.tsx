@@ -1,4 +1,4 @@
-import Selector from 'common/Selector';
+import WorkspaceModalSelector from 'common/Selector';
 import WorkspaceModal from 'components/WorkspaceModal';
 import WorkspaceThumbnaliList from 'components/WorkspaceThumbnailList';
 import { memo, useState } from 'react';
@@ -26,7 +26,7 @@ function WorkspaceList() {
   return (
     <div className={style['workspace-list-container']}>
       <WorkspaceThumbnaliList workspaces={workspaces} />
-      <Selector
+      <WorkspaceModalSelector
         TriggerElement={AddButton}
         options={MENUS}
         onChange={onSelectMenu}
