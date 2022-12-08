@@ -7,6 +7,12 @@ export const getBlock = async (id: string) => {
   return block;
 };
 
+export const getBlockType = async (id: string) => {
+  const block = await blockModel.findOne({ id });
+
+  return block.type;
+};
+
 export const createBlock = async (id: string) => {
   const block = await blockModel.create({ id, type: BlockType.P });
 

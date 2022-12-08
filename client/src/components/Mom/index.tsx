@@ -112,6 +112,10 @@ function Mom() {
       ee.emit(`${SOCKET_MESSAGE.BLOCK.UPDATE_TEXT}-${id}`, crdt);
     });
 
+    socket.on(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, (id, type) => {
+      ee.emit(`${SOCKET_MESSAGE.BLOCK.UPDATE_TYPE}-${id}`, type);
+    });
+
     return () => {
       [
         SOCKET_MESSAGE.MOM.INIT,
@@ -122,6 +126,7 @@ function Mom() {
         SOCKET_MESSAGE.BLOCK.INIT,
         SOCKET_MESSAGE.BLOCK.INSERT_TEXT,
         SOCKET_MESSAGE.BLOCK.DELETE_TEXT,
+        SOCKET_MESSAGE.BLOCK.UPDATE_TYPE,
       ].forEach((event) => socket.off(event));
     };
   }, [selectedMom]);

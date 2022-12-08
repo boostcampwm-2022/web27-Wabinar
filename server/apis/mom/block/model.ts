@@ -1,8 +1,9 @@
 import mongoose from '@db';
 import { Schema } from 'mongoose';
+import { BlockType } from '@wabinar/api-types/block';
+
 import { Vote } from '../vote/service';
 import { Question } from '../questions/service';
-import { BlockType } from '@wabinar/api-types/block';
 
 interface Block {
   id: string;
