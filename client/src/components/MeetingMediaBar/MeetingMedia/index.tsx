@@ -7,7 +7,7 @@ interface MediaProps {
   muted: boolean;
 }
 
-function ConfMedia({ stream, muted }: MediaProps) {
+function MeetingMedia({ stream, muted }: MediaProps) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -18,4 +18,4 @@ function ConfMedia({ stream, muted }: MediaProps) {
   return <video className={style.video} ref={ref} muted={muted} autoPlay />;
 }
 
-export default memo(ConfMedia);
+export default memo(MeetingMedia);
