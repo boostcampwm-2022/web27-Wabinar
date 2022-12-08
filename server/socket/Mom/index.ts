@@ -69,18 +69,30 @@ async function momSocketServer(io: Server) {
     socket.on(MOM_EVENT.INSERT_BLOCK, async (blockId, op) => {
       const momId = socket.data.momId;
 
-      await crdtManager.onInsertBlock(momId, blockId, op);
+      try {
+        await crdtManager.onInsertBlock(momId, blockId, op);
 
-      socket.emit(MOM_EVENT.UPDATED);
-      socket.to(momId).emit(MOM_EVENT.INSERT_BLOCK, op);
+        socket.emit(MOM_EVENT.UPDATED);
+        socket.to(momId).emit(MOM_EVENT.INSERT_BLOCK, op);
+      } catch {
+        const momCrdt = await crdtManager.getMomCRDT(momId);
+
+        socket.emit(MOM_EVENT.INIT, momCrdt.data);
+      }
     });
 
     socket.on(MOM_EVENT.DELETE_BLOCK, async (blockId, op) => {
       const momId = socket.data.momId;
 
-      await crdtManager.onDeleteBlock(momId, blockId, op);
+      try {
+        await crdtManager.onDeleteBlock(momId, blockId, op);
 
-      socket.to(momId).emit(MOM_EVENT.DELETE_BLOCK, op);
+        socket.to(momId).emit(MOM_EVENT.DELETE_BLOCK, op);
+      } catch {
+        const momCrdt = await crdtManager.getMomCRDT(momId);
+
+        socket.emit(MOM_EVENT.INIT, momCrdt.data);
+      }
     });
 
     socket.on(BLOCK_EVENT.LOAD_TYPE, async (blockId, callback) => {
