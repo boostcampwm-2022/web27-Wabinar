@@ -1,10 +1,10 @@
+import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import Mom from 'components/Mom';
 import Sidebar from 'components/Sidebar';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getWorkspaceInfo } from 'src/apis/workspace';
 import MeetingMediaBar from 'src/components/MeetingMediaBar';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
 import MeetingContext from 'src/contexts/meeting';
 import { SelectedMomContext } from 'src/contexts/selected-mom';
 import { SocketContext } from 'src/contexts/socket';
@@ -42,17 +42,17 @@ function Workspace() {
       return;
     }
 
-    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.START_MEETING, () => {
+    workspaceSocket.on(WORKSPACE_EVENT.START_MEETING, () => {
       setIsOnGoing(true);
     });
 
-    workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.END_MEETING, () => {
+    workspaceSocket.on(WORKSPACE_EVENT.END_MEETING, () => {
       setIsOnGoing(false);
     });
 
     return () => {
-      workspaceSocket.off(SOCKET_MESSAGE.WORKSPACE.START_MEETING);
-      workspaceSocket.off(SOCKET_MESSAGE.WORKSPACE.END_MEETING);
+      workspaceSocket.off(WORKSPACE_EVENT.START_MEETING);
+      workspaceSocket.off(WORKSPACE_EVENT.END_MEETING);
     };
   }, [workspaceSocket]);
 

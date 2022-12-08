@@ -1,10 +1,10 @@
 import { BiX } from '@react-icons/all-files/bi/BiX';
+import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import classNames from 'classnames/bind';
 import Button from 'common/Button';
 import { ChangeEventHandler, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { VOTE_MODE } from 'src/constants/block';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
 import useDebounceInput from 'src/hooks/useDebounceInput';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -66,7 +66,7 @@ function VoteBlockTemplate({
     setOptions(validOptions);
     setVoteMode('registered');
 
-    socket.emit(SOCKET_MESSAGE.MOM.CREATE_VOTE, selectedMom?._id, validOptions);
+    socket.emit(BLOCK_EVENT.CREATE_VOTE, validOptions);
 
     toast('투표 등록 완료 ^^', { type: 'info' });
   };
@@ -86,7 +86,7 @@ function VoteBlockTemplate({
   };
 
   const onEnd = () => {
-    socket.emit(SOCKET_MESSAGE.MOM.END_VOTE, selectedMom?._id);
+    socket.emit(BLOCK_EVENT.END_VOTE);
   };
 
   const onChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
@@ -108,20 +108,15 @@ function VoteBlockTemplate({
 
     setSelectedOptionId(targetId);
 
-    socket.emit(
-      SOCKET_MESSAGE.MOM.UPDATE_VOTE,
-      selectedMom?._id,
-      targetId,
-      user?.id,
-    );
+    socket.emit(BLOCK_EVENT.UPDATE_VOTE, targetId, user?.id);
   };
 
   useEffect(() => {
-    socket.on(SOCKET_MESSAGE.MOM.UPDATE_VOTE, (participantCount) => {
+    socket.on(BLOCK_EVENT.UPDATE_VOTE, (participantCount) => {
       setParticipantCount(participantCount);
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.END_VOTE, ({ options, participantCount }) => {
+    socket.on(BLOCK_EVENT.END_VOTE, ({ options, participantCount }) => {
       setVoteMode('end');
       setOptions(options);
       setParticipantCount(participantCount);
@@ -129,8 +124,8 @@ function VoteBlockTemplate({
     });
 
     return () => {
-      socket.off(SOCKET_MESSAGE.MOM.UPDATE_VOTE);
-      socket.off(SOCKET_MESSAGE.MOM.END_VOTE);
+      socket.off(BLOCK_EVENT.UPDATE_VOTE);
+      socket.off(BLOCK_EVENT.END_VOTE);
     };
   }, [setParticipantCount]);
 
