@@ -1,4 +1,5 @@
 import { useState, useEffect, memo, useRef } from 'react';
+import SOCKET_MESSAGE from 'src/constants/socket-message';
 import useSocketContext from 'src/hooks/useSocketContext';
 
 import ee from '../EventEmitter';
@@ -28,7 +29,7 @@ function Block({ id, index, onKeyDown }: BlockProps) {
   useEffect(() => {
     socket.emit('load-type', id, (type: BlockType) => setType(type));
 
-    ee.on(`update-type-${id}`, (type) => {
+    ee.on(`${SOCKET_MESSAGE.BLOCK.UPDATE_TYPE}-${id}`, (type) => {
       setType(type);
       localUpdateFlagRef.current = false;
     });
@@ -36,7 +37,7 @@ function Block({ id, index, onKeyDown }: BlockProps) {
 
   useEffect(() => {
     if (localUpdateFlagRef.current) {
-      socket.emit('update-type', id, type);
+      socket.emit(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, id, type);
     }
   }, [type]);
 

@@ -88,12 +88,12 @@ async function momSocketServer(io: Server) {
       callback(type);
     });
 
-    socket.on('update-type', async (blockId, type) => {
+    socket.on(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, async (blockId, type) => {
       const momId = socket.data.momId;
 
       await putBlockType(blockId, type);
 
-      socket.to(momId).emit('update-type', blockId, type);
+      socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, blockId, type);
     });
 
     /* crdt for Block */
