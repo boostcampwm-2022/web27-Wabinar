@@ -1,14 +1,17 @@
-import style from './style.module.scss';
+import { BlockType } from '@wabinar/api-types/block';
 
+import style from './style.module.scss';
 interface BlockItemProps {
+  id: number;
   name: string;
   desc: string;
   thumbnail: string;
+  onSelect: (arg: BlockType) => void;
 }
 
-function BlockItem({ name, desc, thumbnail }: BlockItemProps) {
+function BlockItem({ id, name, desc, thumbnail, onSelect }: BlockItemProps) {
   return (
-    <li className={style['block-item']}>
+    <li className={style['block-item']} onClick={() => onSelect(id)}>
       <img src={thumbnail} alt={name + '블록'} />
 
       <div className={style.text}>

@@ -11,6 +11,7 @@ import LinkedList, {
   RemoteDeleteOperation,
   RemoteInsertOperation,
 } from '@wabinar/crdt/linked-list';
+import { BlockType } from '@wabinar/api-types/block';
 
 export default class CrdtManager {
   momMap;
@@ -81,14 +82,14 @@ export default class CrdtManager {
     const crdt = this.blockMap.get(blockId);
     crdt.remoteInsert(remoteInsertion);
 
-    await putBlock(blockId, crdt.plainData);
+    await putBlock(blockId, BlockType.P, crdt.plainData);
   }
 
   async onDeleteText(blockId: string, remoteDeletion: RemoteDeleteOperation) {
     const crdt = this.blockMap.get(blockId);
     crdt.remoteDelete(remoteDeletion);
 
-    await putBlock(blockId, crdt.plainData);
+    await putBlock(blockId, BlockType.P, crdt.plainData);
   }
 
   private async initMapEntry(momId: string, mom: Mom) {

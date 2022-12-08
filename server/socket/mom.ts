@@ -10,6 +10,8 @@ import SOCKET_MESSAGE from '@constants/socket-message';
 import CrdtManager from '@utils/crdt-manager';
 import { Namespace, Server, Socket } from 'socket.io';
 
+import { getBlockType, putBlockType } from '@apis/mom/block/service';
+
 async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
 
@@ -83,6 +85,20 @@ async function momSocketServer(io: Server) {
 
       socket.emit(SOCKET_MESSAGE.MOM.UPDATED);
       socket.to(momId).emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, op);
+    });
+
+    socket.on(SOCKET_MESSAGE.BLOCK.LOAD_TYPE, async (blockId, callback) => {
+      const type = await getBlockType(blockId);
+
+      callback(type);
+    });
+
+    socket.on(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, async (blockId, type) => {
+      const momId = socket.data.momId;
+
+      await putBlockType(blockId, type);
+
+      socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, blockId, type);
     });
 
     /* crdt for Block */
