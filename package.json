@@ -19,9 +19,11 @@
       "stylelint --config ./client/.stylelintrc --fix"
     ],
     "client/**/*.{ts,tsx}": [
+      "prettier --write",
       "eslint --config ./client/.eslintrc --fix"
     ],
     "server/**/*.ts": [
+      "prettier --write",
       "eslint --config ./server/.eslintrc --fix"
     ]
   },
