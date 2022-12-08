@@ -38,40 +38,6 @@ function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
   const { offsetRef, setOffset, clearOffset, offsetHandlers } =
     useOffset(blockRef);
 
-  // 로컬에서 일어나는 작성 - 삽입과 삭제 연산
-  const onInput: React.FormEventHandler = (e) => {
-    setOffset();
-
-    if (!blockRef.current) return;
-
-    if (blockRef.current.innerText === '/') {
-      setIsOpen(true);
-    } else if (isOpen) {
-      setIsOpen(false);
-    }
-
-    if (offsetRef.current === null) return;
-
-    const event = e.nativeEvent as InputEvent;
-
-    if (event.isComposing) return; // 한글 입력 무시
-
-    if (event.inputType === 'deleteContentBackward') {
-      const remoteDeletion = localDeleteCRDT(offsetRef.current);
-
-      socket.emit(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, id, remoteDeletion);
-      return;
-    }
-
-    const letter = event.data as string;
-
-    const previousLetterIndex = offsetRef.current - 2;
-
-    const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
-
-    socket.emit(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, id, remoteInsertion);
-  };
-
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
   const updateCaretPosition = (updateOffset = 0) => {
     if (!blockRef.current || offsetRef.current === null) return;
@@ -152,9 +118,28 @@ function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
     };
   }, []);
 
-  useEffect(() => {
-    socket.emit(SOCKET_MESSAGE.BLOCK.INIT, id);
-  }, [type]);
+  // 로컬에서 일어나는 작성 - 삽입과 삭제 연산
+  const onInput: React.FormEventHandler = (e) => {
+    setOffset();
+
+    if (offsetRef.current === null) return;
+
+    const event = e.nativeEvent as InputEvent;
+
+    if (event.isComposing) return; // 한글 입력 무시
+
+    if (event.inputType === 'deleteContentBackward') {
+      const remoteDeletion = localDeleteCRDT(offsetRef.current);
+      socket.emit(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, id, remoteDeletion);
+      return;
+    }
+
+    const letter = event.data as string;
+    const previousLetterIndex = offsetRef.current - 2;
+    const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
+
+    socket.emit(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, id, remoteInsertion);
+  };
 
   // 한글 입력 핸들링
   const onCompositionEnd: React.CompositionEventHandler = (e) => {
