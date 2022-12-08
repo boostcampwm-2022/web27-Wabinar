@@ -14,7 +14,7 @@ function CamButton({ isOn, setIsCamOn }: CamButtonProps) {
   };
 
   return (
-    <button onClick={onClick}>
+    <button onClick={onClick} aria-label={'캠 ' + (isOn ? '끄기' : '켜기')}>
       {isOn ? (
         <MdVideocam color={color.green} size={20} />
       ) : (
