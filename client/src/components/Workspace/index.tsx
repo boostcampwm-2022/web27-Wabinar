@@ -56,7 +56,9 @@ function Workspace() {
     };
   }, [workspaceSocket]);
 
-  return momSocket && workspaceSocket ? (
+  if (!momSocket || !workspaceSocket) return <></>;
+
+  return (
     <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
       <MeetingContext.Provider value={{ isOnGoing, setIsOnGoing }}>
         {workspace && (
@@ -68,8 +70,6 @@ function Workspace() {
         {isOnGoing && <MeetingMediaBar />}
       </MeetingContext.Provider>
     </SocketContext.Provider>
-  ) : (
-    <></>
   );
 }
 
