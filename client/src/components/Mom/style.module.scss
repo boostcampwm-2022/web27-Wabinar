@@ -99,13 +99,19 @@
   }
 
   .highlight {
+    height: 20px;
     margin: 0px 2px;
 
-    padding: 0px 5px;
-    border-radius: 12px;
+    padding: 3px 5px;
+    border-radius: 10px;
     background-color: $off-white;
 
     color: $primary-100;
     font-weight: 700;
+    line-height: 30px;
+
+    & > svg {
+      transform: translateY(5px);
+    }
   }
 }
