@@ -1,5 +1,23 @@
+@import 'styles/color.module';
+
 .video {
   width: 240px;
   height: 180px;
   border-radius: 20px;
+}
+
+.username {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+
+  padding: 2px 6px;
+
+  border-radius: 5px;
+
+  background-color: rgba($color: $gray-100, $alpha: 0.8);
+  color: $white;
+
+  font-size: small;
+  font-weight: 500;
 }
