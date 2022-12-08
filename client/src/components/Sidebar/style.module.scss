@@ -77,6 +77,13 @@
 
 .mom-list-container {
   @include container;
+}
+
+.mom-list-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 
   & > h2 {
     color: $black;
@@ -84,10 +91,9 @@
     font-weight: 500;
   }
 
-  & > button {
-    color: $gray-100;
-    font-size: 16px;
-    text-align: start;
+  & > svg {
+    stroke: $gray-200;
+    fill: $gray-200;
   }
 }
 
