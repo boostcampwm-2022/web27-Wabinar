@@ -1,13 +1,12 @@
 @import 'styles/color.module';
 
 .workspace-list-container {
-
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
-  min-width: 70px;
-  max-width: 70px;
+  min-width: 65px;
+  max-width: 65px;
   height: 100vh;
 
   background-color: $primary-100;
@@ -19,7 +18,6 @@
 }
 
 .menu {
-
   display: flex;
   position: relative;
   z-index: 1;
