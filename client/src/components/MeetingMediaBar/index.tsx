@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useConfMediaStreams } from 'src/hooks/useConfMediaStreams';
+import { useMeetingMediaStreams } from 'src/hooks/useMeetingMediaStreams';
 import useSocketContext from 'src/hooks/useSocketContext';
 
-import ConfMedia from './ConfMedia';
+import MeetingMedia from './MeetingMedia';
 import StreamButton from './StreamButton';
 import style from './style.module.scss';
 
-function ConfMediaBar() {
+function MeetingMediaBar() {
   const { workspaceSocket: socket } = useSocketContext();
-  const [streams, setMyTrack] = useConfMediaStreams(socket);
+  const [streams, setMyTrack] = useMeetingMediaStreams(socket);
 
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCamOn, setIsCamOn] = useState(true);
@@ -22,11 +22,11 @@ function ConfMediaBar() {
   }, [isCamOn]);
 
   return (
-    <div className={style['conf-bar']}>
+    <div className={style['meeting-bar']}>
       <ul>
         {Array.from(streams).map(([id, stream]) => (
           <li key={id}>
-            <ConfMedia
+            <MeetingMedia
               key={id}
               stream={stream}
               muted={id === 'me' ? true : false}
@@ -50,4 +50,4 @@ function ConfMediaBar() {
   );
 }
 
-export default ConfMediaBar;
+export default MeetingMediaBar;

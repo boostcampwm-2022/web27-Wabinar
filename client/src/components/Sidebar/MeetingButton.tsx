@@ -1,16 +1,16 @@
 import { memo } from 'react';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
-import { useConfContext } from 'src/hooks/useConfContext';
+import { useMeetingContext } from 'src/hooks/useMeetingContext';
 import useSocketContext from 'src/hooks/useSocketContext';
 import color from 'styles/color.module.scss';
 
 import style from './style.module.scss';
 
-function ConfButton() {
+function MeetingButton() {
   const { workspaceSocket: socket } = useSocketContext();
 
-  const ConfContext = useConfContext();
-  const { isStart, setIsStart } = ConfContext;
+  const MeetingContext = useMeetingContext();
+  const { isStart, setIsStart } = MeetingContext;
 
   const onClick = () => {
     setIsStart(!isStart);
@@ -23,7 +23,7 @@ function ConfButton() {
 
   return (
     <button
-      className={style['conf-button']}
+      className={style['meeting-button']}
       onClick={onClick}
       style={{ backgroundColor: isStart ? color.red : color.green }}
     >
@@ -32,4 +32,4 @@ function ConfButton() {
   );
 }
 
-export default memo(ConfButton);
+export default memo(MeetingButton);
