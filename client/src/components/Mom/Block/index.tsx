@@ -18,9 +18,10 @@ interface BlockProps {
   id: string;
   index: number;
   onKeyDown: React.KeyboardEventHandler;
+  registerRef: (arg: React.RefObject<HTMLElement>) => void;
 }
 
-function Block({ id, index, onKeyDown }: BlockProps) {
+function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const [type, setType] = useState<BlockType>();
@@ -60,6 +61,7 @@ function Block({ id, index, onKeyDown }: BlockProps) {
           onKeyDown={onKeyDown}
           type={type}
           setType={setBlockType}
+          registerRef={registerRef}
         />
       );
     default:

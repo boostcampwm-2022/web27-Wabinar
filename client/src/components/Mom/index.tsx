@@ -44,17 +44,52 @@ function Mom() {
 
   const [blocks, setBlocks] = useState<string[]>([]);
 
+  const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
+  const focusIndex = useRef<number>();
+
+  const updateBlockFocus = (idx: number | undefined) => {
+    focusIndex.current = idx;
+  };
+
+  const setBlockFocus = () => {
+    if (!blockRefs.current || focusIndex.current === undefined) return;
+
+    const idx = focusIndex.current;
+
+    const targetBlock = blockRefs.current[idx];
+
+    if (!targetBlock || !targetBlock.current) return;
+
+    targetBlock.current.focus();
+  };
+
+  const setCaretToEnd = () => {
+    const selection = getSelection();
+
+    if (!selection) return;
+
+    const range = selection.getRangeAt(0);
+
+    if (!range) return;
+
+    range.selectNodeContents(range.startContainer);
+    range.collapse();
+  };
+
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
 
-    const { index } = target.dataset;
+    const { index: indexString } = target.dataset;
+    const index = Number(indexString);
 
     if (e.key === 'Enter') {
       e.preventDefault();
 
       const blockId = uuid();
 
-      const remoteInsertion = localInsertCRDT(Number(index), blockId);
+      const remoteInsertion = localInsertCRDT(index, blockId);
+
+      updateBlockFocus(index + 1);
 
       socket.emit(SOCKET_MESSAGE.MOM.INSERT_BLOCK, blockId, remoteInsertion);
       return;
@@ -67,7 +102,15 @@ function Mom() {
 
       e.preventDefault();
 
-      const remoteDeletion = localDeleteCRDT(Number(index));
+      if (index === 0) return;
+
+      const remoteDeletion = localDeleteCRDT(index);
+
+      updateBlockFocus(index - 1);
+
+      setBlocks(spreadCRDT());
+      setBlockFocus();
+      setCaretToEnd();
 
       socket.emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, id, remoteDeletion);
     }
@@ -75,6 +118,10 @@ function Mom() {
 
   const initialOption: Option[] = [{ id: 1, text: '', count: 0 }];
   const [options, setOptions] = useState<Option[]>(initialOption);
+
+  useEffect(() => {
+    setBlockFocus();
+  }, [blocks]);
 
   useEffect(() => {
     if (!selectedMom) return;
@@ -92,15 +139,21 @@ function Mom() {
       titleRef.current.innerText = title;
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.UPDATED, () => setBlocks(spreadCRDT()));
+    socket.on(SOCKET_MESSAGE.MOM.UPDATED, () => {
+      setBlocks(spreadCRDT());
+    });
 
     socket.on(SOCKET_MESSAGE.MOM.INSERT_BLOCK, (op) => {
       remoteInsertCRDT(op);
+
+      updateBlockFocus(undefined);
       setBlocks(spreadCRDT());
     });
 
     socket.on(SOCKET_MESSAGE.MOM.DELETE_BLOCK, (op) => {
       remoteDeleteCRDT(op);
+
+      updateBlockFocus(undefined);
       setBlocks(spreadCRDT());
     });
 
@@ -162,7 +215,15 @@ function Mom() {
 
         <div className={style['mom-body']}>
           {blocks.map((id, index) => (
-            <Block key={id} id={id} index={index} onKeyDown={onKeyDown} />
+            <Block
+              key={id}
+              id={id}
+              index={index}
+              onKeyDown={onKeyDown}
+              registerRef={(ref: React.RefObject<HTMLElement>) => {
+                blockRefs.current[index] = ref;
+              }}
+            />
           ))}
         </div>
         {/* TODO: 임시로 놓은 투표 블록임 */}
