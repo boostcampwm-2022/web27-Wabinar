@@ -15,17 +15,29 @@ export default function handleTextBlock(
   socket.on(BLOCK_EVENT.INSERT_TEXT, async (blockId, op) => {
     const momId = socket.data.momId;
 
-    await crdtManager.onInsertText(blockId, op);
+    try {
+      await crdtManager.onInsertText(blockId, op);
 
-    socket.to(momId).emit(BLOCK_EVENT.INSERT_TEXT, blockId, op);
+      socket.to(momId).emit(BLOCK_EVENT.INSERT_TEXT, blockId, op);
+    } catch {
+      const blockCrdt = await crdtManager.getBlockCRDT(blockId);
+
+      socket.emit(BLOCK_EVENT.INIT, blockId, blockCrdt.data);
+    }
   });
 
   socket.on(BLOCK_EVENT.DELETE_TEXT, async (blockId, op) => {
     const momId = socket.data.momId;
 
-    await crdtManager.onDeleteText(blockId, op);
+    try {
+      await crdtManager.onDeleteText(blockId, op);
 
-    socket.to(momId).emit(BLOCK_EVENT.DELETE_TEXT, blockId, op);
+      socket.to(momId).emit(BLOCK_EVENT.DELETE_TEXT, blockId, op);
+    } catch {
+      const blockCrdt = await crdtManager.getBlockCRDT(blockId);
+
+      socket.emit(BLOCK_EVENT.INIT, blockId, blockCrdt.data);
+    }
   });
 
   socket.on(BLOCK_EVENT.UPDATE_TEXT, async (blockId, ops) => {

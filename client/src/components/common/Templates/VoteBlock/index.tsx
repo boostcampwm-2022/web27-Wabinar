@@ -4,12 +4,11 @@ import classNames from 'classnames/bind';
 import Button from 'common/Button';
 import { ChangeEventHandler, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { VOTE_MODE } from 'src/constants/block';
+import { VoteMode } from 'src/constants/block';
 import useDebounceInput from 'src/hooks/useDebounceInput';
-import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { useUserContext } from 'src/hooks/useUserContext';
-import { Option, VoteMode } from 'src/types/block';
+import { Option } from 'src/types/block';
 import color from 'styles/color.module.scss';
 
 import style from './style.module.scss';
@@ -17,27 +16,28 @@ import style from './style.module.scss';
 const cx = classNames.bind(style);
 
 interface VoteBlockProps {
+  id: string;
   mode: VoteMode;
-  setVoteMode: React.Dispatch<React.SetStateAction<VoteMode | null>>;
+  setVoteMode: React.Dispatch<React.SetStateAction<VoteMode>>;
   options: Option[];
   setOptions: React.Dispatch<React.SetStateAction<Option[]>>;
 }
 
 function VoteBlockTemplate({
+  id,
   mode,
   setVoteMode,
   options,
   setOptions,
 }: VoteBlockProps) {
   const [isCreateMode, isRegisteredMode, isEndMode] = [
-    mode === VOTE_MODE.CREATE,
-    mode === VOTE_MODE.REGISTERED,
-    mode === VOTE_MODE.END,
+    mode === VoteMode.CREATE,
+    mode === VoteMode.REGISTERED,
+    mode === VoteMode.END,
   ];
 
   const { user } = useUserContext();
   const { momSocket: socket } = useSocketContext();
-  const { selectedMom } = useSelectedMom();
 
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
   const [participantCount, setParticipantCount] = useState(0);
@@ -65,7 +65,7 @@ function VoteBlockTemplate({
     }
 
     setOptions(validOptions);
-    setVoteMode('registered');
+    setVoteMode(VoteMode.REGISTERED);
 
     socket.emit(BLOCK_EVENT.CREATE_VOTE, validOptions);
 
@@ -118,9 +118,9 @@ function VoteBlockTemplate({
     });
 
     socket.on(BLOCK_EVENT.END_VOTE, ({ options, participantCount }) => {
-      setVoteMode('end');
+      setVoteMode(VoteMode.END);
       setOptions(options);
-      setParticipantCount(Number(participantCount));
+      setParticipantCount(participantCount);
       toast('투표가 종료되었어요 ^^');
     });
 
@@ -171,7 +171,7 @@ function VoteBlockTemplate({
             <input
               type="text"
               className={cx('option-input', {
-                'cursor-enable': !isCreateMode,
+                selected: isRegisteredMode,
               })}
               placeholder="항목을 입력해주세요"
               onChange={onChange}
