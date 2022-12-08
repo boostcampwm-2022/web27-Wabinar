@@ -1,14 +1,5 @@
 @import 'styles/color.module';
 
-.sidebar-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  min-width: 240px;
-  height: 100vh;
-}
-
 @mixin container {
   display: flex;
   box-sizing: border-box;
@@ -16,6 +7,28 @@
   width: 100%;
   padding: 25px;
   gap: 15px;
+}
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 240px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar-container__scrollable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: calc(100vh - 127px);
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
 }
 
 .header {
@@ -79,8 +92,6 @@
 }
 
 .mom-list {
-  height: 400px;
-  overflow: scroll;
   color: $gray-100;
   font-size: 16px;
 
@@ -92,15 +103,11 @@
   & > li:first-child {
     margin-top: 0px;
   }
-
-  &::-webkit-scrollbar {
-    width: 0px;
-  }
 }
 
 .conf-button {
   position: absolute;
-  bottom: 20px;
+  bottom: 15px;
   width: 80px;
   height: 25px;
   border-radius: 13px;

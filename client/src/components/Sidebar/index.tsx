@@ -16,8 +16,10 @@ function Sidebar({ workspace }: SidebarProps) {
   return (
     <div className={style['sidebar-container']}>
       <Header name={workspace.name} />
-      <MemberList members={workspace.members} />
-      <MomList moms={workspace.moms} setSelectedMom={setSelectedMom} />
+      <div className={style['sidebar-container__scrollable']}>
+        <MemberList members={workspace.members} />
+        <MomList moms={workspace.moms} setSelectedMom={setSelectedMom} />
+      </div>
       <ConfButton />
     </div>
   );
