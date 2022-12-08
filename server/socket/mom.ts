@@ -1,9 +1,16 @@
 import * as Questions from '@apis/mom/questions/service';
 import { putMomTitle } from '@apis/mom/service';
-import { createVote, endVote, updateVote } from '@apis/mom/vote/service';
+import {
+  createVote,
+  endVote,
+  Option,
+  updateVote,
+} from '@apis/mom/vote/service';
 import SOCKET_MESSAGE from '@constants/socket-message';
 import CrdtManager from '@utils/crdt-manager';
 import { Namespace, Server, Socket } from 'socket.io';
+
+import { getBlockType, putBlockType } from '@apis/mom/block/service';
 
 async function momSocketServer(io: Server) {
   const workspace = io.of(/^\/sc-workspace\/\d+$/);
@@ -79,6 +86,20 @@ async function momSocketServer(io: Server) {
       socket.to(momId).emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, op);
     });
 
+    socket.on(SOCKET_MESSAGE.BLOCK.LOAD_TYPE, async (blockId, callback) => {
+      const type = await getBlockType(blockId);
+
+      callback(type);
+    });
+
+    socket.on(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, async (blockId, type) => {
+      const momId = socket.data.momId;
+
+      await putBlockType(blockId, type);
+
+      socket.to(momId).emit(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, blockId, type);
+    });
+
     /* crdt for Block */
     socket.on(SOCKET_MESSAGE.BLOCK.INIT, async (blockId) => {
       const blockCrdt = await crdtManager.getBlockCRDT(blockId);
@@ -119,21 +140,22 @@ async function momSocketServer(io: Server) {
     addEventHandlersForQuestionBlock(workspace, socket);
 
     /* 투표 관련 이벤트 */
-    socket.on(SOCKET_MESSAGE.MOM.CREATE_VOTE, (momId, vote) => {
-      const newVote = createVote(momId, vote);
-      workspace.emit(SOCKET_MESSAGE.MOM.CREATE_VOTE, newVote);
+    socket.on(SOCKET_MESSAGE.MOM.CREATE_VOTE, (momId, options: Option[]) => {
+      const newVote = createVote(momId, options);
+      socket.to(momId).emit(SOCKET_MESSAGE.MOM.CREATE_VOTE, newVote);
     });
 
-    socket.on(SOCKET_MESSAGE.MOM.UPDATE_VOTE, (momId, optionId) => {
-      const res = updateVote(momId, Number(optionId));
-      const message = res ? '투표 성공' : '투표 실패';
+    socket.on(SOCKET_MESSAGE.MOM.UPDATE_VOTE, (momId, optionId, userId) => {
+      const participantCount = updateVote(momId, Number(optionId), userId);
 
-      socket.emit(SOCKET_MESSAGE.MOM.UPDATE_VOTE, message);
+      io.of(namespace)
+        .to(momId)
+        .emit(SOCKET_MESSAGE.MOM.UPDATE_VOTE, participantCount);
     });
 
     socket.on(SOCKET_MESSAGE.MOM.END_VOTE, (momId) => {
       const res = endVote(momId);
-      workspace.emit(SOCKET_MESSAGE.MOM.END_VOTE, res);
+      io.of(namespace).to(momId).emit(SOCKET_MESSAGE.MOM.END_VOTE, res);
     });
 
     socket.on('error', (err) => {
