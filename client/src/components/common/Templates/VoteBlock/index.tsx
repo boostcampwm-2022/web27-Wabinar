@@ -10,6 +10,7 @@ import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { useUserContext } from 'src/hooks/useUserContext';
 import { Option, VoteMode } from 'src/types/block';
+import color from 'styles/color.module.scss';
 
 import style from './style.module.scss';
 
@@ -119,7 +120,7 @@ function VoteBlockTemplate({
     socket.on(BLOCK_EVENT.END_VOTE, ({ options, participantCount }) => {
       setVoteMode('end');
       setOptions(options);
-      setParticipantCount(participantCount);
+      setParticipantCount(Number(participantCount));
       toast('투표가 종료되었어요 ^^');
     });
 
@@ -128,6 +129,14 @@ function VoteBlockTemplate({
       socket.off(BLOCK_EVENT.END_VOTE);
     };
   }, [setParticipantCount]);
+
+  const getPercent = (count: number) => {
+    return (count / participantCount) * 100;
+  };
+
+  const getVoteResultText = (count: number) => {
+    return `(${count}/${participantCount}) ${getPercent(count).toFixed(2)}%`;
+  };
 
   return (
     <div className={style['vote-container']}>
@@ -139,7 +148,7 @@ function VoteBlockTemplate({
       )}
 
       <ul>
-        {options.map(({ id, text }, index) => (
+        {options.map(({ id, text, count }, index) => (
           <li
             className={cx('option-item', {
               'selected-item':
@@ -148,11 +157,21 @@ function VoteBlockTemplate({
             key={id}
             onClick={() => onSelect(id)}
           >
+            {isEndMode && (
+              <div
+                className={style['vote-result-bar']}
+                style={{
+                  width: `${getPercent(count)}%`,
+                  backgroundColor: color.highlight100,
+                }}
+              ></div>
+            )}
+
             <div className={style['box-fill']}>{index + 1}</div>
             <input
               type="text"
               className={cx('option-input', {
-                selected: isRegisteredMode,
+                'cursor-enable': !isCreateMode,
               })}
               placeholder="항목을 입력해주세요"
               onChange={onChange}
@@ -166,6 +185,11 @@ function VoteBlockTemplate({
                 ariaLabel="항목 삭제"
                 onClick={() => onDelete(id)}
               />
+            )}
+            {isEndMode && (
+              <div className={style['vote-result-text']}>
+                {getVoteResultText(count)}
+              </div>
             )}
           </li>
         ))}
