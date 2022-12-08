@@ -1,6 +1,5 @@
 #!/bin/bash
 source ./config.sh
-
 source ${VAULT_KEY_FILE}
 
 cd ${FRONTEND_DIR}
