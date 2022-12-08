@@ -82,7 +82,6 @@ function TextBlock({
     if (!blockRef.current) return;
 
     blockRef.current.innerText = readCRDT();
-    blockRef.current.contentEditable = 'true';
   };
 
   const onInsert = (op: RemoteInsertOperation) => {
@@ -227,6 +226,7 @@ function TextBlock({
           'data-id': id,
           'date-index': index,
           ...commonHandlers,
+          contentEditable: true,
           suppressContentEditableWarning: true,
         },
         readCRDT(),
