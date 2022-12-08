@@ -18,9 +18,17 @@ interface BlockProps {
   onKeyDown: React.KeyboardEventHandler;
   type: BlockType;
   setType: (arg: BlockType) => void;
+  registerRef: (arg: React.RefObject<HTMLElement>) => void;
 }
 
-function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
+function TextBlock({
+  id,
+  index,
+  onKeyDown,
+  type,
+  setType,
+  registerRef,
+}: BlockProps) {
   const { momSocket: socket } = useSocketContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -103,6 +111,8 @@ function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
+    registerRef(blockRef);
+
     socket.emit(SOCKET_MESSAGE.BLOCK.INIT, id);
 
     ee.on(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);

@@ -27,11 +27,7 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
   const [type, setType] = useState<BlockType>();
   const localUpdateFlagRef = useRef<boolean>(false);
 
-  const blockRef = useRef<HTMLParagraphElement>(null);
-
   useEffect(() => {
-    registerRef(blockRef);
-
     socket.emit(SOCKET_MESSAGE.BLOCK.LOAD_TYPE, id, (type: BlockType) =>
       setType(type),
     );
@@ -65,6 +61,7 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
           onKeyDown={onKeyDown}
           type={type}
           setType={setBlockType}
+          registerRef={registerRef}
         />
       );
     default:
