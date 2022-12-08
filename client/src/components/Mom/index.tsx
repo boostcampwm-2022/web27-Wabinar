@@ -1,4 +1,5 @@
 import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
+import Block from 'components/Block';
 import { useEffect, useRef, useState } from 'react';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
@@ -6,7 +7,6 @@ import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { v4 as uuid } from 'uuid';
 
-import Block from './Block';
 import DefaultMom from './DefaultMom';
 import ee from './EventEmitter';
 import style from './style.module.scss';

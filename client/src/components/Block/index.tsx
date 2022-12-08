@@ -1,9 +1,9 @@
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
+import ee from 'components/Mom/EventEmitter';
 import { memo, useEffect, useRef, useState } from 'react';
-import QuestionBlock from 'src/components/QuestionBlock';
 import useSocketContext from 'src/hooks/useSocketContext';
 
-import ee from '../EventEmitter';
+import QuestionBlock from './QuestionBlock';
 import TextBlock from './TextBlock';
 import VoteBlock from './VoteBlock';
 
