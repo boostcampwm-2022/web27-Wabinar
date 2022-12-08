@@ -43,7 +43,7 @@ export const putBlock = async (
     case BlockType.QUESTION:
       break;
     default:
-      return;
+      throw new Error(`Bad type ${type} received`);
   }
 };
 
