@@ -1,5 +1,6 @@
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import { memo, useEffect, useRef, useState } from 'react';
+import QuestionBlock from 'src/components/QuestionBlock';
 import useSocketContext from 'src/hooks/useSocketContext';
 
 import ee from '../EventEmitter';
@@ -62,6 +63,9 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
           registerRef={registerRef}
         />
       );
+    case BlockType.VOTE:
+    case BlockType.QUESTION:
+      return <QuestionBlock />;
     default:
       return <p />;
   }
