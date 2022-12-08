@@ -102,46 +102,42 @@ function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
     setOffset();
   };
 
-  useEffect(() => {
-    updateCaretPosition();
-  }, [isOpen]);
+  const onInitialize = (crdt: unknown) => {
+    syncCRDT(crdt);
+
+    if (!blockRef.current) return;
+
+    blockRef.current.innerText = readCRDT();
+    blockRef.current.contentEditable = 'true';
+  };
+
+  const onInsert = (op: RemoteInsertOperation) => {
+    const prevIndex = remoteInsertCRDT(op);
+
+    if (!blockRef.current) return;
+
+    blockRef.current.innerText = readCRDT();
+
+    if (prevIndex === null || offsetRef.current === null) return;
+
+    updateCaretPosition(Number(prevIndex < offsetRef.current));
+  };
+
+  const onDelete = (op: RemoteDeleteOperation) => {
+    const targetIndex = remoteDeleteCRDT(op);
+
+    if (!blockRef.current) return;
+
+    blockRef.current.innerText = readCRDT();
+
+    if (targetIndex === null || offsetRef.current === null) return;
+
+    updateCaretPosition(-Number(targetIndex <= offsetRef.current));
+  };
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
     socket.emit(SOCKET_MESSAGE.BLOCK.INIT, id);
-
-    const onInitialize = (crdt: unknown) => {
-      syncCRDT(crdt);
-
-      if (!blockRef.current) return;
-
-      blockRef.current.innerText = readCRDT();
-      blockRef.current.contentEditable = 'true';
-    };
-
-    const onInsert = (op: RemoteInsertOperation) => {
-      const prevIndex = remoteInsertCRDT(op);
-
-      if (!blockRef.current) return;
-
-      blockRef.current.innerText = readCRDT();
-
-      if (prevIndex === null || offsetRef.current === null) return;
-
-      updateCaretPosition(Number(prevIndex < offsetRef.current));
-    };
-
-    const onDelete = (op: RemoteDeleteOperation) => {
-      const targetIndex = remoteDeleteCRDT(op);
-
-      if (!blockRef.current) return;
-
-      blockRef.current.innerText = readCRDT();
-
-      if (targetIndex === null || offsetRef.current === null) return;
-
-      updateCaretPosition(-Number(targetIndex <= offsetRef.current));
-    };
 
     ee.on(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);
     ee.on(`${SOCKET_MESSAGE.BLOCK.UPDATE_TEXT}-${id}`, onInitialize);
