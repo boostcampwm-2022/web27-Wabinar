@@ -1,9 +1,9 @@
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import { useState, useEffect } from 'react';
 import VoteBlockTemplate from 'src/components/common/Templates/VoteBlock';
-import { VOTE_MODE } from 'src/constants/block';
+import { VoteMode } from 'src/constants/block';
 import useSocketContext from 'src/hooks/useSocketContext';
-import { Option, VoteMode } from 'src/types/block';
+import { Option } from 'src/types/block';
 
 interface VoteBlockProps {
   id: string;
@@ -18,11 +18,11 @@ function VoteBlock({ id }: VoteBlockProps) {
 
   useEffect(() => {
     socket.on(BLOCK_EVENT.CREATE_VOTE, (options) => {
-      setVoteMode(VOTE_MODE.REGISTERED as VoteMode);
+      setVoteMode(VoteMode.REGISTERED as VoteMode);
       setOptions(options);
     });
 
-    setVoteMode(VOTE_MODE.CREATE);
+    setVoteMode(VoteMode.CREATE);
   }, []);
 
   return voteMode ? (
