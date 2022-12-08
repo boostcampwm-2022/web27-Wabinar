@@ -1,5 +1,5 @@
+import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import { memo } from 'react';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useMeetingContext } from 'src/hooks/useMeetingContext';
 import useSocketContext from 'src/hooks/useSocketContext';
 import color from 'styles/color.module.scss';
@@ -15,9 +15,7 @@ function MeetingButton() {
   const onClick = () => {
     setIsOnGoing(!isOnGoing);
     socket.emit(
-      isOnGoing
-        ? SOCKET_MESSAGE.WORKSPACE.END_MEETING
-        : SOCKET_MESSAGE.WORKSPACE.START_MEETING,
+      isOnGoing ? WORKSPACE_EVENT.END_MEETING : WORKSPACE_EVENT.START_MEETING,
     );
   };
 

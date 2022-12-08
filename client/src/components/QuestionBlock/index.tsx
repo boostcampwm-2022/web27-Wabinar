@@ -1,5 +1,6 @@
 import { BiCheckbox } from '@react-icons/all-files/bi/BiCheckbox';
 import { BiCheckboxChecked } from '@react-icons/all-files/bi/BiCheckboxChecked';
+import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -27,27 +28,27 @@ function QuestionBlock() {
       isResolved: false,
       text: questionText,
     };
-    socket.emit('question-block__add-question', question);
+    socket.emit(BLOCK_EVENT.ADD_QUESTIONS, question);
   };
 
   useEffect(() => {
-    socket.on('question-block__questions-fetched', fetchedQuestions => {
+    socket.on(BLOCK_EVENT.FETCH_QUESTIONS, (fetchedQuestions) => {
       setQuestions([...fetchedQuestions]);
     });
 
-    socket.on('question-block__question-added', (questionToAdd) => {
-      setQuestions(prev => [...prev, questionToAdd]);
+    socket.on(BLOCK_EVENT.ADD_QUESTIONS, (questionToAdd) => {
+      setQuestions((prev) => [...prev, questionToAdd]);
     });
 
-    socket.emit('question-block__fetch-questions');
+    socket.emit(BLOCK_EVENT.FETCH_QUESTIONS);
   }, []);
 
   const onClick: React.MouseEventHandler<HTMLLIElement> = (e) => {
     const targetId = Number(e.currentTarget.id);
-    const clickedQuestion = questions.filter(q => q.id === targetId)[0];
+    const clickedQuestion = questions.filter((q) => q.id === targetId)[0];
     const toggledResolved = !clickedQuestion.isResolved;
 
-    socket.emit('question-block__toggle-resolved', targetId, toggledResolved);
+    socket.emit(BLOCK_EVENT.RESOLVE_QUESTIONS, targetId, toggledResolved);
   };
 
   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -80,7 +81,9 @@ function QuestionBlock() {
             ) : (
               <BiCheckbox className={style['check-box']} />
             )}
-            <p className={cx(questionText, { check: isResolved })}>{questionText}</p>
+            <p className={cx(questionText, { check: isResolved })}>
+              {questionText}
+            </p>
           </li>
         ))}
       </ul>

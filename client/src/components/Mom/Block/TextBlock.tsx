@@ -1,11 +1,11 @@
 import { BlockType } from '@wabinar/api-types/block';
+import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import {
-  RemoteInsertOperation,
   RemoteDeleteOperation,
+  RemoteInsertOperation,
 } from '@wabinar/crdt/linked-list';
-import React, { useEffect, useRef, memo, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import BlockSelector from 'src/components/BlockSelector';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -112,18 +112,18 @@ function TextBlock({
   useEffect(() => {
     registerRef(blockRef);
 
-    socket.emit(SOCKET_MESSAGE.BLOCK.INIT, id);
+    socket.emit(BLOCK_EVENT.INIT, id);
 
-    ee.on(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);
-    ee.on(`${SOCKET_MESSAGE.BLOCK.UPDATE_TEXT}-${id}`, onInitialize);
-    ee.on(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, onInsert);
-    ee.on(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, onDelete);
+    ee.on(`${BLOCK_EVENT.INIT}-${id}`, onInitialize);
+    ee.on(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
+    ee.on(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, onInsert);
+    ee.on(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, onDelete);
 
     return () => {
-      ee.off(`${SOCKET_MESSAGE.BLOCK.INIT}-${id}`, onInitialize);
-      ee.off(`${SOCKET_MESSAGE.BLOCK.UPDATE_TEXT}-${id}`, onInitialize);
-      ee.off(`${SOCKET_MESSAGE.BLOCK.INSERT_TEXT}-${id}`, onInsert);
-      ee.off(`${SOCKET_MESSAGE.BLOCK.DELETE_TEXT}-${id}`, onDelete);
+      ee.off(`${BLOCK_EVENT.INIT}-${id}`, onInitialize);
+      ee.off(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
+      ee.off(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, onInsert);
+      ee.off(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, onDelete);
     };
   }, []);
 
@@ -151,7 +151,7 @@ function TextBlock({
 
     if (event.inputType === 'deleteContentBackward') {
       const remoteDeletion = localDeleteCRDT(offsetRef.current);
-      socket.emit(SOCKET_MESSAGE.BLOCK.DELETE_TEXT, id, remoteDeletion);
+      socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
       return;
     }
 
@@ -159,7 +159,7 @@ function TextBlock({
     const previousLetterIndex = offsetRef.current - 2;
     const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-    socket.emit(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, id, remoteInsertion);
+    socket.emit(BLOCK_EVENT.INSERT_TEXT, id, remoteInsertion);
   };
 
   // 한글 입력 핸들링
@@ -177,7 +177,7 @@ function TextBlock({
 
       const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-      socket.emit(SOCKET_MESSAGE.BLOCK.INSERT_TEXT, id, remoteInsertion);
+      socket.emit(BLOCK_EVENT.INSERT_TEXT, id, remoteInsertion);
     });
   };
 
@@ -199,7 +199,7 @@ function TextBlock({
       .split('')
       .map((letter) => localInsertCRDT(previousLetterIndex++, letter));
 
-    socket.emit(SOCKET_MESSAGE.BLOCK.UPDATE_TEXT, id, remoteInsertions);
+    socket.emit(BLOCK_EVENT.UPDATE_TEXT, id, remoteInsertions);
 
     blockRef.current.innerText = previousText + pastedText + nextText;
     updateCaretPosition(pastedText.length);

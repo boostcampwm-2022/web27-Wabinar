@@ -1,7 +1,5 @@
-import { parseClassName } from 'react-toastify/dist/utils';
+import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import { Socket } from 'socket.io-client';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
-const MSG = SOCKET_MESSAGE.WORKSPACE;
 
 type SocketId = string;
 
@@ -33,13 +31,22 @@ class RTC {
   }
 
   connect() {
-    this.socket.on(MSG.RECEIVE_HELLO, this.setDescriptionAndEmitOffer.bind(this));
-    this.socket.on(MSG.RECEIVE_OFFER, this.setDescriptionAndEmitAnswer.bind(this));
-    this.socket.on(MSG.RECEIVE_ANSWER, this.setDescriptionForAnswer.bind(this));
-    this.socket.on(MSG.RECEIVE_ICE, this.addIce.bind(this));
-    this.socket.on(MSG.RECEIVE_BYE, this.disconnectPeer.bind(this));
+    this.socket.on(
+      WORKSPACE_EVENT.RECEIVE_HELLO,
+      this.setDescriptionAndEmitOffer.bind(this),
+    );
+    this.socket.on(
+      WORKSPACE_EVENT.RECEIVE_OFFER,
+      this.setDescriptionAndEmitAnswer.bind(this),
+    );
+    this.socket.on(
+      WORKSPACE_EVENT.RECEIVE_ANSWER,
+      this.setDescriptionForAnswer.bind(this),
+    );
+    this.socket.on(WORKSPACE_EVENT.RECEIVE_ICE, this.addIce.bind(this));
+    this.socket.on(WORKSPACE_EVENT.RECEIVE_BYE, this.disconnectPeer.bind(this));
 
-    this.socket.emit(MSG.SEND_HELLO);
+    this.socket.emit(WORKSPACE_EVENT.SEND_HELLO);
   }
 
   onMediaConnected(callback: onMediaConnectedCb) {
@@ -57,10 +64,13 @@ class RTC {
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
 
-    this.socket.emit(MSG.SEND_OFFER, offer, remoteSocketId);
+    this.socket.emit(WORKSPACE_EVENT.SEND_OFFER, offer, remoteSocketId);
   }
 
-  private async setDescriptionAndEmitAnswer(offer: RTCSessionDescriptionInit, remoteSocketId: SocketId) {
+  private async setDescriptionAndEmitAnswer(
+    offer: RTCSessionDescriptionInit,
+    remoteSocketId: SocketId,
+  ) {
     const pc = this.createPeerConnection(remoteSocketId);
     await pc.setRemoteDescription(offer);
     this.connections.set(remoteSocketId, pc);
@@ -68,10 +78,13 @@ class RTC {
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
 
-    this.socket.emit(MSG.SEND_ANSWER, answer, remoteSocketId);
+    this.socket.emit(WORKSPACE_EVENT.SEND_ANSWER, answer, remoteSocketId);
   }
 
-  private async setDescriptionForAnswer(answer: RTCSessionDescriptionInit, remoteSocketId: SocketId) {
+  private async setDescriptionForAnswer(
+    answer: RTCSessionDescriptionInit,
+    remoteSocketId: SocketId,
+  ) {
     const pc = this.connections.get(remoteSocketId);
     if (!pc) {
       throw new Error('No RTCPeerConnection on answer received.');
@@ -103,15 +116,19 @@ class RTC {
     };
     const pc = new RTCPeerConnection(pcOptions);
 
-    pc.addEventListener('icecandidate', event => this.emitIce(event, remoteSocketId));
-    pc.addEventListener('track', event => this.addRemoteStream(event, remoteSocketId));
+    pc.addEventListener('icecandidate', (event) =>
+      this.emitIce(event, remoteSocketId),
+    );
+    pc.addEventListener('track', (event) =>
+      this.addRemoteStream(event, remoteSocketId),
+    );
     this.addTracksToLocalConnection(pc);
 
     return pc;
   }
 
   private emitIce(event: RTCPeerConnectionIceEvent, remoteSocketId: string) {
-    this.socket.emit(MSG.SEND_ICE, event.candidate, remoteSocketId);
+    this.socket.emit(WORKSPACE_EVENT.SEND_ICE, event.candidate, remoteSocketId);
   }
 
   private addRemoteStream(event: RTCTrackEvent, remoteSocketId: string) {
@@ -126,7 +143,9 @@ class RTC {
   }
 
   private addTracksToLocalConnection(pc: RTCPeerConnection) {
-    this.userMediaStream.getTracks().forEach(track => pc.addTrack(track, this.userMediaStream));
+    this.userMediaStream
+      .getTracks()
+      .forEach((track) => pc.addTrack(track, this.userMediaStream));
   }
 
   // unused; may be used in the future
