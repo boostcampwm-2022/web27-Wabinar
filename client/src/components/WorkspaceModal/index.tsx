@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MENU, MODAL_MENUS } from 'src/constants/workspace';
+import { Workspace } from 'src/types/workspace';
 
 import CreateModal from './CreateModal';
 import CreateSuccessModal from './CreateSuccessModal';
@@ -14,7 +15,7 @@ function WorkspaceModal({
   selectedMenu,
   setSelectedMenu,
 }: WorkspaceModalProps) {
-  const [code, setCode] = useState<string>('');
+  const [workspace, setWorkspace] = useState<Workspace>();
 
   const modalContents = MODAL_MENUS[selectedMenu];
 
@@ -27,7 +28,7 @@ function WorkspaceModal({
           modalContents={modalContents}
           onClose={onClose}
           setSelectedMenu={setSelectedMenu}
-          setCode={setCode}
+          setWorkspace={setWorkspace}
         />
       );
     case MENU.CREATE_SUCCESS:
@@ -35,7 +36,7 @@ function WorkspaceModal({
         <CreateSuccessModal
           modalContents={modalContents}
           onClose={onClose}
-          code={code}
+          workspace={workspace}
         />
       );
     case MENU.JOIN:

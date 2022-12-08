@@ -1,5 +1,5 @@
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
-import { GetWorkspaceParams } from '@params/user';
+import { GetWorkspaceParams } from '@wabinar/api-types/user';
 import asyncWrapper from '@utils/async-wrapper';
 import express, { Request, Response } from 'express';
 import * as userService from './service';

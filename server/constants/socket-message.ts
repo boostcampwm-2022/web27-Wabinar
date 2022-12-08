@@ -13,8 +13,11 @@ const SOCKET_MESSAGE = {
   },
   BLOCK: {
     INIT: 'init-block',
+    LOAD_TYPE: 'load-type',
+    UPDATE_TYPE: 'update-type',
     INSERT_TEXT: 'insert-text',
     DELETE_TEXT: 'delete-text',
+    UPDATE_TEXT: 'update-text',
   },
   WORKSPACE: {
     START_MEETING: 'start-meeting',

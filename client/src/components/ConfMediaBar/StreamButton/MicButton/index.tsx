@@ -14,7 +14,7 @@ function MicButton({ isOn, setIsMicOn }: MicButtonProps) {
   };
 
   return (
-    <button onClick={onClick}>
+    <button onClick={onClick} aria-label={'마이크 ' + (isOn ? '끄기' : '켜기')}>
       {isOn ? (
         <MdMic color={color.green} size={20} />
       ) : (
