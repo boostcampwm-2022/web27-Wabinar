@@ -15,7 +15,7 @@ import { WorkspaceInfo } from 'src/types/workspace';
 
 function Workspace() {
   const { id } = useParams();
-  const [isStart, setIsStart] = useState(false);
+  const [isOnGoing, setIsOnGoing] = useState(false);
 
   const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
@@ -44,7 +44,7 @@ function Workspace() {
     });
 
     loadWorkspaceInfo();
-    setIsStart(false);
+    setIsOnGoing(false);
 
     return () => {
       setMomSocket((prev) => {
@@ -64,11 +64,11 @@ function Workspace() {
     }
 
     workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.START_MEETING, () => {
-      setIsStart(true);
+      setIsOnGoing(true);
     });
 
     workspaceSocket.on(SOCKET_MESSAGE.WORKSPACE.END_MEETING, () => {
-      setIsStart(false);
+      setIsOnGoing(false);
     });
 
     return () => {
@@ -79,14 +79,14 @@ function Workspace() {
 
   return momSocket !== null && workspaceSocket !== null ? (
     <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
-      <MeetingContext.Provider value={{ isStart, setIsStart }}>
+      <MeetingContext.Provider value={{ isOnGoing, setIsOnGoing }}>
         {workspace && (
           <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
             <Sidebar workspace={workspace} />
             <Mom />
           </SelectedMomContext.Provider>
         )}
-        {isStart && <MeetingMediaBar />}
+        {isOnGoing && <MeetingMediaBar />}
       </MeetingContext.Provider>
     </SocketContext.Provider>
   ) : (
