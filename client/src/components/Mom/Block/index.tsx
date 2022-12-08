@@ -65,7 +65,7 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
       );
     case BlockType.VOTE:
     case BlockType.QUESTION:
-      return <QuestionBlock />;
+      return <QuestionBlock id={id} />;
     default:
       return <p />;
   }
