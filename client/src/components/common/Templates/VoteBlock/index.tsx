@@ -134,6 +134,12 @@ function VoteBlockTemplate({
     };
   }, [setParticipantCount]);
 
+  const getVoteResultText = (count: number) => {
+    return `(${count}/${participantCount}) ${
+      (count / participantCount) * 100
+    }%`;
+  };
+
   return (
     <div className={style['vote-container']}>
       <h3 className={style.title}>투표</h3>
@@ -144,7 +150,7 @@ function VoteBlockTemplate({
       )}
 
       <ul>
-        {options.map(({ id, text }, index) => (
+        {options.map(({ id, text, count }, index) => (
           <li
             className={cx('option-item', {
               'selected-item':
@@ -171,6 +177,11 @@ function VoteBlockTemplate({
                 ariaLabel="항목 삭제"
                 onClick={() => onDelete(id)}
               />
+            )}
+            {isEndMode && (
+              <div className={style['vote-result-text']}>
+                {getVoteResultText(count)}
+              </div>
             )}
           </li>
         ))}
