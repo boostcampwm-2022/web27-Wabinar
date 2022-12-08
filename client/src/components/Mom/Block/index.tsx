@@ -5,6 +5,7 @@ import useSocketContext from 'src/hooks/useSocketContext';
 
 import ee from '../EventEmitter';
 import TextBlock from './TextBlock';
+import VoteBlock from './VoteBlock';
 
 export enum BlockType {
   H1,
@@ -64,6 +65,7 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
         />
       );
     case BlockType.VOTE:
+      return <VoteBlock id={id} />;
     case BlockType.QUESTION:
       return <QuestionBlock id={id} />;
     default:

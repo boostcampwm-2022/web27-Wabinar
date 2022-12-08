@@ -1,11 +1,9 @@
 import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
 import { useEffect, useRef, useState } from 'react';
-import { VOTE_MODE } from 'src/constants/block';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
 import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
-import { Option, VoteMode } from 'src/types/block';
 import { v4 as uuid } from 'uuid';
 
 import Block from './Block';
@@ -16,8 +14,6 @@ import style from './style.module.scss';
 function Mom() {
   const { selectedMom } = useSelectedMom();
   const { momSocket: socket } = useSocketContext();
-
-  const [voteMode, setVoteMode] = useState<VoteMode | null>(null);
 
   const {
     syncCRDT,
@@ -115,9 +111,6 @@ function Mom() {
     }
   };
 
-  const initialOption: Option[] = [{ id: 1, text: '', count: 0 }];
-  const [options, setOptions] = useState<Option[]>(initialOption);
-
   useEffect(() => {
     setBlockFocus();
   }, [blocks]);
@@ -176,11 +169,6 @@ function Mom() {
       ee.emit(`${BLOCK_EVENT.UPDATE_TYPE}-${id}`, type);
     });
 
-    socket.on(BLOCK_EVENT.CREATE_VOTE, (options) => {
-      setVoteMode(VOTE_MODE.REGISTERED as VoteMode);
-      setOptions(options);
-    });
-
     return () => {
       [
         MOM_EVENT.INIT,
@@ -192,7 +180,6 @@ function Mom() {
         BLOCK_EVENT.INSERT_TEXT,
         BLOCK_EVENT.DELETE_TEXT,
         BLOCK_EVENT.UPDATE_TYPE,
-        BLOCK_EVENT.CREATE_VOTE,
       ].forEach((event) => socket.off(event));
     };
   }, [selectedMom]);

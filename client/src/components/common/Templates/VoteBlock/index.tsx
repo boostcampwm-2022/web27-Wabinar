@@ -6,7 +6,6 @@ import { ChangeEventHandler, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { VOTE_MODE } from 'src/constants/block';
 import useDebounceInput from 'src/hooks/useDebounceInput';
-import useSelectedMom from 'src/hooks/useSelectedMom';
 import useSocketContext from 'src/hooks/useSocketContext';
 import { useUserContext } from 'src/hooks/useUserContext';
 import { Option, VoteMode } from 'src/types/block';
@@ -17,13 +16,15 @@ import style from './style.module.scss';
 const cx = classNames.bind(style);
 
 interface VoteBlockProps {
+  id: string;
   mode: VoteMode;
-  setVoteMode: React.Dispatch<React.SetStateAction<VoteMode | null>>;
+  setVoteMode: React.Dispatch<React.SetStateAction<VoteMode | undefined>>;
   options: Option[];
   setOptions: React.Dispatch<React.SetStateAction<Option[]>>;
 }
 
 function VoteBlockTemplate({
+  id,
   mode,
   setVoteMode,
   options,
@@ -37,7 +38,6 @@ function VoteBlockTemplate({
 
   const { user } = useUserContext();
   const { momSocket: socket } = useSocketContext();
-  const { selectedMom } = useSelectedMom();
 
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
   const [participantCount, setParticipantCount] = useState(0);
@@ -120,7 +120,7 @@ function VoteBlockTemplate({
     socket.on(BLOCK_EVENT.END_VOTE, ({ options, participantCount }) => {
       setVoteMode('end');
       setOptions(options);
-      setParticipantCount(Number(participantCount));
+      setParticipantCount(participantCount);
       toast('투표가 종료되었어요 ^^');
     });
 
@@ -171,7 +171,7 @@ function VoteBlockTemplate({
             <input
               type="text"
               className={cx('option-input', {
-                'cursor-enable': !isCreateMode,
+                selected: isRegisteredMode,
               })}
               placeholder="항목을 입력해주세요"
               onChange={onChange}
