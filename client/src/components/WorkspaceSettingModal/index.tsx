@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Button from 'src/components/common/Button';
 import CopyButton from 'src/components/common/CopyButton';
 import Modal from 'src/components/common/Modal';
+import ERROR_MESSAGE from 'src/constants/error-message';
 import useWorkspacesContext from 'src/hooks/useWorkspacesContext';
 
 import style from './style.module.scss';
@@ -19,7 +20,7 @@ function WorkspaceSettingModal({ title, onClose }: WorkspaceSettingModalProps) {
   const workspace = workspaces.find((workspace) => workspace.id === Number(id));
 
   if (!workspace) {
-    throw new Error('일어날 수 없는 일이 일어났어요 ^^');
+    throw new Error(ERROR_MESSAGE.IMPOSSIBLE_HAPPENED);
   }
 
   const { code } = workspace;

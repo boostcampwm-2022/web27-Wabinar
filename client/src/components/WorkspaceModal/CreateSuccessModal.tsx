@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import ERROR_MESSAGE from 'src/constants/error-message';
 import { Workspace } from 'src/types/workspace';
 
 import FormModal, { ModalContents } from './FormModal';
@@ -17,7 +18,7 @@ function CreateSuccessModal({
   const navigate = useNavigate();
 
   if (!workspace) {
-    throw new Error('일어날 수 없는 일이 일어났어요 ^^');
+    throw new Error(ERROR_MESSAGE.IMPOSSIBLE_HAPPENED);
   }
 
   const { id, code } = workspace;
