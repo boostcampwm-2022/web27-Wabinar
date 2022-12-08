@@ -25,7 +25,7 @@ export const join = async (userId: number, code: string) => {
   const workspace = await workspaceModel.findOne({ code });
 
   if (!workspace)
-    throw new InvalidJoinError(ERROR_MESSAGE.INVALID_WORKSPCAE_CODE);
+    throw new InvalidJoinError(ERROR_MESSAGE.INVALID_WORKSPACE_CODE);
 
   const { id, name } = workspace;
 
