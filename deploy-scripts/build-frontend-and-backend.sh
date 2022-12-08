@@ -6,3 +6,6 @@ git pull origin main
 
 npm ci
 npm run deploy # main 브랜치 빌드
+
+cd ${BACKEND_DIR}
+cp .env ./dist
