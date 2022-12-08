@@ -1,8 +1,7 @@
 import Mom from 'components/Mom';
 import Sidebar from 'components/Sidebar';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Socket } from 'socket.io-client';
 import { getWorkspaceInfo } from 'src/apis/workspace';
 import ConfMediaBar from 'src/components/ConfMediaBar';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
@@ -20,8 +19,8 @@ function Workspace() {
   const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
 
-  const [momSocket, setMomSocket] = useState<Socket | null>(null);
-  const [workspaceSocket, setWorkspaceSocket] = useState<Socket | null>(null);
+  const momSocket = useSocket(`/sc-workspace/${id}`);
+  const workspaceSocket = useSocket(`/workspace/${id}`);
 
   const loadWorkspaceInfo = async () => {
     if (id) {
@@ -34,28 +33,8 @@ function Workspace() {
   };
 
   useEffect(() => {
-    setMomSocket(prev => {
-      prev?.disconnect();
-      return useSocket(`/sc-workspace/${id}`)
-    });
-    setWorkspaceSocket(prev => {
-      prev?.disconnect();
-      return useSocket(`/workspace/${id}`)
-    });
-    
     loadWorkspaceInfo();
     setIsStart(false);
-
-    return () => {
-      setMomSocket(prev => {
-        prev?.disconnect();
-        return null;
-      });
-      setWorkspaceSocket(prev => {
-        prev?.disconnect();
-        return null;
-      });
-    }
   }, [id]);
 
   useEffect(() => {
@@ -74,23 +53,23 @@ function Workspace() {
     return () => {
       workspaceSocket.off(SOCKET_MESSAGE.WORKSPACE.START_MEETING);
       workspaceSocket.off(SOCKET_MESSAGE.WORKSPACE.END_MEETING);
-    }
+    };
   }, [workspaceSocket]);
 
-  return (
-    (momSocket !== null && workspaceSocket !== null) ?
-      <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
-        <ConfContext.Provider value={{ isStart, setIsStart }}>
-          {workspace && (
-            <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
-              <Sidebar workspace={workspace} />
-              <Mom />
-            </SelectedMomContext.Provider>
-          )}
-          {isStart && <ConfMediaBar />}
-        </ConfContext.Provider>
-      </SocketContext.Provider>
-    : <></>
+  return momSocket && workspaceSocket ? (
+    <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
+      <ConfContext.Provider value={{ isStart, setIsStart }}>
+        {workspace && (
+          <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
+            <Sidebar workspace={workspace} />
+            <Mom />
+          </SelectedMomContext.Provider>
+        )}
+        {isStart && <ConfMediaBar />}
+      </ConfContext.Provider>
+    </SocketContext.Provider>
+  ) : (
+    <></>
   );
 }
 
