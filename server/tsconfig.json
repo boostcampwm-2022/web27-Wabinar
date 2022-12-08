@@ -1,7 +1,5 @@
 {
   "extends": "./tsconfig.path.json",
-  "include": ["./**/*"],
-  "exclude": ["*/test.ts", "./dist"],
   "compilerOptions": {
     "target": "ESNext",
     "module": "CommonJS",
@@ -13,9 +11,5 @@
     "typeRoots": ["../node_modules/@types", "./@types"],
     "isolatedModules": true,
     "disableSourceOfProjectReferenceRedirect": true
-  },
-  "references": [
-    { "path": "../@wabinar/crdt" },
-    { "path": "../@wabinar/api-types" }
-  ]
+  }
 }
