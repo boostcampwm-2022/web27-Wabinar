@@ -1,5 +1,6 @@
 import momModel from '@apis/mom/model';
 import userModel, { User } from '@apis/user/model';
+import ERROR_MESSAGE from '@constants/error-message';
 import AuthorizationError from '@errors/authorization-error';
 import InvalidJoinError from '@errors/invalid-join-error';
 import InvalidWorkspaceError from '@errors/invalid-workspace-error';
@@ -7,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import workspaceModel from './model';
 
 export const create = async (name: string) => {
-  if (!name) throw new Error('워크스페이스 이름을 입력하세요 ^^');
+  if (!name) throw new Error(ERROR_MESSAGE.EMPTY_WORKSPACE_NAME);
 
   const code = uuidv4();
 
@@ -17,13 +18,14 @@ export const create = async (name: string) => {
 };
 
 export const join = async (userId: number, code: string) => {
-  if (!userId) throw new AuthorizationError('유저 인증 실패');
+  if (!userId) throw new AuthorizationError(ERROR_MESSAGE.UNAUTHORIZED);
 
-  if (!code) throw new InvalidJoinError('참여코드를 입력하세요 ^^');
+  if (!code) throw new InvalidJoinError(ERROR_MESSAGE.EMPTY_WORKSPACE_CODE);
 
   const workspace = await workspaceModel.findOne({ code });
 
-  if (!workspace) throw new InvalidJoinError('잘못된 참여코드에요 ^^');
+  if (!workspace)
+    throw new InvalidJoinError(ERROR_MESSAGE.INVALID_WORKSPCAE_CODE);
 
   const { id, name } = workspace;
 
@@ -33,7 +35,7 @@ export const join = async (userId: number, code: string) => {
   );
 
   if (!res.modifiedCount) {
-    throw new InvalidJoinError('이미 참여한 워크스페이스에요 ^^');
+    throw new InvalidJoinError(ERROR_MESSAGE.ALREADY_JOINED_WORKSPACE);
   }
 
   await userModel.updateOne({ id: userId }, { $addToSet: { workspaces: id } });
@@ -42,12 +44,12 @@ export const join = async (userId: number, code: string) => {
 };
 
 export const info = async (workspaceId: number) => {
-  if (!workspaceId) throw new InvalidWorkspaceError('잘못된 접근이에요 ^^');
+  if (!workspaceId) throw new InvalidWorkspaceError(ERROR_MESSAGE.BAD_REQUEST);
 
   const workspace = await workspaceModel.findOne({ id: workspaceId });
 
   if (!workspace)
-    throw new InvalidWorkspaceError('존재하지 않는 워크스페이스에요 ^^');
+    throw new InvalidWorkspaceError(ERROR_MESSAGE.INVALID_WORKSPACE);
 
   const { name, users: userIds, moms: momsIds } = workspace;
 
