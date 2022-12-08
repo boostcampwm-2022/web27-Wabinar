@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Socket, io } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { STUN_SERVER } from 'src/constants/rtc';
 import RTC from 'src/utils/rtc';
 import { setTrack, TrackKind } from 'src/utils/trackSetter';
 
-export function useConfMediaStreams(socket: Socket):
-    [Map<string, MediaStream>, (kind: TrackKind, turnOn: boolean) => void] {
+export function useMeetingMediaStreams(
+  socket: Socket,
+): [Map<string, MediaStream>, (kind: TrackKind, turnOn: boolean) => void] {
   const [mediaStreams, setMediaStreams] = useState<Map<string, MediaStream>>(
     new Map(),
   );
@@ -23,7 +24,7 @@ export function useConfMediaStreams(socket: Socket):
       video: true,
       audio: true,
     });
-    
+
     setMyStream(userMedia);
     setMediaStreams((prev) =>
       copyMapWithOperation(prev, (map) => map.set('me', userMedia)),

@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import { getWorkspaceInfo } from 'src/apis/workspace';
-import ConfMediaBar from 'src/components/ConfMediaBar';
-import ConfContext from 'src/contexts/conf';
+import MeetingMediaBar from 'src/components/MeetingMediaBar';
+import MeetingContext from 'src/contexts/meeting';
 import { SelectedMomContext } from 'src/contexts/selected-mom';
 import { SocketContext } from 'src/contexts/socket';
 import useSocket from 'src/hooks/useSocket';
@@ -15,7 +15,7 @@ import { WorkspaceInfo } from 'src/types/workspace';
 
 function Workspace() {
   const { id } = useParams();
-  const [isStart, setIsStart] = useState(false);
+  const [isOnGoing, setIsOnGoing] = useState(false);
 
   const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
@@ -44,7 +44,7 @@ function Workspace() {
     });
 
     loadWorkspaceInfo();
-    setIsStart(false);
+    setIsOnGoing(false);
 
     return () => {
       setMomSocket((prev) => {
@@ -64,11 +64,11 @@ function Workspace() {
     }
 
     workspaceSocket.on(WORKSPACE_EVENT.START_MEETING, () => {
-      setIsStart(true);
+      setIsOnGoing(true);
     });
 
     workspaceSocket.on(WORKSPACE_EVENT.END_MEETING, () => {
-      setIsStart(false);
+      setIsOnGoing(false);
     });
 
     return () => {
@@ -79,15 +79,15 @@ function Workspace() {
 
   return momSocket !== null && workspaceSocket !== null ? (
     <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
-      <ConfContext.Provider value={{ isStart, setIsStart }}>
+      <MeetingContext.Provider value={{ isOnGoing, setIsOnGoing }}>
         {workspace && (
           <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
             <Sidebar workspace={workspace} />
             <Mom />
           </SelectedMomContext.Provider>
         )}
-        {isStart && <ConfMediaBar />}
-      </ConfContext.Provider>
+        {isOnGoing && <MeetingMediaBar />}
+      </MeetingContext.Provider>
     </SocketContext.Provider>
   ) : (
     <></>

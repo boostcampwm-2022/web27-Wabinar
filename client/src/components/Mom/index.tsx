@@ -1,5 +1,4 @@
 import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
-import VoteBlockTemplate from 'common/Templates/VoteBlock';
 import { useEffect, useRef, useState } from 'react';
 import { VOTE_MODE } from 'src/constants/block';
 import { useCRDT } from 'src/hooks/useCRDT';
@@ -226,16 +225,6 @@ function Mom() {
             />
           ))}
         </div>
-        {/* TODO: 임시로 놓은 투표 블록임 */}
-        <button onClick={() => setVoteMode('create')}>투표 등록</button>
-        {voteMode && (
-          <VoteBlockTemplate
-            mode={voteMode}
-            setVoteMode={setVoteMode}
-            options={options}
-            setOptions={setOptions}
-          />
-        )}
       </div>
     </div>
   ) : (

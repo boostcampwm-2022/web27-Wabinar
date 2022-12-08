@@ -1,3 +1,4 @@
+import { RiFileAddLine } from '@react-icons/all-files/ri/RiFileAddLine';
 import { MOM_EVENT } from '@wabinar/constants/socket-message';
 import { memo, useEffect, useState } from 'react';
 import useSocketContext from 'src/hooks/useSocketContext';
@@ -43,7 +44,18 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
 
   return (
     <div className={style['mom-list-container']}>
-      <h2>회의록</h2>
+      <div className={style['mom-list-header']}>
+        <h2>회의록</h2>
+        <RiFileAddLine
+          size={20}
+          className={
+            momList.length
+              ? style['mom-add-icon']
+              : style['mom-add-icon__highlighted']
+          }
+          onClick={onCreateMom}
+        />
+      </div>
       <ul className={style['mom-list']}>
         {momList.map(({ _id: id, title }) => (
           <li key={id} onClick={() => onSelect(id)} role="button">
@@ -51,7 +63,6 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
           </li>
         ))}
       </ul>
-      <button onClick={onCreateMom}>+ 회의록 추가</button>
     </div>
   );
 }
