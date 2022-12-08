@@ -25,16 +25,16 @@ function VoteBlock({ id }: VoteBlockProps) {
     setVoteMode(VOTE_MODE.CREATE);
   }, []);
 
-  return (
-    voteMode && (
-      <VoteBlockTemplate
-        id={id}
-        mode={voteMode}
-        setVoteMode={setVoteMode}
-        options={options}
-        setOptions={setOptions}
-      />
-    )
+  return voteMode ? (
+    <VoteBlockTemplate
+      id={id}
+      mode={voteMode}
+      setVoteMode={setVoteMode}
+      options={options}
+      setOptions={setOptions}
+    />
+  ) : (
+    <></>
   );
 }
 
