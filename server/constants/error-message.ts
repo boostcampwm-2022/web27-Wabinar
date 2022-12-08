@@ -8,7 +8,7 @@ const ERROR_MESSAGE = {
 
   EMPTY_WORKSPACE_NAME: '워크스페이스 이름을 입력하세요 ^^',
   EMPTY_WORKSPACE_CODE: '참여코드를 입력하세요.',
-  INVALID_WORKSPCAE_CODE: '잘못된 참여 코드',
+  INVALID_WORKSPACE_CODE: '잘못된 참여 코드',
 
   BAD_REQUEST: '잘못된 접근이에요 ^^',
 };
