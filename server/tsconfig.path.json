@@ -9,17 +9,9 @@
       "@db": ["db"],
       "@middlewares/*": ["middlewares/*"],
       "@utils/*": ["utils/*"],
-      "@socket": ["socket"],
-      "@wabinar/crdt": ["../@wabinar/crdt"],
-      "@wabinar/api-types": ["../@wabinar/api-types"]
+      "@socket": ["socket"]
     }
   },
-  "plugins": [
-    {
-      "transform": "typescript-transform-paths",
-      "afterDeclarations": true
-    }
-  ],
   "ts-node": {
     "files": true,
     "transpileOnly": true,

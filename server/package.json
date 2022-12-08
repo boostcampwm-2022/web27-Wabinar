@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node-dev index.ts",
     "test": "jest",
-    "build": "tsc --build && tsc-alias"
+    "build": "tsc && vite build"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",
@@ -19,7 +19,6 @@
     "node-dev": "^7.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
-    "ttypescript": "^1.5.13",
     "typescript-transform-paths": "^3.4.4"
   },
   "dependencies": {
@@ -32,6 +31,7 @@
     "mongoose-auto-increment": "^5.0.1",
     "morgan": "^1.10.0",
     "socket.io": "^4.5.3",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "vite-plugin-node": "^1.0.0"
   }
 }
