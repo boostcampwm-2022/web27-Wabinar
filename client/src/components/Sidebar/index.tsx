@@ -6,6 +6,7 @@ import MeetingButton from './MeetingButton';
 import MemberList from './MemberList';
 import MomList from './MomList';
 import style from './style.module.scss';
+
 interface SidebarProps {
   workspace: WorkspaceInfo;
 }
