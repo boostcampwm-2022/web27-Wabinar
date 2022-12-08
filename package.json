@@ -7,6 +7,9 @@
     "postinstall": "husky install",
     "lint-staged": "lint-staged",
     "env": "npm run dotenv-pull",
+    "deploy": "npm run deploy:client && npm run deploy:server",
+    "deploy:client": "npm -w client run build",
+    "deploy:server": "npm -w server run build",
     "dotenv-pull": "npm run dotenv-pull:client && npm run dotenv-pull:server",
     "dotenv-pull:client": "echo For client... && cd client && npx dotenv-vault pull development",
     "dotenv-pull:server": "echo For server... && cd server && npx dotenv-vault pull development"
@@ -23,13 +26,15 @@
     ]
   },
   "workspaces": [
-    "./*"
+    "./*",
+    "@wabinar/*"
   ],
   "devDependencies": {
     "@types/eslint": "^8",
     "@types/jest": "^29.2.3",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
+    "dotenv-vault": "^1.16.3",
     "eslint": "latest",
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^3.5.2",
@@ -40,10 +45,8 @@
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "ts-jest": "^29.0.3",
-    "typescript": "^4.6.4"
-  },
-  "dependencies": {
-    "dotenv-vault": "^1.16.3",
-    "tsc-alias": "^1.7.1"
+    "typescript": "^4.6.4",
+    "vite": "^3.2.3",
+    "vite-tsconfig-paths": "^3.5.2"
   }
 }

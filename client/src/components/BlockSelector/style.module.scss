@@ -1,6 +1,7 @@
 @import 'styles/color.module';
 
 .block-selector {
+  position: absolute;
   height: 100%;
   overflow: hidden;
 
@@ -11,6 +12,7 @@
     max-height: 280px;
     padding: 5px;
     overflow: auto;
+    border: 1px solid $gray-300-transparent;
     border-radius: 4px;
     background-color: $white;
     box-shadow: rgb(15 15 15 / 5%) 0px 0px 0px 1px,

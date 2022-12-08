@@ -1,4 +1,4 @@
-import { PostLoginParams } from 'params/auth';
+import { PostLoginParams } from '@wabinar/api-types/auth';
 import { User } from 'src/types/user';
 import { Workspace } from 'src/types/workspace';
 

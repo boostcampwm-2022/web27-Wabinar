@@ -9,8 +9,15 @@
       "@db": ["db"],
       "@middlewares/*": ["middlewares/*"],
       "@utils/*": ["utils/*"],
-      "@params/*": ["../types/params/*"],
       "@socket": ["socket"]
     }
+  },
+  "ts-node": {
+    "files": true,
+    "transpileOnly": true,
+    "require": [
+      "typescript-transform-paths/register",
+      "tsconfig-paths/register"
+    ]
   }
 }
