@@ -27,7 +27,9 @@ function Block({ id, index, onKeyDown }: BlockProps) {
   const localUpdateFlagRef = useRef<boolean>(false);
 
   useEffect(() => {
-    socket.emit('load-type', id, (type: BlockType) => setType(type));
+    socket.emit(SOCKET_MESSAGE.BLOCK.LOAD_TYPE, id, (type: BlockType) =>
+      setType(type),
+    );
 
     ee.on(`${SOCKET_MESSAGE.BLOCK.UPDATE_TYPE}-${id}`, (type) => {
       setType(type);

@@ -82,7 +82,7 @@ async function momSocketServer(io: Server) {
       socket.to(momId).emit(SOCKET_MESSAGE.MOM.DELETE_BLOCK, op);
     });
 
-    socket.on('load-type', async (blockId, callback) => {
+    socket.on(SOCKET_MESSAGE.BLOCK.LOAD_TYPE, async (blockId, callback) => {
       const type = await getBlockType(blockId);
 
       callback(type);
