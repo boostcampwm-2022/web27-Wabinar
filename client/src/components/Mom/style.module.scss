@@ -40,6 +40,7 @@
   box-sizing: border-box;
   height: calc(100% - 70px);
   padding: 20px;
+  overflow-y: scroll;
   background-color: white;
   white-space: pre-wrap;
 
@@ -66,6 +67,19 @@
   & > *:focus {
     outline: none;
   }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: $gray-300;
+  }
 }
 
 .default-container {
@@ -85,13 +99,19 @@
   }
 
   .highlight {
+    height: 20px;
     margin: 0px 2px;
 
-    padding: 0px 5px;
-    border-radius: 12px;
+    padding: 3px 5px;
+    border-radius: 10px;
     background-color: $off-white;
 
     color: $primary-100;
     font-weight: 700;
+    line-height: 30px;
+
+    & > svg {
+      transform: translateY(5px);
+    }
   }
 }
