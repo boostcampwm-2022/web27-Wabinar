@@ -1,8 +1,10 @@
+import { BlockType } from '@wabinar/api-types/block';
 import {
   RemoteInsertOperation,
   RemoteDeleteOperation,
 } from '@wabinar/crdt/linked-list';
-import { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef, memo, useState } from 'react';
+import BlockSelector from 'src/components/BlockSelector';
 import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
@@ -10,18 +12,17 @@ import useSocketContext from 'src/hooks/useSocketContext';
 
 import ee from '../EventEmitter';
 
-type BlockType = 'h1' | 'h2' | 'h3' | 'p' | 'vote' | 'question';
-
 interface BlockProps {
   id: string;
   index: number;
   onKeyDown: React.KeyboardEventHandler;
   type: BlockType;
-  setType: React.Dispatch<React.SetStateAction<BlockType | undefined>>;
+  setType: (arg: BlockType) => void;
 }
 
 function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const {
     syncCRDT,
@@ -198,56 +199,31 @@ function TextBlock({ id, index, onKeyDown, type, setType }: BlockProps) {
     onPaste,
   };
 
-  switch (type) {
-    case 'h1':
-      return (
-        <h1
-          ref={blockRef}
-          data-id={id}
-          data-index={index}
-          {...commonHandlers}
-          suppressContentEditableWarning={true}
-        >
-          {readCRDT()}
-        </h1>
-      );
-    case 'h2':
-      return (
-        <h2
-          ref={blockRef}
-          data-id={id}
-          data-index={index}
-          {...commonHandlers}
-          suppressContentEditableWarning={true}
-        >
-          {readCRDT()}
-        </h2>
-      );
-    case 'h3':
-      return (
-        <h3
-          ref={blockRef}
-          data-id={id}
-          data-index={index}
-          {...commonHandlers}
-          suppressContentEditableWarning={true}
-        >
-          {readCRDT()}
-        </h3>
-      );
-    default:
-      return (
-        <p
-          ref={blockRef}
-          data-id={id}
-          data-index={index}
-          {...commonHandlers}
-          suppressContentEditableWarning={true}
-        >
-          {readCRDT()}
-        </p>
-      );
-  }
+  const BLOCK_TYPES = Object.values(BlockType)
+    .filter((el) => typeof el === 'string')
+    .map((el) => (el as string).toLocaleLowerCase());
+
+  const onSelect = (id: BlockType) => {
+    setType(id);
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      {React.createElement(
+        BLOCK_TYPES[type],
+        {
+          ref: blockRef,
+          'data-id': id,
+          'date-index': index,
+          ...commonHandlers,
+          suppressContentEditableWarning: true,
+        },
+        readCRDT(),
+      )}
+      {isOpen && <BlockSelector onSelect={onSelect} />}
+    </>
+  );
 }
 
 export default memo(TextBlock);
