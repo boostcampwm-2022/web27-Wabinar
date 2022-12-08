@@ -140,7 +140,7 @@ function VoteBlockTemplate({
   };
 
   const getVoteResultText = (count: number) => {
-    return `(${count}/${participantCount}) ${getPercent(count)}%`;
+    return `(${count}/${participantCount}) ${getPercent(count).toFixed(2)}%`;
   };
 
   return (
