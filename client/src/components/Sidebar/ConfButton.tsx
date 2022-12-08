@@ -1,5 +1,5 @@
+import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import { memo } from 'react';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
 import { useConfContext } from 'src/hooks/useConfContext';
 import useSocketContext from 'src/hooks/useSocketContext';
 import color from 'styles/color.module.scss';
@@ -15,9 +15,7 @@ function ConfButton() {
   const onClick = () => {
     setIsStart(!isStart);
     socket.emit(
-      isStart
-        ? SOCKET_MESSAGE.WORKSPACE.END_MEETING
-        : SOCKET_MESSAGE.WORKSPACE.START_MEETING,
+      isStart ? WORKSPACE_EVENT.END_MEETING : WORKSPACE_EVENT.START_MEETING,
     );
   };
 

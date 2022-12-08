@@ -1,5 +1,5 @@
-import { useState, useEffect, memo, useRef } from 'react';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
+import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
+import { memo, useEffect, useRef, useState } from 'react';
 import useSocketContext from 'src/hooks/useSocketContext';
 
 import ee from '../EventEmitter';
@@ -28,11 +28,9 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
   const localUpdateFlagRef = useRef<boolean>(false);
 
   useEffect(() => {
-    socket.emit(SOCKET_MESSAGE.BLOCK.LOAD_TYPE, id, (type: BlockType) =>
-      setType(type),
-    );
+    socket.emit(BLOCK_EVENT.LOAD_TYPE, id, (type: BlockType) => setType(type));
 
-    ee.on(`${SOCKET_MESSAGE.BLOCK.UPDATE_TYPE}-${id}`, (type) => {
+    ee.on(`${BLOCK_EVENT.UPDATE_TYPE}-${id}`, (type) => {
       setType(type);
       localUpdateFlagRef.current = false;
     });
@@ -40,7 +38,7 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
 
   useEffect(() => {
     if (localUpdateFlagRef.current) {
-      socket.emit(SOCKET_MESSAGE.BLOCK.UPDATE_TYPE, id, type);
+      socket.emit(BLOCK_EVENT.UPDATE_TYPE, id, type);
     }
   }, [type]);
 

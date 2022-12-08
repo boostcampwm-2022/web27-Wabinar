@@ -1,5 +1,5 @@
+import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import { Socket } from 'socket.io-client';
-import SOCKET_MESSAGE from 'src/constants/socket-message';
 
 type onMediaConnectedCb = (socketId: string, remoteStream: MediaStream) => void;
 type onMediaDisconnectedCb = (socketId: string) => void;
@@ -46,7 +46,7 @@ class RTC {
     // add event listeners
     pc.addEventListener('icecandidate', (iceEvent) => {
       this.socket.emit(
-        SOCKET_MESSAGE.WORKSPACE.SEND_ICE,
+        WORKSPACE_EVENT.SEND_ICE,
         iceEvent.candidate,
         remoteSocketId,
       );
@@ -83,25 +83,22 @@ class RTC {
   }
 
   connect() {
-    this.socket.on(
-      SOCKET_MESSAGE.WORKSPACE.RECEIVE_HELLO,
-      async (remoteSocketId) => {
-        const pc = this.#createPeerConnection(remoteSocketId);
-        this.connections.set(remoteSocketId, pc);
+    this.socket.on(WORKSPACE_EVENT.RECEIVE_HELLO, async (remoteSocketId) => {
+      const pc = this.#createPeerConnection(remoteSocketId);
+      this.connections.set(remoteSocketId, pc);
 
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
 
-        this.socket.emit(
-          SOCKET_MESSAGE.WORKSPACE.SEND_OFFER,
-          pc.localDescription,
-          remoteSocketId,
-        );
-      },
-    );
+      this.socket.emit(
+        WORKSPACE_EVENT.SEND_OFFER,
+        pc.localDescription,
+        remoteSocketId,
+      );
+    });
 
     this.socket.on(
-      SOCKET_MESSAGE.WORKSPACE.RECEIVE_OFFER,
+      WORKSPACE_EVENT.RECEIVE_OFFER,
       async (offer, remoteSocketId) => {
         const pc = this.#createPeerConnection(remoteSocketId);
         this.connections.set(remoteSocketId, pc);
@@ -111,16 +108,12 @@ class RTC {
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
 
-        this.socket.emit(
-          SOCKET_MESSAGE.WORKSPACE.SEND_ANSWER,
-          answer,
-          remoteSocketId,
-        );
+        this.socket.emit(WORKSPACE_EVENT.SEND_ANSWER, answer, remoteSocketId);
       },
     );
 
     this.socket.on(
-      SOCKET_MESSAGE.WORKSPACE.RECEIVE_ANSWER,
+      WORKSPACE_EVENT.RECEIVE_ANSWER,
       async (answer, remoteSocketId) => {
         const pc = this.connections.get(remoteSocketId);
         if (!pc) {
@@ -131,27 +124,24 @@ class RTC {
       },
     );
 
-    this.socket.on(
-      SOCKET_MESSAGE.WORKSPACE.RECEIVE_ICE,
-      (ice, remoteSocketId) => {
-        const pc = this.connections.get(remoteSocketId);
+    this.socket.on(WORKSPACE_EVENT.RECEIVE_ICE, (ice, remoteSocketId) => {
+      const pc = this.connections.get(remoteSocketId);
 
-        if (!pc) {
-          throw new Error('No RTCPeerConnection on ice candindate received.');
-        }
+      if (!pc) {
+        throw new Error('No RTCPeerConnection on ice candindate received.');
+      }
 
-        pc.addIceCandidate(ice);
-      },
-    );
+      pc.addIceCandidate(ice);
+    });
 
-    this.socket.on(SOCKET_MESSAGE.WORKSPACE.RECEIVE_BYE, (remoteSocketId) => {
+    this.socket.on(WORKSPACE_EVENT.RECEIVE_BYE, (remoteSocketId) => {
       this.connections.delete(remoteSocketId);
       this.streams.delete(remoteSocketId);
 
       this.onMediaDisconnectedCallback(remoteSocketId);
     });
 
-    this.socket.emit(SOCKET_MESSAGE.WORKSPACE.SEND_HELLO);
+    this.socket.emit(WORKSPACE_EVENT.SEND_HELLO);
   }
 }
 
