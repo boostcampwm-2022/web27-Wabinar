@@ -44,9 +44,9 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
     }
   }, [type]);
 
-  const setBlockType = (id: BlockType) => {
+  const setBlockType = (type: BlockType) => {
     localUpdateFlagRef.current = true;
-    setType(id);
+    setType(type);
   };
 
   switch (type) {
