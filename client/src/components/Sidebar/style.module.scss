@@ -90,10 +90,33 @@
     font-size: 18px;
     font-weight: 500;
   }
+}
 
-  & > svg {
-    stroke: $gray-200;
-    fill: $gray-200;
+.mom-add-icon {
+  stroke: $gray-200;
+  fill: $gray-200;
+  cursor: pointer;
+}
+
+.mom-add-icon__highlighted {
+  transform: scale(2);
+  animation: highlight 0.5s ease-in infinite;
+  stroke: $primary-100;
+  fill: $primary-100;
+}
+
+@keyframes highlight {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(7deg);
+  }
+  75% {
+    transform: rotate(-7deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
 

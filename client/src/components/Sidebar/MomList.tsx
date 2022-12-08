@@ -48,7 +48,15 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
     <div className={style['mom-list-container']}>
       <div className={style['mom-list-header']}>
         <h2>회의록</h2>
-        <RiFileAddLine size={20} onClick={onCreateMom} />
+        <RiFileAddLine
+          size={20}
+          className={
+            momList.length
+              ? style['mom-add-icon']
+              : style['mom-add-icon__highlighted']
+          }
+          onClick={onCreateMom}
+        />
       </div>
       <ul className={style['mom-list']}>
         {momList.map(({ _id: id, title }) => (
