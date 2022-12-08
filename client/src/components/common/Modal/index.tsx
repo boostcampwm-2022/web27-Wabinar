@@ -27,7 +27,11 @@ function Modal({ title, isDark = false, children, onClose }: ModalProps) {
         <div className={style['out-container']}>
           <div className={style.header} id="modal-heading">
             <h2 className={style.title}>{title}</h2>
-            <button className={style['close-modal']} onClick={onClose}>
+            <button
+              className={style['close-modal']}
+              onClick={onClose}
+              aria-label="모달 창 닫기"
+            >
               <MdClose size={20} color={'white'} />
             </button>
           </div>

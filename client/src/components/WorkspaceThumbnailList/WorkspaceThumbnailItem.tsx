@@ -16,7 +16,7 @@ function WorkspaceThumbnailItem({
   onClick,
 }: WorkspaceThumbnailItemProps) {
   return (
-    <li className={style.thumbnail} onClick={onClick}>
+    <li className={style.thumbnail} onClick={onClick} role="button">
       <div className={style.thumbnail__content}>
         {/* <img src={imageUrl} /> */}
         {name[0]}

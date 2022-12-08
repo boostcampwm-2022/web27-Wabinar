@@ -43,6 +43,26 @@
   background-color: white;
   white-space: pre-wrap;
 
+  & > h1 {
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  & > h2 {
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  & > h3 {
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  & > p {
+    font-size: initial;
+    font-weight: 400;
+  }
+
   & > *:focus {
     outline: none;
   }

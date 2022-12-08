@@ -1,15 +1,17 @@
 import classNames from 'classnames/bind';
+import { memo } from 'react';
 
 import style from './style.module.scss';
 
 const cx = classNames.bind(style);
 
 interface ButtonProps {
-  text: string;
+  text?: string;
   href?: string;
   icon?: JSX.Element;
   className?: string;
   isDisabled?: boolean;
+  ariaLabel?: string;
   color?: string;
   onClick?: () => void;
 }
@@ -20,6 +22,7 @@ function Button({
   icon,
   className,
   isDisabled = false,
+  ariaLabel,
   color,
   onClick,
 }: ButtonProps) {
@@ -34,15 +37,19 @@ function Button({
     </a>
   ) : (
     <button
-      className={cx(style.button, className, { disable: isDisabled })}
+      className={cx(style.button, className, {
+        disable: isDisabled,
+        foursquare: !text,
+      })}
       disabled={isDisabled}
       onClick={onClickBtn}
       style={{ backgroundColor: color }}
+      aria-label={ariaLabel}
     >
       {icon}
-      <span>{text}</span>
+      {text && <span>{text}</span>}
     </button>
   );
 }
 
-export default Button;
+export default memo(Button);
