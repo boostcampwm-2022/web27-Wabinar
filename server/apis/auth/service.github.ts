@@ -1,4 +1,5 @@
 import env from '@config';
+import ERROR_MESSAGE from '@constants/error-message';
 import AuthorizationError from '@errors/authorization-error';
 import axios from 'axios';
 
@@ -25,7 +26,7 @@ export const getAccessToken = async (code: string) => {
   );
 
   if (accessTokenResponse.error) {
-    throw new Error('access token 생성 요청 실패');
+    throw new Error(ERROR_MESSAGE.ACCESS_TOKEN_REQUEST_FAILED);
   }
 
   return accessTokenResponse;
@@ -39,7 +40,7 @@ export const getGithubUser = async (accessToken: string, tokenType: string) => {
   });
 
   if (user.error) {
-    throw new AuthorizationError('OAuth 유저 정보 요청 실패');
+    throw new AuthorizationError(ERROR_MESSAGE.UNAUTHORIZED_OAUTH);
   }
 
   return user;

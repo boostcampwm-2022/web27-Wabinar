@@ -20,6 +20,7 @@
 
 .sidebar-container__scrollable {
   display: flex;
+  box-sizing: border-box;
   flex-direction: column;
   align-items: center;
   width: 100%;
@@ -134,7 +135,7 @@
   }
 }
 
-.conf-button {
+.meeting-button {
   position: absolute;
   bottom: 15px;
   width: 80px;

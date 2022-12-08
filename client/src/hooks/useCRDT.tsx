@@ -4,6 +4,7 @@ import LinkedList, {
   RemoteDeleteOperation,
 } from '@wabinar/crdt/linked-list';
 import { useRef } from 'react';
+import ERROR_MESSAGE from 'src/constants/error-message';
 import { useUserContext } from 'src/hooks/useUserContext';
 
 enum OPERATION_TYPE {
@@ -19,7 +20,7 @@ interface RemoteOperation {
 export function useCRDT() {
   const { user } = useUserContext();
 
-  if (!user) throw new Error('인증되지 않은 유저에요 ^^');
+  if (!user) throw new Error(ERROR_MESSAGE.UNAUTHORIZED);
 
   const { id: clientId } = user;
 
