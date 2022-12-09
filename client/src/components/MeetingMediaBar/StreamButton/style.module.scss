@@ -1,0 +1,12 @@
+@import 'styles/color.module';
+
+.stream-button {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  margin: auto;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: $gray-300-transparent;
+  cursor: pointer;
+}

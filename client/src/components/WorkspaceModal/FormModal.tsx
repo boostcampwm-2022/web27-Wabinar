@@ -1,8 +1,8 @@
-import { BiCopy } from '@react-icons/all-files/bi/BiCopy';
 import cx from 'classnames';
+import Button from 'src/components/common/Button';
+import CopyButton from 'src/components/common/CopyButton';
+import Modal from 'src/components/common/Modal';
 
-import Button from '../common/Button';
-import Modal from '../common/Modal';
 import style from './style.module.scss';
 
 export interface ModalContents {
@@ -48,7 +48,9 @@ function FormModal({
         ))}
 
         <div className={style['input-section']}>
-          {isDisabled && <BiCopy className={style['copy-icon']} />}
+          {isDisabled && (
+            <CopyButton target={inputValue} className={style['copy-icon']} />
+          )}
           <input
             className={cx(style.input, {
               [style.disabled]: isDisabled,
@@ -58,6 +60,7 @@ function FormModal({
             value={inputValue}
             onChange={onChange}
             disabled={isDisabled}
+            autoFocus
           />
         </div>
 

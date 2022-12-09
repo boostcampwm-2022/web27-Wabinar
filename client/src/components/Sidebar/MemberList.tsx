@@ -1,24 +1,18 @@
+import { memo } from 'react';
+import { User } from 'src/types/user';
+
 import style from './style.module.scss';
 
-function MemberList() {
-  const members = [
-    {
-      id: 1,
-      name: '백도훈',
-      avatarUrl: 'https://avatars.githubusercontent.com/u/65100540?s=60&v=4',
-    },
-    {
-      id: 2,
-      name: '백도훈',
-      avatarUrl: 'https://avatars.githubusercontent.com/u/65100540?s=60&v=4',
-    },
-  ];
+interface MemberListProps {
+  members: User[];
+}
 
+function MemberList({ members }: MemberListProps) {
   return (
     <ul className={style['member-list']}>
       {members.map((item) => (
         <li key={item.id} className={style['member-item']}>
-          <img src={item.avatarUrl} />
+          <img src={item.avatarUrl} alt={item.name + '의 프로필 사진'} />
           <span>{item.name}</span>
         </li>
       ))}
@@ -26,4 +20,4 @@ function MemberList() {
   );
 }
 
-export default MemberList;
+export default memo(MemberList);

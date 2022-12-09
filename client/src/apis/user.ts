@@ -1,9 +1,14 @@
-import { GetWorkspaceParams } from 'params/user';
+import {
+  GetWorkspaceParams,
+  GetWorkspacesResBody,
+} from '@wabinar/api-types/user';
 
 import { http } from './http';
 import { OK } from './http-status';
 
-export const getWorkspaces = async ({ id }: GetWorkspaceParams) => {
+export const getWorkspaces = async ({
+  id,
+}: GetWorkspaceParams): Promise<GetWorkspacesResBody> => {
   const res = await http.get(`/user/${id}/workspace`);
 
   if (res.status !== OK) throw new Error();

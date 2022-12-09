@@ -1,4 +1,8 @@
-import { GetInfoParams, PostJoinParams, PostParams } from 'params/workspace';
+import {
+  GetInfoParams,
+  PostJoinParams,
+  PostParams,
+} from '@wabinar/api-types/workspace';
 import { Workspace, WorkspaceInfo } from 'src/types/workspace';
 
 import { http } from './http';

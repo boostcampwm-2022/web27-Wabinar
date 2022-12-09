@@ -1,3 +1,6 @@
+# ignore secret keys
+deploy-scripts/vault-secrets
+
 # ignore settings for yarn berry zero install
 .yarn/*
 !.yarn/cache

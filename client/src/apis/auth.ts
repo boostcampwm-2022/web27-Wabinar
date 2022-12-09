@@ -1,8 +1,15 @@
-import { PostLoginParams } from 'params/auth';
-import { GetUserInfo } from 'src/types/workspace';
+import { PostLoginParams } from '@wabinar/api-types/auth';
+import { User } from 'src/types/user';
+import { Workspace } from 'src/types/workspace';
 
 import { http } from './http';
 import { CREATED, OK } from './http-status';
+
+// TODO: BE API 변경할 때 제거
+type GetUserInfo = {
+  user: User;
+  workspaces: Workspace[];
+};
 
 export const getAuth = async (): Promise<GetUserInfo> => {
   const res = await http.get(`/auth`);

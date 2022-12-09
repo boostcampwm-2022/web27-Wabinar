@@ -7,11 +7,6 @@ export interface Workspace {
   code: string;
 }
 
-export type GetUserInfo = {
-  user: User;
-  workspaces: Workspace[];
-};
-
 export type WorkspaceInfo = {
   name: string;
   members: User[];

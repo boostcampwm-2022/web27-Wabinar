@@ -1,8 +1,9 @@
 // eslint-disable-next-line import/named
 import { AxiosError, AxiosResponse } from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { postWorkspaceJoin } from 'src/apis/workspace';
-import { useSetWorkspaces } from 'src/hooks/useSetWorkspaces';
+import useWorkspacesContext from 'src/hooks/useWorkspacesContext';
 
 import FormModal, { ModalContents } from './FormModal';
 
@@ -12,9 +13,11 @@ interface JoinModalProps {
 }
 
 function JoinModal({ modalContents, onClose }: JoinModalProps) {
+  const navigate = useNavigate();
+  const { setWorkspaces } = useWorkspacesContext();
+
   const [inputValue, setInputValue] = useState<string>('');
 
-  const setWorkspaces = useSetWorkspaces();
   const [errorMessage, setErrorMessage] = useState<string | undefined>(
     undefined,
   );
@@ -28,6 +31,7 @@ function JoinModal({ modalContents, onClose }: JoinModalProps) {
       });
 
       onClose();
+      navigate(`/workspace/${workspace.id}`);
     } catch (e) {
       const { data } = (e as AxiosError).response as AxiosResponse;
 

@@ -4,7 +4,7 @@ import workspaceRouter from '@apis/workspace/controller';
 import env from '@config';
 import cors from '@middlewares/cors';
 import errorHandler from '@middlewares/error-handler';
-import { momSocketServer, signalingSocketServer } from '@socket';
+import { momSocketServer, workspaceSocketServer } from '@socket';
 import cookieParser from 'cookie-parser';
 import express, { Request, Response } from 'express';
 import http from 'http';
@@ -29,11 +29,14 @@ const io = new Server({
   cors: {
     origin: env.CLIENT_PATH,
   },
+  path: env.SOCKET_PATH,
 });
 
 momSocketServer(io);
-signalingSocketServer(io);
+workspaceSocketServer(io);
 
 io.attach(server);
 
-server.listen(8080);
+server.listen(env.PORT, () => {
+  console.log(`Server listening on port ${env.PORT}`);
+});

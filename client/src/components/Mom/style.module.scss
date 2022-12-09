@@ -1,4 +1,4 @@
-@import 'styles/color.module.scss';
+@import 'styles/color.module';
 
 .mom-container {
   display: flex;
@@ -18,12 +18,12 @@
 
 .mom-header {
   display: flex;
+  box-sizing: border-box;
   flex-direction: row;
   align-items: baseline;
   justify-content: space-between;
   height: 70px;
   padding: 0px 15px 20px 15px;
-  box-sizing: border-box;
   color: $gray-100;
 
   & > h1 {
@@ -36,9 +36,82 @@
   }
 }
 
-.editor-container {
+.mom-body {
+  box-sizing: border-box;
   height: calc(100% - 70px);
   padding: 20px;
-  box-sizing: border-box;
+  overflow-y: scroll;
   background-color: white;
+  white-space: pre-wrap;
+
+  & > h1 {
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  & > h2 {
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  & > h3 {
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  & > p {
+    font-size: initial;
+    font-weight: 400;
+  }
+
+  & > *:focus {
+    outline: none;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: $gray-300;
+  }
+}
+
+.default-container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: $off-white;
+
+  .message {
+    margin: 20px;
+    color: $primary-100;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .highlight {
+    height: 20px;
+    margin: 0px 2px;
+
+    padding: 3px 5px;
+    border-radius: 10px;
+    background-color: $off-white;
+
+    color: $primary-100;
+    font-weight: 700;
+    line-height: 30px;
+
+    & > svg {
+      transform: translateY(5px);
+    }
+  }
 }

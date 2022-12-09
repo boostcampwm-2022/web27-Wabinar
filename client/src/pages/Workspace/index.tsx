@@ -1,29 +1,47 @@
 import Workspace from 'components/Workspace';
-import WorkspaceList from 'components/WorkspaceList';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getWorkspaceInfo } from 'src/apis/workspace';
-import ConfBar from 'src/components/ConfBar';
-import useRTC from 'src/hooks/useRTC';
-import useSocket from 'src/hooks/useSocket';
-import { WorkspaceInfo } from 'src/types/workspace';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import { getWorkspaces } from 'src/apis/user';
+import DefaultWorkspace from 'src/components/Workspace/DefaultWorkspace';
+import WorkspacesContext from 'src/contexts/workspaces';
+import { useUserContext } from 'src/hooks/useUserContext';
+import { Workspace as TWorkspace } from 'src/types/workspace';
 
-import style from './style.module.scss';
+import Layout from './Layout';
 
 function WorkspacePage() {
-  const { id } = useParams();
-  const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
+  const { user } = useUserContext();
+  const navigate = useNavigate();
 
-  /* 워크스페이스 정보 불러오기 */
-  const loadWorkspaceInfo = async () => {
-    if (id) {
-      const workspaceInfo = await getWorkspaceInfo({ id });
-      setWorkspace(workspaceInfo);
+  const [workspaces, setWorkspaces] = useState<TWorkspace[]>([]);
+
+  const loadWorkspaces = async () => {
+    if (!user) {
+      navigate('/');
+      return;
     }
+
+    const { id: userId } = user;
+
+    const { workspaces: userWorkspaces } = await getWorkspaces({
+      id: userId,
+    });
+
+    setWorkspaces(userWorkspaces);
+
+    if (!userWorkspaces.length) {
+      navigate('/workspace');
+      return;
+    }
+
+    const defaultWorkspace = userWorkspaces[0];
+    const { id: workspaceId } = defaultWorkspace;
+
+    navigate(`/workspace/${workspaceId}`);
   };
 
   useEffect(() => {
-    loadWorkspaceInfo();
+    loadWorkspaces();
   }, []);
 
   const socket = useSocket(`/signaling/${id}`);
@@ -31,17 +49,14 @@ function WorkspacePage() {
   const streams = Array.from(participants.values());
 
   return (
-    <div className={style.container}>
-      <WorkspaceList />
-      {workspace && (
-        <Workspace
-          name={workspace.name}
-          members={workspace.members}
-          moms={workspace.moms}
-        />
-      )}
-      <ConfBar streams={streams} />
-    </div>
+    <WorkspacesContext.Provider value={{ workspaces, setWorkspaces }}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<DefaultWorkspace />} />
+          <Route path="/:id" element={<Workspace />} />
+        </Route>
+      </Routes>
+    </WorkspacesContext.Provider>
   );
 }
 
