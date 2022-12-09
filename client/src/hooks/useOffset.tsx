@@ -58,7 +58,6 @@ export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
       setOffset as unknown as React.FocusEventHandler<HTMLParagraphElement>,
     onClick:
       setOffset as unknown as React.MouseEventHandler<HTMLParagraphElement>,
-    onBlur: clearOffset,
     onKeyDown,
     onKeyUp,
   };

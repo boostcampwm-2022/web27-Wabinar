@@ -212,12 +212,18 @@ function TextBlock({
     onKeyDown(e);
   };
 
+  const onBlur = () => {
+    clearOffset();
+    setIsOpen(false);
+  };
+
   const commonHandlers = {
     onInput,
     onCompositionEnd,
     ...offsetHandlers,
     onKeyDown: onKeyDownComposite,
     onPaste,
+    onBlur,
   };
 
   const BLOCK_TYPES = Object.values(BlockType)
