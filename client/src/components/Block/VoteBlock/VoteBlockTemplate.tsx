@@ -67,7 +67,7 @@ function VoteBlockTemplate({
     setOptions(validOptions);
     setVoteMode(VoteMode.REGISTERED);
 
-    socket.emit(BLOCK_EVENT.CREATE_VOTE, validOptions);
+    socket.emit(BLOCK_EVENT.CREATE_VOTE, id, validOptions);
 
     toast('투표 등록 완료 ^^', { type: 'info' });
   };
@@ -87,7 +87,7 @@ function VoteBlockTemplate({
   };
 
   const onEnd = () => {
-    socket.emit(BLOCK_EVENT.END_VOTE);
+    socket.emit(BLOCK_EVENT.END_VOTE, id);
   };
 
   const onChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
@@ -109,20 +109,23 @@ function VoteBlockTemplate({
 
     setSelectedOptionId(targetId);
 
-    socket.emit(BLOCK_EVENT.UPDATE_VOTE, targetId, user?.id);
+    socket.emit(BLOCK_EVENT.UPDATE_VOTE, id, targetId, user?.id);
   };
 
   useEffect(() => {
-    socket.on(BLOCK_EVENT.UPDATE_VOTE, (participantCount) => {
+    socket.on(`${BLOCK_EVENT.UPDATE_VOTE}-${id}`, (participantCount) => {
       setParticipantCount(participantCount);
     });
 
-    socket.on(BLOCK_EVENT.END_VOTE, ({ options, participantCount }) => {
-      setVoteMode(VoteMode.END);
-      setOptions(options);
-      setParticipantCount(participantCount);
-      toast('투표가 종료되었어요 ^^');
-    });
+    socket.on(
+      `${BLOCK_EVENT.END_VOTE}-${id}`,
+      ({ options, participantCount }) => {
+        setVoteMode(VoteMode.END);
+        setOptions(options);
+        setParticipantCount(participantCount);
+        toast('투표가 종료되었어요 ^^');
+      },
+    );
 
     return () => {
       socket.off(BLOCK_EVENT.UPDATE_VOTE);
