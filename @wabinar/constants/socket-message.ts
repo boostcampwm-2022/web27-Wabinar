@@ -23,9 +23,9 @@ export const MOM_EVENT = {
 };
 
 export const BLOCK_EVENT = {
-  INIT: 'init-block',
   LOAD_TYPE: 'load-type',
   UPDATE_TYPE: 'update-type',
+  INIT_TEXT: 'init-text',
   INSERT_TEXT: 'insert-text',
   DELETE_TEXT: 'delete-text',
   UPDATE_TEXT: 'update-text',

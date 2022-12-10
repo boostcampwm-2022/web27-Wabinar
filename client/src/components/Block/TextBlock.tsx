@@ -112,15 +112,15 @@ function TextBlock({
   useEffect(() => {
     registerRef(blockRef);
 
-    socket.emit(BLOCK_EVENT.INIT, id);
+    socket.emit(BLOCK_EVENT.INIT_TEXT, id);
 
-    ee.on(`${BLOCK_EVENT.INIT}-${id}`, onInitialize);
+    ee.on(`${BLOCK_EVENT.INIT_TEXT}-${id}`, onInitialize);
     ee.on(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
     ee.on(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, onInsert);
     ee.on(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, onDelete);
 
     return () => {
-      ee.off(`${BLOCK_EVENT.INIT}-${id}`, onInitialize);
+      ee.off(`${BLOCK_EVENT.INIT_TEXT}-${id}`, onInitialize);
       ee.off(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
       ee.off(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, onInsert);
       ee.off(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, onDelete);
