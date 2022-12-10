@@ -184,6 +184,12 @@ function Mom() {
     };
   }, [selectedMom]);
 
+  const registerRef =
+    (index: number) => (ref: React.RefObject<HTMLElement>) => {
+      blockRefs.current[index] = ref;
+      setBlockFocus();
+    };
+
   return selectedMom ? (
     <div className={style['mom-container']}>
       <div className={style['mom']}>
@@ -206,9 +212,7 @@ function Mom() {
               id={id}
               index={index}
               onKeyDown={onKeyDown}
-              registerRef={(ref: React.RefObject<HTMLElement>) => {
-                blockRefs.current[index] = ref;
-              }}
+              registerRef={registerRef(index)}
             />
           ))}
         </div>
