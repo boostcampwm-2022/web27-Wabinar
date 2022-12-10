@@ -67,7 +67,7 @@ function VoteBlockTemplate({
     setOptions(validOptions);
     setVoteMode(VoteMode.REGISTERED);
 
-    socket.emit(BLOCK_EVENT.CREATE_VOTE, id, validOptions);
+    socket.emit(BLOCK_EVENT.REGISTER_VOTE, id, validOptions);
 
     toast('투표 등록 완료 ^^', { type: 'info' });
   };

@@ -29,7 +29,7 @@ export const BLOCK_EVENT = {
   INSERT_TEXT: 'insert-text',
   DELETE_TEXT: 'delete-text',
   UPDATE_TEXT: 'update-text',
-  CREATE_VOTE: 'create-vote',
+  REGISTER_VOTE: 'register-vote',
   UPDATE_VOTE: 'update-vote',
   END_VOTE: 'end-vote',
   FETCH_QUESTIONS: 'fetch-questions',

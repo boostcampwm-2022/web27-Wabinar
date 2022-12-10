@@ -18,7 +18,7 @@ function VoteBlock({ id }: VoteBlockProps) {
   const [options, setOptions] = useState<Option[]>(initialOption);
 
   useEffect(() => {
-    socket.on(`${BLOCK_EVENT.CREATE_VOTE}-${id}`, (options) => {
+    socket.on(`${BLOCK_EVENT.REGISTER_VOTE}-${id}`, (options) => {
       setVoteMode(VoteMode.REGISTERED as VoteMode);
       setOptions(options);
     });
