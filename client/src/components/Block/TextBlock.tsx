@@ -110,8 +110,6 @@ function TextBlock({
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    registerRef(blockRef);
-
     socket.emit(BLOCK_EVENT.INIT, id);
 
     ee.on(`${BLOCK_EVENT.INIT}-${id}`, onInitialize);
@@ -126,6 +124,10 @@ function TextBlock({
       ee.off(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, onDelete);
     };
   }, []);
+
+  useEffect(() => {
+    registerRef(blockRef);
+  }, [index]);
 
   useEffect(() => {
     updateCaretPosition();
