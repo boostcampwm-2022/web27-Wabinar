@@ -236,7 +236,7 @@ function TextBlock({
         {
           ref: blockRef,
           'data-id': id,
-          'date-index': index,
+          'data-index': index,
           ...commonHandlers,
           contentEditable: true,
           suppressContentEditableWarning: true,
