@@ -30,8 +30,9 @@ function VoteBlockTemplate({
   options,
   setOptions,
 }: VoteBlockProps) {
-  const [isCreateMode, isRegisteredMode, isEndMode] = [
+  const [isCreateMode, isRegisteringMode, isRegisteredMode, isEndMode] = [
     mode === VoteMode.CREATE,
+    mode === VoteMode.REGISTERING,
     mode === VoteMode.REGISTERED,
     mode === VoteMode.END,
   ];
@@ -182,7 +183,7 @@ function VoteBlockTemplate({
               readOnly={isRegisteredMode || isEndMode}
               defaultValue={text}
             />
-            {isCreateMode && (
+            {isRegisteringMode && (
               <Button
                 icon={<BiX size="20" color="white" />}
                 ariaLabel="항목 삭제"
@@ -199,7 +200,7 @@ function VoteBlockTemplate({
       </ul>
 
       <div className={style['vote-buttons']}>
-        {isCreateMode && (
+        {isRegisteringMode && (
           <>
             <Button onClick={onAdd} text="항목 추가" />
             <Button onClick={onRegister} text="투표 등록" />

@@ -8,12 +8,15 @@ import VoteBlockTemplate from './VoteBlockTemplate';
 
 interface VoteBlockProps {
   id: string;
+  registerable: boolean;
 }
 
-function VoteBlock({ id }: VoteBlockProps) {
+function VoteBlock({ id, registerable }: VoteBlockProps) {
   const { momSocket: socket } = useSocketContext();
 
-  const [voteMode, setVoteMode] = useState<VoteMode>(VoteMode.CREATE);
+  const [voteMode, setVoteMode] = useState<VoteMode>(
+    registerable ? VoteMode.REGISTERING : VoteMode.CREATE,
+  );
   const initialOption: Option[] = [{ id: 1, text: '', count: 0 }];
   const [options, setOptions] = useState<Option[]>(initialOption);
 
