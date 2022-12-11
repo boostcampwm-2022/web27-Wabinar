@@ -19,85 +19,125 @@
   <a href="https://www.figma.com/file/OxypldnsrmkTqX1LStgJPl/Wabinar?node-id=59%3A2014&t=eSUFpSn0pU3tpyjQ-0">기획서</a>
 </p>
 
-<hr>
-
 <br>
 
 <h2>프로젝트 소개</h2>
 
-비대면 화상 회의를 여러 차례 진행하면서 팀원들이 공통으로 느낀 문제점들이 있었어요.
+**🤷 하나의 플랫폼에서 말하고 또 기록할 수 있으면 오가는 논의들이 더 잘 기록될 수 있지 않을까?**
 
 <br>
 
-> 💡 **하나의 플랫폼에서 말하고 또 기록할 수 있으면 편리하지 않을까**
+비대면 화상 회의를 여러 차례 진행하면서 팀원들이 공통으로 느낀 **문제점**들이 있었어요.
 
-> 💡 **공유보드를 제공해서 오가는 이야기들을 기록하도록 유도할 수 있지 않을까**
-
-> 💡 **텍스트 기반 발제로 비디오/보이스 기반 소통의 진입장벽을 조금은 허물 수 있지 않을까**
+회의와 기록이 **서로 다른 플랫폼**에서 이루어지다보니 **기록되지 못하고 휘발되는 이야기**들이 많았어요.
 
 <br>
 
-**Wabinar** 는 비대면 회의 환경에 기록이라는 요소를 넣음으로써 더 좋은 회의를 진행할 수 있을 것으로 기대해요.
+**회의가 끝나도 생각은 남아있을 수 있게**
+
+**Wabinar는 비대면 회의에 기록이라는 요소를 추가했어요.**
 
 <br>
 
+## 주요 기능
 
-## 데모 영상
+### 🧑‍🤝‍🧑 워크스페이스
 
-(추후 업데이트)
+> 원하는 사람들과 워크스페이스를 만들어 **회의**하고 **회의 기록을 관리**할 수 있습니다.
+> 
 
-## 기능
+### 🎥 화상 회의
 
-(추후 업데이트)
+> 워크스페이스 멤버들과 **화상 회의**를 진행할 수 있습니다.
+> 
+
+### ✍️ 실시간 공유 회의록
+
+> 워크스페이스 멤버들과 회의록을 **실시간 공동 편집**할 수 있습니다.
+>
+
+(데모 영상 추가 예정) 
+
+<br />
 
 ## 기술 스택 (큐 아님)
 
-<div style="margin: 1em auto; text-align: center;">
-  <p>Common</p>
-  <img src="https://img.shields.io/badge/WebRTC-333333?logo=webrtc">
-  <img src="https://img.shields.io/badge/Socket.io-010101?logo=Socket.io">
-  <img src="https://img.shields.io/badge/Jest-341f0e?logo=jest&logoColor=FF0000&">
-  <img src="https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=ffffff">
-  <img src="https://img.shields.io/badge/ESLint-4B32C3?logo=Eslint">
-  <img src="https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=ffffff">
-  <img src="https://img.shields.io/badge/.ENV-ECD53F?logo=.ENV&logoColor=ffffff">
-</div>
+<table>
+    <thead>
+        <tr>
+            <th>category</th>
+            <th>stack</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <p align=center>Common</p>
+            </td>
+            <td>
+                <img src="https://img.shields.io/badge/WebRTC-333333?logo=webrtc">
+                <img src="https://img.shields.io/badge/Socket.io-010101?logo=Socket.io">
+                <img src="https://img.shields.io/badge/Jest-341f0e?logo=jest&logoColor=FF0000&">
+                <img src="https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=ffffff">
+                <img src="https://img.shields.io/badge/ESLint-4B32C3?logo=Eslint">
+                <img src="https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=ffffff">
+                <img src="https://img.shields.io/badge/.ENV-ECD53F?logo=.ENV&logoColor=ffffff">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                  <p align=center>Frontend</p>
+            </td>
+            <td>
+                 <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=ffffff">
+                <img src="https://img.shields.io/badge/Vite-646CFF?logo=Vite&logoColor=ffffff">
+                <img src="https://img.shields.io/badge/React-61DAFB?logo=React&logoColor=ffffff">
+                <img src="https://img.shields.io/badge/Sass-CC6699?logo=Sass&logoColor=ffffff">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p align=center>Backend</p>
+            </td>
+            <td>
+                <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=ffffff">
+                <img src="https://img.shields.io/badge/Node.js-114411?logo=node.js">
+                <img src="https://img.shields.io/badge/Express-17202C?logo=Express">
+                <img src="https://img.shields.io/badge/MongoDB-114411?logo=mongodb">
+                <img src="https://img.shields.io/badge/Mongoose-114411?logo=mongodb">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p align=center>CI/CD</p>
+            </td>
+            <td>
+                 <img src="https://img.shields.io/badge/GitHub Actions-000000?logo=github-actions">
+            </td>
+        </tr>
+                <tr>
+            <td>
+                <p align=center>Deployment</p>
+            </td>
+            <td>
+                <img src="https://img.shields.io/badge/nginx-014532?logo=Nginx&logoColor=009639&">
+                <img src="https://img.shields.io/badge/Naver Cloud Platform-03C75A?logo=naver&logoColor=ffffff">  
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p align=center>Collaboration</p>
+            </td>
+            <td>
+                <img src="https://img.shields.io/badge/Notion-000000?logo=Notion">
+                <img src="https://img.shields.io/badge/Figma-F24E1E?logo=Figma&logoColor=ffffff">
+                <img src="https://img.shields.io/badge/Slack-4A154B?logo=Slack&logoColor=ffffff">
+            </td>
+        </tr>
+    </tbody>
+</table>
 
-<div style="margin: 1em auto; text-align: center;">
-  <p>FE</p>
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=ffffff">
-  <img src="https://img.shields.io/badge/Vite-646CFF?logo=Vite&logoColor=ffffff">
-  <img src="https://img.shields.io/badge/React-61DAFB?logo=React&logoColor=ffffff">
-  <img src="https://img.shields.io/badge/Sass-CC6699?logo=Sass&logoColor=ffffff">
-</div>
-
-<div style="margin: 1em auto; text-align: center;">
-  <p>BE</p>
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=ffffff">
-  <img src="https://img.shields.io/badge/Node.js-114411?logo=node.js">
-  <img src="https://img.shields.io/badge/Express-17202C?logo=Express">
-  <img src="https://img.shields.io/badge/MongoDB-114411?logo=mongodb">
-  <img src="https://img.shields.io/badge/Mongoose-114411?logo=mongodb">
-</div>
-
-<div style="margin: 1em auto; text-align: center;">
-  <p>CI/CD</p>
-  <img src="https://img.shields.io/badge/GitHub Actions-000000?logo=github-actions">
-</div>
-
-<div style="margin: 1em auto; text-align: center;">
-  <p>Deployment</p>
-  <img src="https://img.shields.io/badge/nginx-014532?logo=Nginx&logoColor=009639&">
-  <img src="https://img.shields.io/badge/Naver Cloud Platform-03C75A?logo=naver&logoColor=ffffff">
-</div>
-
-<div style="margin: 1em auto; text-align: center;">
-<p>Collaboration</p>
-   <img src="https://img.shields.io/badge/Github-181717?logo=Github&logoColor=ffffff">
-  <img src="https://img.shields.io/badge/Notion-000000?logo=Notion">
-   <img src="https://img.shields.io/badge/Figma-F24E1E?logo=Figma&logoColor=ffffff">
-   <img src="https://img.shields.io/badge/Slack-4A154B?logo=Slack&logoColor=ffffff">
-</div>
+<br>
 
 ## 팀 소개
 
