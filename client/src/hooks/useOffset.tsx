@@ -43,7 +43,7 @@ export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
     }
   };
 
-  // 위 아래 방향키 이동은 핸들링하지 않음
+  // 위 아래 방향키 이동은 keyDown에서 핸들링하지 않음
   const onArrowKeyup: React.KeyboardEventHandler = (e) => {
     const ARROW_DOWN = 'ArrowDown';
     const ARROW_UP = 'ArrowUp';
