@@ -7,29 +7,21 @@
 
 <h2 align=center style="text-align: center; font-size: 1.5em">💻 회의와 기록을 한번에 📝</h2>
 
+<br>
+
 <p align=center>
-  <a href="https://www.minari.shop">배포 서버</a>
-  &nbsp; | &nbsp;
-  <a href="https://saber-ash-4ab.notion.site/Wabinar-57f67053ef2c48ababd1da317c63e7a7">노션</a>
-  &nbsp; | &nbsp; 
-  <a href="https://github.com/boostcampwm-2022/web27-Wabinar/wiki">위키</a>
-  &nbsp; | &nbsp; 
-  <a href="https://saber-ash-4ab.notion.site/f4e8ed8c594a4a8089404025a3692ca4?v=70e2fe5f08c94c998ea9c9846fc1aaaf">백로그</a>
-  &nbsp; | &nbsp;
-  <a href="https://www.figma.com/file/OxypldnsrmkTqX1LStgJPl/Wabinar?node-id=59%3A2014&t=eSUFpSn0pU3tpyjQ-0">기획서</a>
+<a href="https://www.wabinar.live">https://www.wabinar.live</a>
 </p>
 
-<br>
+<div align=center>
 
-<h2>프로젝트 소개</h2>
+<p><b>🤷 하나의 플랫폼에서 말하고 또 기록할 수 있으면 오가는 논의들이 더 잘 기록될 수 있지 않을까?</b></p>
 
-**🤷 하나의 플랫폼에서 말하고 또 기록할 수 있으면 오가는 논의들이 더 잘 기록될 수 있지 않을까?**
+<p>
+비대면 화상 회의를 여러 차례 진행하면서 팀원들이 공통으로 느낀 문제점들이 있었어요.
 
-<br>
-
-비대면 화상 회의를 여러 차례 진행하면서 팀원들이 공통으로 느낀 **문제점**들이 있었어요.
-
-회의와 기록이 **서로 다른 플랫폼**에서 이루어지다보니 **기록되지 못하고 휘발되는 이야기**들이 많았어요.
+회의와 기록이 서로 다른 플랫폼에서 이루어지다보니 기록되지 못하고 휘발되는 이야기들이 많았어요.
+</p>
 
 <br>
 
@@ -37,7 +29,22 @@
 
 **Wabinar는 비대면 회의에 기록이라는 요소를 추가했어요.**
 
+</div>
+
 <br>
+<p align=center>
+  <a href="https://saber-ash-4ab.notion.site/Wabinar-57f67053ef2c48ababd1da317c63e7a7">노션</a>
+  &nbsp; | &nbsp; 
+  <a href="https://saber-ash-4ab.notion.site/f4e8ed8c594a4a8089404025a3692ca4?v=70e2fe5f08c94c998ea9c9846fc1aaaf">백로그</a>
+  &nbsp; | &nbsp;
+  <a href="https://www.figma.com/file/OxypldnsrmkTqX1LStgJPl/Wabinar?node-id=59%3A2014&t=eSUFpSn0pU3tpyjQ-0">기획서</a>
+  &nbsp; | &nbsp; 
+  <a href="https://github.com/boostcampwm-2022/web27-Wabinar/wiki">위키</a>
+</p>
+
+<div align=center>
+    <a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fboostcampwm-2022%2Fweb27-Wabinar&count_bg=%231264A3&title_bg=%23323845&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
+</div>
 
 ## 주요 기능
 
