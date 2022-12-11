@@ -29,7 +29,7 @@ export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
   };
 
   // keydown 이벤트는 키 입력의 내용 반영 이전에 발생
-  const onKeyDown: React.KeyboardEventHandler = (e) => {
+  const onArrowKeyDown: React.KeyboardEventHandler = (e) => {
     const ARROW_LEFT = 'ArrowLeft';
     const ARROW_RIGHT = 'ArrowRight';
 
@@ -43,8 +43,8 @@ export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
     }
   };
 
-  // 위 아래 방향키 이동은 핸들링하지 않음
-  const onKeyUp: React.KeyboardEventHandler = (e) => {
+  // 위 아래 방향키 이동은 keyDown에서 핸들링하지 않음
+  const onArrowKeyup: React.KeyboardEventHandler = (e) => {
     const ARROW_DOWN = 'ArrowDown';
     const ARROW_UP = 'ArrowUp';
 
@@ -58,14 +58,14 @@ export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
       setOffset as unknown as React.FocusEventHandler<HTMLParagraphElement>,
     onClick:
       setOffset as unknown as React.MouseEventHandler<HTMLParagraphElement>,
-    onKeyDown,
-    onKeyUp,
+    onKeyUp: onArrowKeyup,
   };
 
   return {
     offsetRef,
     setOffset,
     clearOffset,
+    onArrowKeyDown,
     offsetHandlers,
   };
 }
