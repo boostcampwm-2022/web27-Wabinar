@@ -15,7 +15,7 @@ import ee from '../Mom/EventEmitter';
 interface BlockProps {
   id: string;
   index: number;
-  onKeyDown: React.KeyboardEventHandler;
+  onHandleBlock: React.KeyboardEventHandler;
   type: BlockType;
   setType: (arg: BlockType) => void;
   registerRef: (arg: React.RefObject<HTMLElement>) => void;
@@ -24,7 +24,7 @@ interface BlockProps {
 function TextBlock({
   id,
   index,
-  onKeyDown,
+  onHandleBlock,
   type,
   setType,
   registerRef,
@@ -43,7 +43,7 @@ function TextBlock({
 
   const blockRef = useRef<HTMLParagraphElement>(null);
 
-  const { offsetRef, setOffset, clearOffset, offsetHandlers } =
+  const { offsetRef, setOffset, clearOffset, onArrowKeyDown, offsetHandlers } =
     useOffset(blockRef);
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
@@ -205,19 +205,23 @@ function TextBlock({
     updateCaretPosition(pastedText.length);
   };
 
-  const onKeyDownComposite: React.KeyboardEventHandler<HTMLParagraphElement> = (
-    e,
-  ) => {
-    offsetHandlers.onKeyDown(e);
-    onKeyDown(e);
+  const onKeyDown: React.KeyboardEventHandler<HTMLParagraphElement> = (e) => {
+    onArrowKeyDown(e);
+    onHandleBlock(e);
+  };
+
+  const onBlur = () => {
+    clearOffset();
+    setIsOpen(false);
   };
 
   const commonHandlers = {
     onInput,
     onCompositionEnd,
     ...offsetHandlers,
-    onKeyDown: onKeyDownComposite,
+    onKeyDown,
     onPaste,
+    onBlur,
   };
 
   const BLOCK_TYPES = Object.values(BlockType)
