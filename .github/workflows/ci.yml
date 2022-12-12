@@ -32,28 +32,3 @@ jobs:
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
-
-      - name: For client directory
-        run: |
-          cd client
-          npm run build --if-present
-          npm test --if-present
-
-      - name: Install coreutils for macOS
-        shell: bash
-        if: runner.os == 'macOS'
-        run: |
-          brew install coreutils
-          alias timeout=gtimeout
-
-      - name: For server directory
-        shell: bash
-        env:
-          BACKEND_LOGIN_KEY: ${{ secrets.DOTENV_VAULT_BACKEND_CI_LOGIN_KEY }}
-        run: |
-          cd server
-          npm run build --if-present
-          npm test --if-present
-          npx dotenv-vault login "$BACKEND_LOGIN_KEY" > /dev/null
-          npx dotenv-vault pull ci .env
-          timeout --verbose 10 npx ts-node index.ts || { if [ $? -eq 124 ]; then (exit 0); else (exit $?); fi }
