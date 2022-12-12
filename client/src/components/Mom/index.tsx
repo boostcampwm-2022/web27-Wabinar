@@ -27,7 +27,7 @@ function Mom() {
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
-    (e) => {
+    () => {
       if (!titleRef.current) return;
 
       const title = titleRef.current.innerText;
@@ -46,13 +46,13 @@ function Mom() {
     focusIndex.current = idx;
   };
 
-  const setBlockFocus = () => {
+  const setBlockFocus = (index: number) => {
     if (!blockRefs.current || focusIndex.current === undefined) return;
 
     const idx = focusIndex.current;
+    if (index === undefined || index !== idx) return;
 
     const targetBlock = blockRefs.current[idx];
-
     if (!targetBlock || !targetBlock.current) return;
 
     targetBlock.current.focus();
@@ -104,16 +104,15 @@ function Mom() {
       updateBlockFocus(index - 1);
 
       setBlocks(spreadCRDT());
-      setBlockFocus();
+
+      if (focusIndex.current === undefined) return;
+      setBlockFocus(focusIndex.current);
+
       setCaretToEnd();
 
       socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
     }
   };
-
-  useEffect(() => {
-    setBlockFocus();
-  }, [blocks]);
 
   useEffect(() => {
     if (!selectedMom) return;
@@ -184,6 +183,12 @@ function Mom() {
     };
   }, [selectedMom]);
 
+  const registerRef =
+    (index: number) => (ref: React.RefObject<HTMLElement>) => {
+      blockRefs.current[index] = ref;
+      setBlockFocus(index);
+    };
+
   return selectedMom ? (
     <div className={style['mom-container']}>
       <div className={style['mom']}>
@@ -206,9 +211,7 @@ function Mom() {
               id={id}
               index={index}
               onHandleBlock={onHandleBlock}
-              registerRef={(ref: React.RefObject<HTMLElement>) => {
-                blockRefs.current[index] = ref;
-              }}
+              registerRef={registerRef(index)}
             />
           ))}
         </div>
