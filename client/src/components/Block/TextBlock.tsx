@@ -18,6 +18,7 @@ interface BlockProps {
   onHandleBlock: React.KeyboardEventHandler;
   type: BlockType;
   setType: (arg: BlockType) => void;
+  isLocalTypeUpdate: boolean;
   registerRef: (arg: React.RefObject<HTMLElement>) => void;
 }
 
@@ -27,6 +28,7 @@ function TextBlock({
   onHandleBlock,
   type,
   setType,
+  isLocalTypeUpdate,
   registerRef,
 }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
@@ -136,7 +138,7 @@ function TextBlock({
   }, [isOpen]);
 
   useEffect(() => {
-    if (readCRDT().length) {
+    if (isLocalTypeUpdate && readCRDT().length) {
       const remoteDeletion = localDeleteCRDT(0);
       socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
 
