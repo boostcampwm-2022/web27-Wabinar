@@ -54,8 +54,8 @@ export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
   };
 
   const offsetHandlers = {
-    onClick:
-      setOffset as unknown as React.MouseEventHandler<HTMLParagraphElement>,
+    onClick: setOffset,
+    onBlur: clearOffset,
     onKeyUp: onArrowKeyup,
   };
 
