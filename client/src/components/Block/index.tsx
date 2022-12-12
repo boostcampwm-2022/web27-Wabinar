@@ -1,9 +1,11 @@
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
+import ee from 'components/Mom/EventEmitter';
 import { memo, useEffect, useRef, useState } from 'react';
 import useSocketContext from 'src/hooks/useSocketContext';
 
-import ee from '../EventEmitter';
+import QuestionBlock from './QuestionBlock';
 import TextBlock from './TextBlock';
+import VoteBlock from './VoteBlock';
 
 export enum BlockType {
   H1,
@@ -42,9 +44,9 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
     }
   }, [type]);
 
-  const setBlockType = (id: BlockType) => {
+  const setBlockType = (type: BlockType) => {
     localUpdateFlagRef.current = true;
-    setType(id);
+    setType(type);
   };
 
   switch (type) {
@@ -62,6 +64,10 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
           registerRef={registerRef}
         />
       );
+    case BlockType.VOTE:
+      return <VoteBlock id={id} />;
+    case BlockType.QUESTION:
+      return <QuestionBlock id={id} />;
     default:
       return <p />;
   }

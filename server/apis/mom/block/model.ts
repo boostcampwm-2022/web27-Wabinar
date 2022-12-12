@@ -3,7 +3,7 @@ import { Schema } from 'mongoose';
 import { BlockType } from '@wabinar/api-types/block';
 
 import { Vote } from '../vote/service';
-import { Question } from '../questions/service';
+import { Question } from './question/service';
 
 interface Block {
   id: string;
@@ -11,7 +11,7 @@ interface Block {
   head: Object;
   nodeMap: Object;
   voteProperties: Vote;
-  questionProperties: Question;
+  questionProperties: Question[];
 }
 
 const blockSchema = new Schema<Block>({
@@ -20,7 +20,7 @@ const blockSchema = new Schema<Block>({
   head: { type: Object, default: null },
   nodeMap: { type: Object, default: {} },
   voteProperties: { type: Object, default: {} },
-  questionProperties: { type: Object, default: {} },
+  questionProperties: { type: [Object], default: [] },
 });
 
 const blockModel = mongoose.model('Block', blockSchema);

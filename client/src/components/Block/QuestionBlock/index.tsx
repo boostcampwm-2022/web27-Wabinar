@@ -15,7 +15,11 @@ interface Question {
   text: string;
 }
 
-function QuestionBlock() {
+interface QuestionBlockProps {
+  id: string;
+}
+
+function QuestionBlock({ id }: QuestionBlockProps) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const { momSocket: socket } = useSocketContext();
 
@@ -28,27 +32,40 @@ function QuestionBlock() {
       isResolved: false,
       text: questionText,
     };
-    socket.emit(BLOCK_EVENT.ADD_QUESTIONS, question);
+
+    socket.emit(BLOCK_EVENT.ADD_QUESTIONS, id, question);
   };
 
   useEffect(() => {
-    socket.on(BLOCK_EVENT.FETCH_QUESTIONS, (fetchedQuestions) => {
-      setQuestions([...fetchedQuestions]);
+    socket.on(`${BLOCK_EVENT.FETCH_QUESTIONS}-${id}`, (fetchedQuestions) => {
+      setQuestions(fetchedQuestions ? [...fetchedQuestions] : []);
     });
 
-    socket.on(BLOCK_EVENT.ADD_QUESTIONS, (questionToAdd) => {
+    socket.on(`${BLOCK_EVENT.ADD_QUESTIONS}-${id}`, (questionToAdd) => {
       setQuestions((prev) => [...prev, questionToAdd]);
     });
 
-    socket.emit(BLOCK_EVENT.FETCH_QUESTIONS);
+    socket.emit(BLOCK_EVENT.FETCH_QUESTIONS, id);
+
+    return () => {
+      socket.off(`${BLOCK_EVENT.FETCH_QUESTIONS}-${id}`);
+      socket.off(`${BLOCK_EVENT.ADD_QUESTIONS}-${id}`);
+    };
   }, []);
 
   const onClick: React.MouseEventHandler<HTMLLIElement> = (e) => {
     const targetId = Number(e.currentTarget.id);
-    const clickedQuestion = questions.filter((q) => q.id === targetId)[0];
-    const toggledResolved = !clickedQuestion.isResolved;
 
-    socket.emit(BLOCK_EVENT.RESOLVE_QUESTIONS, targetId, toggledResolved);
+    const toggledQuestions = questions.map((q) => {
+      if (q.id === targetId) {
+        q.isResolved = !q.isResolved;
+      }
+      return q;
+    });
+
+    setQuestions(toggledQuestions);
+
+    socket.emit(BLOCK_EVENT.RESOLVE_QUESTIONS, id, toggledQuestions);
   };
 
   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {

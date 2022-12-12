@@ -10,7 +10,7 @@ import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
 import useSocketContext from 'src/hooks/useSocketContext';
 
-import ee from '../EventEmitter';
+import ee from '../Mom/EventEmitter';
 
 interface BlockProps {
   id: string;
