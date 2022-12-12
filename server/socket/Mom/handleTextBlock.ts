@@ -6,10 +6,10 @@ export default function handleTextBlock(
   socket: Socket,
   crdtManager: CrdtManager,
 ) {
-  socket.on(BLOCK_EVENT.INIT, async (blockId) => {
+  socket.on(BLOCK_EVENT.INIT_TEXT, async (blockId) => {
     const blockCrdt = await crdtManager.getBlockCRDT(blockId);
 
-    socket.emit(BLOCK_EVENT.INIT, blockId, blockCrdt.data);
+    socket.emit(BLOCK_EVENT.INIT_TEXT, blockId, blockCrdt.data);
   });
 
   socket.on(BLOCK_EVENT.INSERT_TEXT, async (blockId, op) => {
@@ -22,7 +22,7 @@ export default function handleTextBlock(
     } catch {
       const blockCrdt = await crdtManager.getBlockCRDT(blockId);
 
-      socket.emit(BLOCK_EVENT.INIT, blockId, blockCrdt.data);
+      socket.emit(BLOCK_EVENT.INIT_TEXT, blockId, blockCrdt.data);
     }
   });
 
@@ -36,7 +36,7 @@ export default function handleTextBlock(
     } catch {
       const blockCrdt = await crdtManager.getBlockCRDT(blockId);
 
-      socket.emit(BLOCK_EVENT.INIT, blockId, blockCrdt.data);
+      socket.emit(BLOCK_EVENT.INIT_TEXT, blockId, blockCrdt.data);
     }
   });
 

@@ -15,22 +15,23 @@ import ee from '../Mom/EventEmitter';
 interface BlockProps {
   id: string;
   index: number;
-  onKeyDown: React.KeyboardEventHandler;
+  onHandleBlock: React.KeyboardEventHandler;
   type: BlockType;
   setType: (arg: BlockType) => void;
+  isLocalTypeUpdate: boolean;
   registerRef: (arg: React.RefObject<HTMLElement>) => void;
 }
 
 function TextBlock({
   id,
   index,
-  onKeyDown,
+  onHandleBlock,
   type,
   setType,
+  isLocalTypeUpdate,
   registerRef,
 }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const {
     syncCRDT,
@@ -43,8 +44,11 @@ function TextBlock({
 
   const blockRef = useRef<HTMLParagraphElement>(null);
 
-  const { offsetRef, setOffset, clearOffset, offsetHandlers } =
+  const { offsetRef, setOffset, clearOffset, onArrowKeyDown, offsetHandlers } =
     useOffset(blockRef);
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const onClose = () => setIsOpen(false);
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
   const updateCaretPosition = (updateOffset = 0) => {
@@ -110,17 +114,15 @@ function TextBlock({
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    registerRef(blockRef);
+    socket.emit(BLOCK_EVENT.INIT_TEXT, id);
 
-    socket.emit(BLOCK_EVENT.INIT, id);
-
-    ee.on(`${BLOCK_EVENT.INIT}-${id}`, onInitialize);
+    ee.on(`${BLOCK_EVENT.INIT_TEXT}-${id}`, onInitialize);
     ee.on(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
     ee.on(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, onInsert);
     ee.on(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, onDelete);
 
     return () => {
-      ee.off(`${BLOCK_EVENT.INIT}-${id}`, onInitialize);
+      ee.off(`${BLOCK_EVENT.INIT_TEXT}-${id}`, onInitialize);
       ee.off(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
       ee.off(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, onInsert);
       ee.off(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, onDelete);
@@ -128,8 +130,24 @@ function TextBlock({
   }, []);
 
   useEffect(() => {
+    registerRef(blockRef);
+  }, [index]);
+
+  useEffect(() => {
     updateCaretPosition();
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isLocalTypeUpdate && readCRDT().length) {
+      const remoteDeletion = localDeleteCRDT(0);
+      socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
+
+      if (!blockRef.current) return;
+
+      blockRef.current.innerText = readCRDT();
+      blockRef.current.focus();
+    }
+  }, [type]);
 
   // 로컬에서 일어나는 작성 - 삽입과 삭제 연산
   const onInput: React.FormEventHandler = (e) => {
@@ -205,18 +223,16 @@ function TextBlock({
     updateCaretPosition(pastedText.length);
   };
 
-  const onKeyDownComposite: React.KeyboardEventHandler<HTMLParagraphElement> = (
-    e,
-  ) => {
-    offsetHandlers.onKeyDown(e);
-    onKeyDown(e);
+  const onKeyDown: React.KeyboardEventHandler<HTMLParagraphElement> = (e) => {
+    onArrowKeyDown(e);
+    onHandleBlock(e);
   };
 
   const commonHandlers = {
     onInput,
     onCompositionEnd,
     ...offsetHandlers,
-    onKeyDown: onKeyDownComposite,
+    onKeyDown,
     onPaste,
   };
 
@@ -236,14 +252,14 @@ function TextBlock({
         {
           ref: blockRef,
           'data-id': id,
-          'date-index': index,
+          'data-index': index,
           ...commonHandlers,
           contentEditable: true,
           suppressContentEditableWarning: true,
         },
         readCRDT(),
       )}
-      {isOpen && <BlockSelector onSelect={onSelect} />}
+      {isOpen && <BlockSelector onClose={onClose} onSelect={onSelect} />}
     </>
   );
 }

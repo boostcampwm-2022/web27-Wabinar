@@ -39,6 +39,7 @@ export const BLOCKS_TYPE = [
 
 export enum VoteMode {
   CREATE,
+  REGISTERING,
   REGISTERED,
   END,
 }

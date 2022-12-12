@@ -27,7 +27,7 @@ function Mom() {
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
-    (e) => {
+    () => {
       if (!titleRef.current) return;
 
       const title = titleRef.current.innerText;
@@ -46,13 +46,13 @@ function Mom() {
     focusIndex.current = idx;
   };
 
-  const setBlockFocus = () => {
+  const setBlockFocus = (index: number) => {
     if (!blockRefs.current || focusIndex.current === undefined) return;
 
     const idx = focusIndex.current;
+    if (index === undefined || index !== idx) return;
 
     const targetBlock = blockRefs.current[idx];
-
     if (!targetBlock || !targetBlock.current) return;
 
     targetBlock.current.focus();
@@ -71,7 +71,7 @@ function Mom() {
     range.collapse();
   };
 
-  const onKeyDown: React.KeyboardEventHandler = (e) => {
+  const onHandleBlock: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
 
     const { index: indexString } = target.dataset;
@@ -104,16 +104,15 @@ function Mom() {
       updateBlockFocus(index - 1);
 
       setBlocks(spreadCRDT());
-      setBlockFocus();
+
+      if (focusIndex.current === undefined) return;
+      setBlockFocus(focusIndex.current);
+
       setCaretToEnd();
 
       socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
     }
   };
-
-  useEffect(() => {
-    setBlockFocus();
-  }, [blocks]);
 
   useEffect(() => {
     if (!selectedMom) return;
@@ -149,8 +148,8 @@ function Mom() {
       setBlocks(spreadCRDT());
     });
 
-    socket.on(BLOCK_EVENT.INIT, (id, crdt) => {
-      ee.emit(`${BLOCK_EVENT.INIT}-${id}`, crdt);
+    socket.on(BLOCK_EVENT.INIT_TEXT, (id, crdt) => {
+      ee.emit(`${BLOCK_EVENT.INIT_TEXT}-${id}`, crdt);
     });
 
     socket.on(BLOCK_EVENT.INSERT_TEXT, (id, op) => {
@@ -176,13 +175,19 @@ function Mom() {
         MOM_EVENT.UPDATED,
         MOM_EVENT.INSERT_BLOCK,
         MOM_EVENT.DELETE_BLOCK,
-        BLOCK_EVENT.INIT,
+        BLOCK_EVENT.INIT_TEXT,
         BLOCK_EVENT.INSERT_TEXT,
         BLOCK_EVENT.DELETE_TEXT,
         BLOCK_EVENT.UPDATE_TYPE,
       ].forEach((event) => socket.off(event));
     };
   }, [selectedMom]);
+
+  const registerRef =
+    (index: number) => (ref: React.RefObject<HTMLElement>) => {
+      blockRefs.current[index] = ref;
+      setBlockFocus(index);
+    };
 
   return selectedMom ? (
     <div className={style['mom-container']}>
@@ -205,10 +210,8 @@ function Mom() {
               key={id}
               id={id}
               index={index}
-              onKeyDown={onKeyDown}
-              registerRef={(ref: React.RefObject<HTMLElement>) => {
-                blockRefs.current[index] = ref;
-              }}
+              onHandleBlock={onHandleBlock}
+              registerRef={registerRef(index)}
             />
           ))}
         </div>
