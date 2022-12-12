@@ -36,6 +36,11 @@
   }
 }
 
+@mixin heading-style($border-size, $padding) {
+  padding: $padding 0px;
+  border-bottom: $border-size solid $gray-300;
+}
+
 .mom-body {
   box-sizing: border-box;
   height: calc(100% - 70px);
@@ -45,23 +50,27 @@
   white-space: pre-wrap;
 
   & > h1 {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
+    @include heading-style(1.5px, 8px);
   }
 
   & > h2 {
     font-size: 28px;
     font-weight: 600;
+    @include heading-style(1px, 6px);
   }
 
   & > h3 {
     font-size: 24px;
     font-weight: 500;
+    @include heading-style(0.5px, 4px);
   }
 
   & > p {
     font-size: initial;
     font-weight: 400;
+    line-height: 30px;
   }
 
   & > *:focus {
