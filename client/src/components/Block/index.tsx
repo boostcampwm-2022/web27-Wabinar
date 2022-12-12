@@ -65,7 +65,7 @@ function Block({ id, index, onKeyDown, registerRef }: BlockProps) {
         />
       );
     case BlockType.VOTE:
-      return <VoteBlock id={id} />;
+      return <VoteBlock id={id} registerable={localUpdateFlagRef.current} />;
     case BlockType.QUESTION:
       return <QuestionBlock id={id} />;
     default:

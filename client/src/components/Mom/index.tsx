@@ -149,8 +149,8 @@ function Mom() {
       setBlocks(spreadCRDT());
     });
 
-    socket.on(BLOCK_EVENT.INIT, (id, crdt) => {
-      ee.emit(`${BLOCK_EVENT.INIT}-${id}`, crdt);
+    socket.on(BLOCK_EVENT.INIT_TEXT, (id, crdt) => {
+      ee.emit(`${BLOCK_EVENT.INIT_TEXT}-${id}`, crdt);
     });
 
     socket.on(BLOCK_EVENT.INSERT_TEXT, (id, op) => {
@@ -176,7 +176,7 @@ function Mom() {
         MOM_EVENT.UPDATED,
         MOM_EVENT.INSERT_BLOCK,
         MOM_EVENT.DELETE_BLOCK,
-        BLOCK_EVENT.INIT,
+        BLOCK_EVENT.INIT_TEXT,
         BLOCK_EVENT.INSERT_TEXT,
         BLOCK_EVENT.DELETE_TEXT,
         BLOCK_EVENT.UPDATE_TYPE,
