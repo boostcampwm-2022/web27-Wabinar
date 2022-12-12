@@ -2,6 +2,7 @@ import {
   createVote,
   endVote,
   Option,
+  getVoteResult,
   updateVote,
 } from '@apis/mom/block/vote/service';
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
@@ -33,8 +34,12 @@ export default function handleVoteBlock(
   socket.on(BLOCK_EVENT.END_VOTE, async (blockId) => {
     const momId = socket.data.momId;
 
-    const res = await endVote(blockId);
+    const vote = await endVote(blockId);
 
-    io.of(namespace).to(momId).emit(`${BLOCK_EVENT.END_VOTE}-${blockId}`, res);
+    const voteResult = getVoteResult(vote);
+
+    io.of(namespace)
+      .to(momId)
+      .emit(`${BLOCK_EVENT.END_VOTE}-${blockId}`, voteResult);
   });
 }
