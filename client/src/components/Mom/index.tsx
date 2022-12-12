@@ -46,13 +46,13 @@ function Mom() {
     focusIndex.current = idx;
   };
 
-  const setBlockFocus = () => {
+  const setBlockFocus = (index?: number) => {
     if (!blockRefs.current || focusIndex.current === undefined) return;
 
     const idx = focusIndex.current;
+    if (index === undefined || index !== idx) return;
 
     const targetBlock = blockRefs.current[idx];
-
     if (!targetBlock || !targetBlock.current) return;
 
     targetBlock.current.focus();
@@ -104,7 +104,7 @@ function Mom() {
       updateBlockFocus(index - 1);
 
       setBlocks(spreadCRDT());
-      setBlockFocus();
+      setBlockFocus(focusIndex.current);
       setCaretToEnd();
 
       socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
@@ -187,7 +187,7 @@ function Mom() {
   const registerRef =
     (index: number) => (ref: React.RefObject<HTMLElement>) => {
       blockRefs.current[index] = ref;
-      setBlockFocus();
+      setBlockFocus(index);
     };
 
   return selectedMom ? (
