@@ -48,12 +48,18 @@ export const updateVote = async (
 
   if (!option) return;
 
-  const count = option.count;
+  if (vote.participants[userId]) {
+    const prevOptionId = vote.participants[userId];
 
-  if (!vote.participants[userId]) {
-    vote.options[optionId] = { ...option, count: count + 1 };
+    const prevOption = vote.options[prevOptionId];
+    const { count } = prevOption;
+
+    vote.options[prevOptionId] = { ...prevOption, count: count - 1 };
   }
 
+  const { count } = option;
+
+  vote.options[optionId] = { ...option, count: count + 1 };
   vote.participants[userId] = optionId;
 
   await putBlock(blockId, BlockType.VOTE, vote);
