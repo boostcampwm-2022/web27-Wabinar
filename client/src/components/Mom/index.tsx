@@ -71,7 +71,7 @@ function Mom() {
     range.collapse();
   };
 
-  const onKeyDown: React.KeyboardEventHandler = (e) => {
+  const onHandleBlock: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
 
     const { index: indexString } = target.dataset;
@@ -210,7 +210,7 @@ function Mom() {
               key={id}
               id={id}
               index={index}
-              onKeyDown={onKeyDown}
+              onHandleBlock={onHandleBlock}
               registerRef={registerRef(index)}
             />
           ))}
