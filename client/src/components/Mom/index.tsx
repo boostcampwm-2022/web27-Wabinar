@@ -105,7 +105,7 @@ function Mom() {
 
       setBlocks(spreadCRDT());
 
-      if (!focusIndex.current) return;
+      if (focusIndex.current === undefined) return;
       setBlockFocus(focusIndex.current);
 
       setCaretToEnd();
