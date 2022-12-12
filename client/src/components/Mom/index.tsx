@@ -27,7 +27,7 @@ function Mom() {
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
-    (e) => {
+    () => {
       if (!titleRef.current) return;
 
       const title = titleRef.current.innerText;
@@ -50,7 +50,7 @@ function Mom() {
     if (!blockRefs.current || focusIndex.current === undefined) return;
 
     const idx = focusIndex.current;
-    if (index !== idx) return;
+    if (index === undefined || index !== idx) return;
 
     const targetBlock = blockRefs.current[idx];
     if (!targetBlock || !targetBlock.current) return;
@@ -104,7 +104,10 @@ function Mom() {
       updateBlockFocus(index - 1);
 
       setBlocks(spreadCRDT());
+
+      if (!focusIndex.current) return;
       setBlockFocus(focusIndex.current);
+
       setCaretToEnd();
 
       socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
