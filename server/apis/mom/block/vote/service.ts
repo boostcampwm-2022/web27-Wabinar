@@ -74,11 +74,13 @@ export const endVote = async (blockId: string) => {
 
   await putBlock(blockId, BlockType.VOTE, vote);
 
+  const options = Object.entries(vote.options).map(([id, rest]) => ({
+    id,
+    ...rest,
+  }));
+
   const result = {
-    options: Object.entries(vote.options).map(([id, rest]) => ({
-      id,
-      ...rest,
-    })),
+    options,
     participantCount,
   };
 
