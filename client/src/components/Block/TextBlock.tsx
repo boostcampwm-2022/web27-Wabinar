@@ -30,7 +30,6 @@ function TextBlock({
   registerRef,
 }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const {
     syncCRDT,
@@ -45,6 +44,9 @@ function TextBlock({
 
   const { offsetRef, setOffset, clearOffset, onArrowKeyDown, offsetHandlers } =
     useOffset(blockRef);
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const onClose = () => setIsOpen(false);
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
   const updateCaretPosition = (updateOffset = 0) => {
@@ -212,18 +214,12 @@ function TextBlock({
     onHandleBlock(e);
   };
 
-  const onBlur = () => {
-    clearOffset();
-    setIsOpen(false);
-  };
-
   const commonHandlers = {
     onInput,
     onCompositionEnd,
     ...offsetHandlers,
     onKeyDown,
     onPaste,
-    onBlur,
   };
 
   const BLOCK_TYPES = Object.values(BlockType)
@@ -249,7 +245,7 @@ function TextBlock({
         },
         readCRDT(),
       )}
-      {isOpen && <BlockSelector onSelect={onSelect} />}
+      {isOpen && <BlockSelector onClose={onClose} onSelect={onSelect} />}
     </>
   );
 }

@@ -3,7 +3,7 @@
 .block-selector {
   position: absolute;
   z-index: 99;
-  height: 100%;
+  height: 280px;
   overflow: hidden;
 
   .block-displayed {
@@ -26,4 +26,12 @@
       font-size: 12px;
     }
   }
+}
+
+.dimmer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
