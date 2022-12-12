@@ -1,6 +1,6 @@
 import { BlockType } from '@wabinar/api-types/block';
-import { getBlock, putBlock } from '../service';
-
+import { Block } from '../model';
+import { getBlock, putBlock, putVoteBlockStatus } from '../service';
 export interface Option {
   id: number;
   text: string;
@@ -70,18 +70,12 @@ export const updateVote = async (
 };
 
 export const endVote = async (blockId: string) => {
-  const voteBlock = await getBlock(blockId);
-
-  const { voteProperties: vote } = voteBlock;
-
-  vote.isDoing = false;
-
-  await putBlock(blockId, BlockType.VOTE, vote);
-
-  return vote;
+  return await putVoteBlockStatus(blockId, false);
 };
 
-export const getVoteResult = (vote: Vote) => {
+export const getVoteResult = async (block: Block) => {
+  const { voteProperties: vote } = block;
+
   const participantCount = Object.keys(vote.participants).length;
 
   const options = Object.entries(vote.options).map(([id, rest]) => ({

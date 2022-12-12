@@ -34,12 +34,10 @@ export default function handleVoteBlock(
   socket.on(BLOCK_EVENT.END_VOTE, async (blockId) => {
     const momId = socket.data.momId;
 
-    const vote = await endVote(blockId);
+    const block = await endVote(blockId);
 
-    const voteResult = getVoteResult(vote);
+    const res = await getVoteResult(block);
 
-    io.of(namespace)
-      .to(momId)
-      .emit(`${BLOCK_EVENT.END_VOTE}-${blockId}`, voteResult);
+    io.of(namespace).to(momId).emit(`${BLOCK_EVENT.END_VOTE}-${blockId}`, res);
   });
 }

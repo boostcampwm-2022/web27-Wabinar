@@ -59,6 +59,16 @@ const putVoteBlock = async (id: string, vote: Vote) => {
   await blockModel.updateOne({ id }, { voteProperties: vote });
 };
 
+export const putVoteBlockStatus = async (id: string, isDoing: boolean) => {
+  const block = await blockModel.findOneAndUpdate(
+    { id },
+    { $set: { 'voteProperties.isDoing': isDoing } },
+    { new: true },
+  );
+
+  return block;
+};
+
 const putQuestionBlock = async (id: string, questions: Question[]) => {
   await blockModel.updateOne({ id }, { questionProperties: questions });
 };
