@@ -61,6 +61,7 @@ function Block({ id, index, onHandleBlock, registerRef }: BlockProps) {
           onHandleBlock={onHandleBlock}
           type={type}
           setType={setBlockType}
+          isLocalTypeUpdate={localUpdateFlagRef.current}
           registerRef={registerRef}
         />
       );

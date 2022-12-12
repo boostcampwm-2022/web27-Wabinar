@@ -18,6 +18,7 @@ interface BlockProps {
   onHandleBlock: React.KeyboardEventHandler;
   type: BlockType;
   setType: (arg: BlockType) => void;
+  isLocalTypeUpdate: boolean;
   registerRef: (arg: React.RefObject<HTMLElement>) => void;
 }
 
@@ -27,6 +28,7 @@ function TextBlock({
   onHandleBlock,
   type,
   setType,
+  isLocalTypeUpdate,
   registerRef,
 }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
@@ -134,6 +136,18 @@ function TextBlock({
   useEffect(() => {
     updateCaretPosition();
   }, [isOpen]);
+
+  useEffect(() => {
+    if (isLocalTypeUpdate && readCRDT().length) {
+      const remoteDeletion = localDeleteCRDT(0);
+      socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
+
+      if (!blockRef.current) return;
+
+      blockRef.current.innerText = readCRDT();
+      blockRef.current.focus();
+    }
+  }, [type]);
 
   // 로컬에서 일어나는 작성 - 삽입과 삭제 연산
   const onInput: React.FormEventHandler = (e) => {
