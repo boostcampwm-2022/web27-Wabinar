@@ -135,6 +135,18 @@ function TextBlock({
     updateCaretPosition();
   }, [isOpen]);
 
+  useEffect(() => {
+    if (readCRDT().length) {
+      const remoteDeletion = localDeleteCRDT(0);
+      socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
+
+      if (!blockRef.current) return;
+
+      blockRef.current.innerText = readCRDT();
+      blockRef.current.focus();
+    }
+  }, [type]);
+
   // 로컬에서 일어나는 작성 - 삽입과 삭제 연산
   const onInput: React.FormEventHandler = (e) => {
     setOffset();
