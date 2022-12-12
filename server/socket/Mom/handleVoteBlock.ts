@@ -13,12 +13,12 @@ export default function handleVoteBlock(
   namespace: string,
   socket: Socket,
 ) {
-  socket.on(BLOCK_EVENT.CREATE_VOTE, async (blockId, options: Option[]) => {
+  socket.on(BLOCK_EVENT.REGISTER_VOTE, async (blockId, options: Option[]) => {
     const momId = socket.data.momId;
 
     await createVote(blockId, options);
 
-    socket.to(momId).emit(`${BLOCK_EVENT.CREATE_VOTE}-${blockId}`, options);
+    socket.to(momId).emit(`${BLOCK_EVENT.REGISTER_VOTE}-${blockId}`, options);
   });
 
   socket.on(BLOCK_EVENT.UPDATE_VOTE, async (blockId, optionId, userId) => {
