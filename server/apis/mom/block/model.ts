@@ -2,10 +2,10 @@ import mongoose from '@db';
 import { Schema } from 'mongoose';
 import { BlockType } from '@wabinar/api-types/block';
 
-import { Vote } from '../vote/service';
+import { Vote } from './vote/service';
 import { Question } from './question/service';
 
-interface Block {
+export interface Block {
   id: string;
   type: BlockType;
   head: Object;

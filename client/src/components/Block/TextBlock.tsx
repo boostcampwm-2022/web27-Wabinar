@@ -110,15 +110,15 @@ function TextBlock({
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    socket.emit(BLOCK_EVENT.INIT, id);
+    socket.emit(BLOCK_EVENT.INIT_TEXT, id);
 
-    ee.on(`${BLOCK_EVENT.INIT}-${id}`, onInitialize);
+    ee.on(`${BLOCK_EVENT.INIT_TEXT}-${id}`, onInitialize);
     ee.on(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
     ee.on(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, onInsert);
     ee.on(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, onDelete);
 
     return () => {
-      ee.off(`${BLOCK_EVENT.INIT}-${id}`, onInitialize);
+      ee.off(`${BLOCK_EVENT.INIT_TEXT}-${id}`, onInitialize);
       ee.off(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
       ee.off(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, onInsert);
       ee.off(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, onDelete);
