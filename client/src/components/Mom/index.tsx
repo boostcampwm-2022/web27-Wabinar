@@ -46,11 +46,11 @@ function Mom() {
     focusIndex.current = idx;
   };
 
-  const setBlockFocus = (index?: number) => {
+  const setBlockFocus = (index: number) => {
     if (!blockRefs.current || focusIndex.current === undefined) return;
 
     const idx = focusIndex.current;
-    if (index === undefined || index !== idx) return;
+    if (index !== idx) return;
 
     const targetBlock = blockRefs.current[idx];
     if (!targetBlock || !targetBlock.current) return;
@@ -110,10 +110,6 @@ function Mom() {
       socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
     }
   };
-
-  useEffect(() => {
-    setBlockFocus();
-  }, [blocks]);
 
   useEffect(() => {
     if (!selectedMom) return;
