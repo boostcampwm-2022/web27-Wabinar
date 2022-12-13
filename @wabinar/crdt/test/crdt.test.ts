@@ -1,34 +1,61 @@
 import CRDT from '../index';
 import LinkedList from '../linked-list';
 
-describe('Local operation', () => {
-  const initialStructure = new LinkedList();
+describe('CRDT Local operations', () => {
+  let 나;
 
-  const 나 = new CRDT(1, initialStructure);
-
-  it('head에 삽입', () => {
-    let innerText = 나.read();
-
-    나.localInsert(-1, '녕');
-    expect(나.read()).toEqual('녕' + innerText);
-
-    innerText = 나.read();
-
-    나.localInsert(-1, '안');
-    expect(나.read()).toEqual('안' + innerText);
+  beforeEach(() => {
+    const initialStructure = new LinkedList();
+    나 = new CRDT(1, initialStructure);
   });
 
-  it('tail에 삽입', () => {
-    let innerText = 나.read();
+  describe('localInsert()', () => {
+    it('head 위치 삽입에 성공한다.', () => {
+      // act
+      나.localInsert(-1, '녕');
+      나.localInsert(-1, '안');
 
-    나.localInsert(1, '하');
-    expect(나.read()).toEqual(innerText + '하');
+      // assert
+      expect(나.read()).toEqual('안녕');
+    });
+
+    it('tail 위치 삽입에 성공한다.', () => {
+      // act
+      나.localInsert(-1, '안');
+      나.localInsert(0, '녕');
+
+      // assert
+      expect(나.read()).toEqual('안녕');
+    });
+
+    it('없는 위치에 삽입 시도 시 에러를 던진다.', () => {
+      // arrange
+      나.localInsert(-1, '안');
+
+      // act & assert
+      expect(() => 나.localInsert(1, '녕')).toThrow();
+    });
   });
 
-  it('head 삭제', () => {
-    let innerText = 나.read();
+  describe('localDelete()', () => {
+    it('tail 위치 삭제에 성공한다.', () => {
+      // arrange
+      나.localInsert(-1, '안');
+      나.localInsert(0, '녕');
 
-    나.localDelete(0);
-    expect(나.read()).toEqual(innerText.replace('안', ''));
+      // act
+      나.localDelete(1);
+
+      // assert
+      expect(나.read()).toEqual('안');
+    });
+
+    it('없는 위치에 삭제 시도 시 에러를 던진다.', () => {
+      // arrange
+      나.localInsert(-1, '안');
+
+      // act & assert
+      expect(() => 나.localDelete(1)).toThrow();
+    });
   });
 });
