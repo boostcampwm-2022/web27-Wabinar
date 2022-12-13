@@ -5,7 +5,7 @@ import LinkedList, {
 } from '@wabinar/crdt/linked-list';
 import { useRef } from 'react';
 import ERROR_MESSAGE from 'src/constants/error-message';
-import { useUserContext } from 'src/hooks/context/useUserContext';
+import useUserContext from 'src/hooks/context/useUserContext';
 
 enum OPERATION_TYPE {
   INSERT,
