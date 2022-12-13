@@ -25,7 +25,7 @@ function MeetingButton() {
       onClick={onClick}
       style={{ backgroundColor: isOnGoing ? color.red : color.green }}
     >
-      {isOnGoing ? '회의종료' : '회의참여'}
+      {isOnGoing ? '회의퇴장' : '회의참여'}
     </button>
   );
 }
