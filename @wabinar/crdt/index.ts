@@ -46,35 +46,51 @@ class CRDT {
 
   localInsert(index: number, value: string): RemoteInsertOperation {
     const id = new Identifier(this.clock++, this.client);
-    const remoteInsertion = this.structure.insertByIndex(index, value, id);
+    try {
+      const remoteInsertion = this.structure.insertByIndex(index, value, id);
 
-    return remoteInsertion;
+      return remoteInsertion;
+    } catch (e) {
+      throw e;
+    }
   }
 
   localDelete(index: number): RemoteDeleteOperation {
-    const targetId = this.structure.deleteByIndex(index);
+    try {
+      const targetId = this.structure.deleteByIndex(index);
 
-    return { targetId, clock: this.clock };
+      return { targetId, clock: this.clock };
+    } catch (e) {
+      throw e;
+    }
   }
 
   remoteInsert({ node }: RemoteInsertOperation) {
-    const prevIndex = this.structure.insertById(node);
+    try {
+      const prevIndex = this.structure.insertById(node);
 
-    if (++this.clock < node.id.clock) {
-      this.clock = node.id.clock + 1;
+      if (++this.clock < node.id.clock) {
+        this.clock = node.id.clock + 1;
+      }
+
+      return prevIndex;
+    } catch (e) {
+      throw e;
     }
-
-    return prevIndex;
   }
 
   remoteDelete({ targetId, clock }: RemoteDeleteOperation) {
-    const targetIndex = this.structure.deleteById(targetId);
+    try {
+      const targetIndex = this.structure.deleteById(targetId);
 
-    if (++this.clock < clock) {
-      this.clock = clock + 1;
+      if (++this.clock < clock) {
+        this.clock = clock + 1;
+      }
+
+      return targetIndex;
+    } catch (e) {
+      throw e;
     }
-
-    return targetIndex;
   }
 
   read() {
