@@ -215,7 +215,7 @@ export default class LinkedList {
 
   spread(): string[] {
     let node: Node | null = this.getHeadNode();
-    let result = [];
+    let result: string[] = [];
 
     while (node) {
       result.push(node.value);
