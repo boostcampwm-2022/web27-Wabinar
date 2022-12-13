@@ -1,6 +1,6 @@
 import mongoose from '@db';
 import { Schema } from 'mongoose';
-import { BlockType } from '@wabinar/api-types/block';
+import { BlockType } from '@wabinar/constants/block';
 
 import { Vote } from './vote/service';
 import { Question } from './question/service';

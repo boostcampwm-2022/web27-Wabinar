@@ -1,6 +1,6 @@
 import { addQuestion } from '@apis/mom/block/question/service';
 import { getBlock, putBlock } from '@apis/mom/block/service';
-import { BlockType } from '@wabinar/api-types/block';
+import { BlockType } from '@wabinar/constants/block';
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import { Server, Socket } from 'socket.io';
 

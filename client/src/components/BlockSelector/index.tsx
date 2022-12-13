@@ -1,4 +1,4 @@
-import { BlockType } from '@wabinar/api-types/block';
+import { BlockType } from '@wabinar/constants/block';
 import { BLOCKS_TYPE } from 'src/constants/block';
 
 import BlockItem from './BlockItem';
