@@ -44,10 +44,6 @@ function WorkspacePage() {
     loadWorkspaces();
   }, []);
 
-  const socket = useSocket(`/signaling/${id}`);
-  const participants = useRTC({ socket });
-  const streams = Array.from(participants.values());
-
   return (
     <WorkspacesContext.Provider value={{ workspaces, setWorkspaces }}>
       <Routes>
