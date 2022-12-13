@@ -31,7 +31,7 @@ function MeetingMediaBar() {
         {streams.map(
           ({ id, stream, type, audioOn, videoOn }: MeetingMediaStream) => (
             <li key={id}>
-              <MeetingMedia key={id} stream={stream} muted={type === 'local'} />
+              <MeetingMedia stream={stream} muted={type === 'local'} />
               {type === 'remote' && (
                 <StreamButton isMicOn={audioOn} isCamOn={videoOn} />
               )}
