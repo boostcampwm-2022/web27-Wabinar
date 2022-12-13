@@ -13,10 +13,10 @@ function MeetingButton() {
   const { isOnGoing, setIsOnGoing } = MeetingContext;
 
   const onClick = () => {
+    if (isOnGoing) {
+      socket.emit('bye');
+    }
     setIsOnGoing(!isOnGoing);
-    socket.emit(
-      isOnGoing ? WORKSPACE_EVENT.END_MEETING : WORKSPACE_EVENT.START_MEETING,
-    );
   };
 
   return (
@@ -25,7 +25,7 @@ function MeetingButton() {
       onClick={onClick}
       style={{ backgroundColor: isOnGoing ? color.red : color.green }}
     >
-      {isOnGoing ? '회의종료' : '회의시작'}
+      {isOnGoing ? '회의종료' : '회의참여'}
     </button>
   );
 }
