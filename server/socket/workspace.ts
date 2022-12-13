@@ -52,6 +52,11 @@ function workspaceSocketServer(io: Server) {
       namespace.emit('video_state_changed', socket.id, videoOn);
     });
 
+    socket.on('bye', () => {
+      const senderId = socket.id;
+      socket.broadcast.emit(WORKSPACE_EVENT.RECEIVE_BYE, senderId);
+    });
+
     socket.on('disconnecting', () => {
       const senderId = socket.id;
       socket.broadcast.emit(WORKSPACE_EVENT.RECEIVE_BYE, senderId);
