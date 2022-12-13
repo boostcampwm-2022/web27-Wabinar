@@ -12,7 +12,7 @@ import { User } from 'src/types/user';
 
 import 'styles/reset.scss';
 
-function App() {
+function App(): React.ReactElement {
   const [user, setUser] = useState<User | null>(null);
 
   return (

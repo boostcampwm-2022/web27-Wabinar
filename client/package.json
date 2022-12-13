@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest"
   },
   "dependencies": {
     "@react-icons/all-files": "^4.1.0",
@@ -22,11 +23,15 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@types/testing-library__jest-dom": "^5",
     "@vitejs/plugin-react": "^2.2.0",
+    "babel-jest": "^29.3.1",
     "eslint-plugin-react": "latest",
+    "jest-environment-jsdom": "^29.3.1",
+    "react-testing-library": "^8.0.1",
     "sass": "^1.56.1",
     "stylelint": "^14.15.0",
     "stylelint-config-prettier-scss": "^0.0.1",
