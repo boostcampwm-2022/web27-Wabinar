@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import CRDT from '@wabinar/crdt';
 import LinkedList, {
   RemoteInsertOperation,
@@ -27,7 +28,7 @@ export function useCRDT() {
   const crdtRef = useRef<CRDT>(new CRDT(clientId, new LinkedList()));
 
   const initializedRef = useRef<boolean>(false);
-  const operationSet: RemoteOperation[] = [];
+  let operationSet: RemoteOperation[] = [];
 
   const syncCRDT = (structure: unknown) => {
     crdtRef.current = new CRDT(
@@ -36,6 +37,7 @@ export function useCRDT() {
     );
 
     initializedRef.current = true;
+
     operationSet.forEach(({ type, op }) => {
       switch (type) {
         case OPERATION_TYPE.INSERT:
@@ -48,6 +50,7 @@ export function useCRDT() {
           break;
       }
     });
+    operationSet = [];
   };
 
   const readCRDT = (): string => {
@@ -61,15 +64,23 @@ export function useCRDT() {
   };
 
   const localInsertCRDT = (index: number, value: string) => {
-    const remoteInsertion = crdtRef.current.localInsert(index, value);
+    try {
+      const remoteInsertion = crdtRef.current.localInsert(index, value);
 
-    return remoteInsertion;
+      return remoteInsertion;
+    } catch (e) {
+      throw e;
+    }
   };
 
   const localDeleteCRDT = (index: number) => {
-    const targetIndex = crdtRef.current.localDelete(index);
+    try {
+      const targetIndex = crdtRef.current.localDelete(index);
 
-    return targetIndex;
+      return targetIndex;
+    } catch (e) {
+      throw e;
+    }
   };
 
   const remoteInsertCRDT = (op: RemoteInsertOperation) => {
@@ -78,9 +89,13 @@ export function useCRDT() {
       return null;
     }
 
-    const prevIndex = crdtRef.current.remoteInsert(op);
+    try {
+      const prevIndex = crdtRef.current.remoteInsert(op);
 
-    return prevIndex;
+      return prevIndex;
+    } catch (e) {
+      throw e;
+    }
   };
 
   const remoteDeleteCRDT = (op: RemoteDeleteOperation) => {
@@ -89,9 +104,13 @@ export function useCRDT() {
       return null;
     }
 
-    const targetIndex = crdtRef.current.remoteDelete(op);
+    try {
+      const targetIndex = crdtRef.current.remoteDelete(op);
 
-    return targetIndex;
+      return targetIndex;
+    } catch (e) {
+      throw e;
+    }
   };
 
   return {

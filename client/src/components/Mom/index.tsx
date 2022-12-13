@@ -15,6 +15,11 @@ function Mom() {
   const { selectedMom } = useSelectedMom();
   const { momSocket: socket } = useSocketContext();
 
+  const initMom = () => {
+    if (!selectedMom) return;
+    socket.emit(MOM_EVENT.INIT, selectedMom._id);
+  };
+
   const {
     syncCRDT,
     spreadCRDT,
@@ -82,11 +87,16 @@ function Mom() {
 
       const blockId = uuid();
 
-      const remoteInsertion = localInsertCRDT(index, blockId);
+      try {
+        const remoteInsertion = localInsertCRDT(index, blockId);
 
-      updateBlockFocus(index + 1);
+        updateBlockFocus(index + 1);
 
-      socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
+        socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
+      } catch {
+        initMom();
+      }
+
       return;
     }
 
@@ -99,25 +109,27 @@ function Mom() {
 
       if (index === 0) return;
 
-      const remoteDeletion = localDeleteCRDT(index);
+      try {
+        const remoteDeletion = localDeleteCRDT(index);
 
-      updateBlockFocus(index - 1);
+        updateBlockFocus(index - 1);
 
-      setBlocks(spreadCRDT());
+        setBlocks(spreadCRDT());
 
-      if (focusIndex.current === undefined) return;
-      setBlockFocus(focusIndex.current);
+        if (focusIndex.current === undefined) return;
+        setBlockFocus(focusIndex.current);
 
-      setCaretToEnd();
+        setCaretToEnd();
 
-      socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
+        socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
+      } catch {
+        initMom();
+      }
     }
   };
 
   useEffect(() => {
-    if (!selectedMom) return;
-
-    socket.emit(MOM_EVENT.INIT, selectedMom._id);
+    initMom();
 
     socket.on(MOM_EVENT.INIT, (crdt) => {
       syncCRDT(crdt);
@@ -135,17 +147,25 @@ function Mom() {
     });
 
     socket.on(MOM_EVENT.INSERT_BLOCK, (op) => {
-      remoteInsertCRDT(op);
+      try {
+        remoteInsertCRDT(op);
 
-      updateBlockFocus(undefined);
-      setBlocks(spreadCRDT());
+        updateBlockFocus(undefined);
+        setBlocks(spreadCRDT());
+      } catch {
+        initMom();
+      }
     });
 
     socket.on(MOM_EVENT.DELETE_BLOCK, (op) => {
-      remoteDeleteCRDT(op);
+      try {
+        remoteDeleteCRDT(op);
 
-      updateBlockFocus(undefined);
-      setBlocks(spreadCRDT());
+        updateBlockFocus(undefined);
+        setBlocks(spreadCRDT());
+      } catch {
+        initMom();
+      }
     });
 
     socket.on(BLOCK_EVENT.INIT_TEXT, (id, crdt) => {

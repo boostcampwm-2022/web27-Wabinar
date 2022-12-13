@@ -33,6 +33,10 @@ function TextBlock({
 }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
+  const initBlock = () => {
+    socket.emit(BLOCK_EVENT.INIT_TEXT, id);
+  };
+
   const {
     syncCRDT,
     readCRDT,
@@ -89,32 +93,40 @@ function TextBlock({
   };
 
   const onInsert = (op: RemoteInsertOperation) => {
-    const prevIndex = remoteInsertCRDT(op);
+    try {
+      const prevIndex = remoteInsertCRDT(op);
 
-    if (!blockRef.current) return;
+      if (!blockRef.current) return;
 
-    blockRef.current.innerText = readCRDT();
+      blockRef.current.innerText = readCRDT();
 
-    if (prevIndex === null || offsetRef.current === null) return;
+      if (prevIndex === null || offsetRef.current === null) return;
 
-    updateCaretPosition(Number(prevIndex < offsetRef.current));
+      updateCaretPosition(Number(prevIndex < offsetRef.current));
+    } catch {
+      initBlock();
+    }
   };
 
   const onDelete = (op: RemoteDeleteOperation) => {
-    const targetIndex = remoteDeleteCRDT(op);
+    try {
+      const targetIndex = remoteDeleteCRDT(op);
 
-    if (!blockRef.current) return;
+      if (!blockRef.current) return;
 
-    blockRef.current.innerText = readCRDT();
+      blockRef.current.innerText = readCRDT();
 
-    if (targetIndex === null || offsetRef.current === null) return;
+      if (targetIndex === null || offsetRef.current === null) return;
 
-    updateCaretPosition(-Number(targetIndex <= offsetRef.current));
+      updateCaretPosition(-Number(targetIndex <= offsetRef.current));
+    } catch {
+      initBlock();
+    }
   };
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    socket.emit(BLOCK_EVENT.INIT_TEXT, id);
+    initBlock();
 
     ee.on(`${BLOCK_EVENT.INIT_TEXT}-${id}`, onInitialize);
     ee.on(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
@@ -168,16 +180,25 @@ function TextBlock({
     if (event.isComposing) return; // 한글 입력 무시
 
     if (event.inputType === 'deleteContentBackward') {
-      const remoteDeletion = localDeleteCRDT(offsetRef.current);
-      socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
+      try {
+        const remoteDeletion = localDeleteCRDT(offsetRef.current);
+        socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
+      } catch {
+        initBlock();
+      }
       return;
     }
 
     const letter = event.data as string;
     const previousLetterIndex = offsetRef.current - 2;
-    const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-    socket.emit(BLOCK_EVENT.INSERT_TEXT, id, remoteInsertion);
+    try {
+      const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
+
+      socket.emit(BLOCK_EVENT.INSERT_TEXT, id, remoteInsertion);
+    } catch {
+      initBlock();
+    }
   };
 
   // 한글 입력 핸들링
