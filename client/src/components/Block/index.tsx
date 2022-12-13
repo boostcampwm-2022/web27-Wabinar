@@ -1,9 +1,11 @@
+import { BiPlus } from '@react-icons/all-files/bi/BiPlus';
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import ee from 'components/Mom/EventEmitter';
 import { memo, useEffect, useRef, useState } from 'react';
 import useSocketContext from 'src/hooks/context/useSocketContext';
 
 import QuestionBlock from './QuestionBlock';
+import style from './style.module.scss';
 import TextBlock from './TextBlock';
 import VoteBlock from './VoteBlock';
 
@@ -60,26 +62,41 @@ function Block({
     }
   };
 
+  const onCreate = () => createBlock(index);
+
   switch (type) {
     case BlockType.H1:
     case BlockType.H2:
     case BlockType.H3:
     case BlockType.P:
       return (
-        <TextBlock
-          id={id}
-          index={index}
-          onHandleBlocks={onHandleBlocks}
-          type={type}
-          setType={setBlockType}
-          isLocalTypeUpdate={localUpdateFlagRef.current}
-          registerRef={registerRef}
-        />
+        <div className={style['block']}>
+          <BiPlus size={20} onClick={onCreate} />
+          <TextBlock
+            id={id}
+            index={index}
+            onHandleBlocks={onHandleBlocks}
+            type={type}
+            setType={setBlockType}
+            isLocalTypeUpdate={localUpdateFlagRef.current}
+            registerRef={registerRef}
+          />
+        </div>
       );
     case BlockType.VOTE:
-      return <VoteBlock id={id} registerable={localUpdateFlagRef.current} />;
+      return (
+        <div className={style['block']}>
+          <BiPlus size={20} onClick={onCreate} />
+          <VoteBlock id={id} registerable={localUpdateFlagRef.current} />
+        </div>
+      );
     case BlockType.QUESTION:
-      return <QuestionBlock id={id} />;
+      return (
+        <div className={style['block']}>
+          <BiPlus size={20} onClick={onCreate} />
+          <QuestionBlock id={id} />
+        </div>
+      );
     default:
       return <p />;
   }
