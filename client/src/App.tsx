@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
 import UserContext from 'src/contexts/user';
 import {
@@ -17,6 +17,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
+  const location = useLocation();
   const navigate = useNavigate();
 
   const autoLogin = async () => {
@@ -26,7 +27,7 @@ function App() {
 
     setUser(user);
 
-    if (user) {
+    if (user && !/^\/workspace(\/\d)?$/.test(location.pathname)) {
       navigate('/workspace');
     }
   };
