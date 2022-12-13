@@ -5,9 +5,9 @@ import Button from 'common/Button';
 import { ChangeEventHandler, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { VoteMode } from 'src/constants/block';
+import useSocketContext from 'src/hooks/context/useSocketContext';
+import useUserContext from 'src/hooks/context/useUserContext';
 import useDebounceInput from 'src/hooks/useDebounceInput';
-import useSocketContext from 'src/hooks/useSocketContext';
-import { useUserContext } from 'src/hooks/useUserContext';
 import { Option } from 'src/types/block';
 import color from 'styles/color.module.scss';
 
