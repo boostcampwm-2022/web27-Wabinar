@@ -1,20 +1,22 @@
 import { MdMic } from '@react-icons/all-files/md/MdMic';
 import { MdMicOff } from '@react-icons/all-files/md/MdMicOff';
-import { Dispatch, SetStateAction } from 'react';
 import color from 'styles/color.module.scss';
 
 interface MicButtonProps {
   isOn: boolean;
-  setIsMicOn?: Dispatch<SetStateAction<boolean>>;
+  onClick?: () => void;
 }
 
-function MicButton({ isOn, setIsMicOn }: MicButtonProps) {
-  const onClick = () => {
-    if (setIsMicOn) setIsMicOn(!isOn);
+function MicButton({ isOn, onClick }: MicButtonProps) {
+  const onClickBtn = () => {
+    if (onClick) onClick();
   };
 
   return (
-    <button onClick={onClick} aria-label={'마이크 ' + (isOn ? '끄기' : '켜기')}>
+    <button
+      onClick={onClickBtn}
+      aria-label={'마이크 ' + (isOn ? '끄기' : '켜기')}
+    >
       {isOn ? (
         <MdMic color={color.green} size={20} />
       ) : (

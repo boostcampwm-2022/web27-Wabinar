@@ -1,20 +1,19 @@
 import { MdVideocam } from '@react-icons/all-files/md/MdVideocam';
 import { MdVideocamOff } from '@react-icons/all-files/md/MdVideocamOff';
-import { Dispatch, SetStateAction } from 'react';
 import color from 'styles/color.module.scss';
 
 interface CamButtonProps {
   isOn: boolean;
-  setIsCamOn?: Dispatch<SetStateAction<boolean>>;
+  onClick?: () => void;
 }
 
-function CamButton({ isOn, setIsCamOn }: CamButtonProps) {
-  const onClick = () => {
-    if (setIsCamOn) setIsCamOn(!isOn);
+function CamButton({ isOn, onClick }: CamButtonProps) {
+  const onClickBtn = () => {
+    if (onClick) onClick();
   };
 
   return (
-    <button onClick={onClick} aria-label={'캠 ' + (isOn ? '끄기' : '켜기')}>
+    <button onClick={onClickBtn} aria-label={'캠 ' + (isOn ? '끄기' : '켜기')}>
       {isOn ? (
         <MdVideocam color={color.green} size={20} />
       ) : (
