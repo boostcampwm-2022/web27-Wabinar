@@ -57,7 +57,8 @@ function Workspace() {
   }, [workspaceSocket]);
 
   const memoizedSocketValue = useMemo(
-    () => ({ momSocket, workspaceSocket }),
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    () => ({ momSocket: momSocket!, workspaceSocket: workspaceSocket! }),
     [momSocket, workspaceSocket],
   );
 
@@ -65,8 +66,6 @@ function Workspace() {
     () => ({ isOnGoing, setIsOnGoing }),
     [isOnGoing],
   );
-
-  if (!momSocket || !workspaceSocket) return <></>;
 
   return (
     <SocketContext.Provider value={memoizedSocketValue}>
