@@ -4,7 +4,7 @@ import Button from 'src/components/common/Button';
 import CopyButton from 'src/components/common/CopyButton';
 import Modal from 'src/components/common/Modal';
 import ERROR_MESSAGE from 'src/constants/error-message';
-import useWorkspacesContext from 'src/hooks/useWorkspacesContext';
+import useWorkspacesContext from 'src/hooks/context/useWorkspacesContext';
 
 import style from './style.module.scss';
 

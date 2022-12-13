@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
 import WabinarIcon from 'src/components/common/Icon/Wabinar';
-import { useUserContext } from 'src/hooks/useUserContext';
+import useUserContext from 'src/hooks/context/useUserContext';
 
 import style from './style.module.scss';
 

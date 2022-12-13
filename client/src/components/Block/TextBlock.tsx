@@ -6,9 +6,9 @@ import {
 } from '@wabinar/crdt/linked-list';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import BlockSelector from 'src/components/BlockSelector';
+import useSocketContext from 'src/hooks/context/useSocketContext';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
-import useSocketContext from 'src/hooks/useSocketContext';
 
 import ee from '../Mom/EventEmitter';
 
