@@ -73,9 +73,13 @@ class RTC {
 
   async #setVideoBitrate(pc: RTCPeerConnection, bitrate: number) {
     // fetch video sender
-    const [videoSender] = pc
+    const videoSender = pc
       .getSenders()
-      .filter((sender) => sender!.track!.kind === 'video');
+      .find((sender) => sender!.track!.kind === 'video');
+
+    if (!videoSender) {
+      return;
+    }
 
     // set bitrate
     const params = videoSender.getParameters();
