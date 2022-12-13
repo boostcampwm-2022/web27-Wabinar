@@ -111,11 +111,15 @@ export default class LinkedList {
 
       const prevNode = this.findByIndex(index - 1);
 
-      if (!prevNode.next) return null;
+      if (!prevNode.next) {
+        throw new Error('deleteByIndex 실패 ^^');
+      }
 
       const targetNode = this.getNode(prevNode.next);
 
-      if (!targetNode) return null;
+      if (!targetNode) {
+        throw new Error('deleteByIndex 실패 ^^');
+      }
 
       this.deleteNode(targetNode.id);
       prevNode.next = targetNode.next;
