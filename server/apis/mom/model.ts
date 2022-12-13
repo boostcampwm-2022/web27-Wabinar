@@ -9,13 +9,15 @@ export interface Mom extends LinkedList {
   createdAt: Date;
 }
 
-const momSchema = new Schema<Mom>({
-  id: { type: Number, required: true },
-  title: { type: String, default: '제목 없음' },
-  createdAt: { type: Date, default: new Date() },
-  head: { type: Object, default: null },
-  nodeMap: { type: Object, default: {} },
-});
+const momSchema = new Schema<Mom>(
+  {
+    id: { type: Number, required: true },
+    title: { type: String, default: '제목 없음' },
+    head: { type: Object, default: null },
+    nodeMap: { type: Object, default: {} },
+  },
+  { timestamps: true },
+);
 
 momSchema.plugin(autoIncrement.plugin, {
   model: 'mom',
