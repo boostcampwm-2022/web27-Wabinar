@@ -1,11 +1,17 @@
-import {
-  원희,
-  주영,
-  도훈,
-  세영,
-  convergenceCheck,
-  remoteInsertThroughSocket,
-} from './utils';
+import CRDT from '../index';
+import LinkedList from '../linked-list';
+import { convergenceCheck, remoteInsertThroughSocket } from './utils';
+
+/**
+ * 테스트용 site들
+ * 인스턴스를 재사용하기 때문에 테스트 케이스 간 의존성 존재
+ */
+const 원희 = new CRDT(1, new LinkedList());
+const 주영 = new CRDT(2, new LinkedList());
+const 도훈 = new CRDT(3, new LinkedList());
+const 세영 = new CRDT(4, new LinkedList());
+
+const remoteSites = [원희, 주영, 도훈, 세영];
 
 describe('Convergence', () => {
   it('하나의 site에서 삽입', () => {
@@ -18,7 +24,7 @@ describe('Convergence', () => {
       원희remotes.forEach((op) => remoteInsertThroughSocket(나, op));
     });
 
-    convergenceCheck();
+    convergenceCheck(remoteSites);
   });
 
   it('여러 site에서 같은 위치에 삽입', () => {
@@ -33,7 +39,7 @@ describe('Convergence', () => {
       remoteInsertThroughSocket(나, 세영remote);
     });
 
-    convergenceCheck();
+    convergenceCheck(remoteSites);
   });
 
   it('여러 site에서 다른 위치에 삽입', () => {
@@ -48,7 +54,7 @@ describe('Convergence', () => {
       remoteInsertThroughSocket(나, 주영remote);
     });
 
-    convergenceCheck();
+    convergenceCheck(remoteSites);
   });
 
   it('여러 site에서 같은 위치 삭제', () => {
@@ -63,7 +69,7 @@ describe('Convergence', () => {
       나.remoteDelete(도훈remote);
     });
 
-    convergenceCheck();
+    convergenceCheck(remoteSites);
   });
 
   it('여러 site에서 다른 위치 삭제', () => {
@@ -78,6 +84,6 @@ describe('Convergence', () => {
       나.remoteDelete(주영remote);
     });
 
-    convergenceCheck();
+    convergenceCheck(remoteSites);
   });
 });
