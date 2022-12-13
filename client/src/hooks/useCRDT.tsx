@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 import CRDT from '@wabinar/crdt';
 import LinkedList, {
   RemoteInsertOperation,
@@ -64,23 +63,15 @@ export function useCRDT() {
   };
 
   const localInsertCRDT = (index: number, value: string) => {
-    try {
-      const remoteInsertion = crdtRef.current.localInsert(index, value);
+    const remoteInsertion = crdtRef.current.localInsert(index, value);
 
-      return remoteInsertion;
-    } catch (e) {
-      throw e;
-    }
+    return remoteInsertion;
   };
 
   const localDeleteCRDT = (index: number) => {
-    try {
-      const targetIndex = crdtRef.current.localDelete(index);
+    const targetIndex = crdtRef.current.localDelete(index);
 
-      return targetIndex;
-    } catch (e) {
-      throw e;
-    }
+    return targetIndex;
   };
 
   const remoteInsertCRDT = (op: RemoteInsertOperation) => {
@@ -89,13 +80,9 @@ export function useCRDT() {
       return null;
     }
 
-    try {
-      const prevIndex = crdtRef.current.remoteInsert(op);
+    const prevIndex = crdtRef.current.remoteInsert(op);
 
-      return prevIndex;
-    } catch (e) {
-      throw e;
-    }
+    return prevIndex;
   };
 
   const remoteDeleteCRDT = (op: RemoteDeleteOperation) => {
@@ -104,13 +91,9 @@ export function useCRDT() {
       return null;
     }
 
-    try {
-      const targetIndex = crdtRef.current.remoteDelete(op);
+    const targetIndex = crdtRef.current.remoteDelete(op);
 
-      return targetIndex;
-    } catch (e) {
-      throw e;
-    }
+    return targetIndex;
   };
 
   return {
