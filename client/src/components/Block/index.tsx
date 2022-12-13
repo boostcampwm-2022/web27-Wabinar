@@ -64,14 +64,13 @@ function Block({
 
   const onCreate = () => createBlock(index);
 
-  switch (type) {
-    case BlockType.H1:
-    case BlockType.H2:
-    case BlockType.H3:
-    case BlockType.P:
-      return (
-        <div className={style['block']}>
-          <BiPlus size={20} onClick={onCreate} />
+  const getCurrentBlock = () => {
+    switch (type) {
+      case BlockType.H1:
+      case BlockType.H2:
+      case BlockType.H3:
+      case BlockType.P:
+        return (
           <TextBlock
             id={id}
             index={index}
@@ -81,25 +80,22 @@ function Block({
             isLocalTypeUpdate={localUpdateFlagRef.current}
             registerRef={registerRef}
           />
-        </div>
-      );
-    case BlockType.VOTE:
-      return (
-        <div className={style['block']}>
-          <BiPlus size={20} onClick={onCreate} />
-          <VoteBlock id={id} registerable={localUpdateFlagRef.current} />
-        </div>
-      );
-    case BlockType.QUESTION:
-      return (
-        <div className={style['block']}>
-          <BiPlus size={20} onClick={onCreate} />
-          <QuestionBlock id={id} />
-        </div>
-      );
-    default:
-      return <p />;
-  }
+        );
+      case BlockType.VOTE:
+        return <VoteBlock id={id} registerable={localUpdateFlagRef.current} />;
+      case BlockType.QUESTION:
+        return <QuestionBlock id={id} />;
+      default:
+        return <p />;
+    }
+  };
+
+  return (
+    <div className={style['block']}>
+      <BiPlus size={20} onClick={onCreate} />
+      {getCurrentBlock()}
+    </div>
+  );
 }
 
 export default memo(Block);
