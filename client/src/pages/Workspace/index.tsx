@@ -4,7 +4,7 @@ import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import { getWorkspaces } from 'src/apis/user';
 import DefaultWorkspace from 'src/components/Workspace/DefaultWorkspace';
 import WorkspacesContext from 'src/contexts/workspaces';
-import { useUserContext } from 'src/hooks/useUserContext';
+import useUserContext from 'src/hooks/context/useUserContext';
 import LoadingPage from 'src/pages/Loading';
 import { Workspace as TWorkspace } from 'src/types/workspace';
 

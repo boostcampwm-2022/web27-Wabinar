@@ -1,4 +1,4 @@
-import useSelectedMom from 'src/hooks/useSelectedMom';
+import useSelectedMomContext from 'src/hooks/context/useSelectedMomContext';
 import { WorkspaceInfo } from 'src/types/workspace';
 
 import Header from './Header';
@@ -12,7 +12,7 @@ interface SidebarProps {
 }
 
 function Sidebar({ workspace }: SidebarProps) {
-  const { setSelectedMom } = useSelectedMom();
+  const { setSelectedMom } = useSelectedMomContext();
 
   return (
     <div className={style['sidebar-container']}>

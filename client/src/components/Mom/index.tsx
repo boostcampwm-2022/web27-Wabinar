@@ -1,10 +1,10 @@
 import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
 import Block from 'components/Block';
 import { useEffect, useRef, useState } from 'react';
+import useSelectedMomContext from 'src/hooks/context/useSelectedMomContext';
+import useSocketContext from 'src/hooks/context/useSocketContext';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
-import useSelectedMom from 'src/hooks/useSelectedMom';
-import useSocketContext from 'src/hooks/useSocketContext';
 import { v4 as uuid } from 'uuid';
 
 import DefaultMom from './DefaultMom';
@@ -12,7 +12,7 @@ import ee from './EventEmitter';
 import style from './style.module.scss';
 
 function Mom() {
-  const { selectedMom } = useSelectedMom();
+  const { selectedMom } = useSelectedMomContext();
   const { momSocket: socket } = useSocketContext();
 
   const initMom = () => {
