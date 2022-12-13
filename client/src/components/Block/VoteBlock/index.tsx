@@ -1,7 +1,7 @@
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { VoteMode } from 'src/constants/block';
-import useSocketContext from 'src/hooks/useSocketContext';
+import useSocketContext from 'src/hooks/context/useSocketContext';
 import { Option } from 'src/types/block';
 
 import VoteBlockTemplate from './VoteBlockTemplate';

@@ -1,11 +1,11 @@
 import CRDT from '@wabinar/crdt';
 import LinkedList, {
-  RemoteInsertOperation,
   RemoteDeleteOperation,
+  RemoteInsertOperation,
 } from '@wabinar/crdt/linked-list';
 import { useRef } from 'react';
 import ERROR_MESSAGE from 'src/constants/error-message';
-import { useUserContext } from 'src/hooks/useUserContext';
+import useUserContext from 'src/hooks/context/useUserContext';
 
 enum OPERATION_TYPE {
   INSERT,

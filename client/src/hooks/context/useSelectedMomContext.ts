@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import ERROR_MESSAGE from 'src/constants/error-message';
-import UserContext from 'src/contexts/user';
+import { SelectedMomContext } from 'src/contexts/selected-mom';
 
-export function useUserContext() {
-  const context = useContext(UserContext);
+export default function useSelectedMomContext() {
+  const context = useContext(SelectedMomContext);
 
   if (!context) throw new Error(ERROR_MESSAGE.OUT_OF_CONTEXT_SCOPE);
 
