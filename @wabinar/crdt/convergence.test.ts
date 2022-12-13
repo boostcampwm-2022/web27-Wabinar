@@ -80,4 +80,34 @@ describe('Convergence', () => {
 
     convergenceCheck();
   });
+
+  it('여러 site에서 같은 위치 삭제', () => {
+    const 도훈remote = 도훈.localDelete(0);
+    const 세영remote = 세영.localDelete(0);
+
+    도훈.remoteDelete(세영remote);
+    세영.remoteDelete(도훈remote);
+
+    [원희, 주영].forEach((나) => {
+      나.remoteDelete(세영remote);
+      나.remoteDelete(도훈remote);
+    });
+
+    convergenceCheck();
+  });
+
+  it('여러 site에서 다른 위치 삭제', () => {
+    const 원희remote = 원희.localDelete(0);
+    const 주영remote = 주영.localDelete(2);
+
+    원희.remoteDelete(주영remote);
+    주영.remoteDelete(원희remote);
+
+    [도훈, 세영].forEach((나) => {
+      나.remoteDelete(원희remote);
+      나.remoteDelete(주영remote);
+    });
+
+    convergenceCheck();
+  });
 });
