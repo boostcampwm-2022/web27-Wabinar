@@ -1,4 +1,4 @@
-import { BlockType } from '@wabinar/api-types/block';
+import { BlockType } from '@wabinar/constants/block';
 import { Block } from '../model';
 import { getBlock, putBlock, putVoteBlockStatus } from '../service';
 export interface Option {
