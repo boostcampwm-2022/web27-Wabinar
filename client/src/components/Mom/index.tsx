@@ -241,6 +241,7 @@ function Mom() {
               key={id}
               id={id}
               index={index}
+              createBlock={createBlock}
               onHandleBlocks={onHandleBlocks}
               registerRef={registerRef(index)}
             />
