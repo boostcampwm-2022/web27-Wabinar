@@ -1,5 +1,5 @@
-import CRDT from './index';
-import LinkedList from './linked-list';
+import CRDT from '../index';
+import LinkedList from '../linked-list';
 
 describe('Local operation', () => {
   const initialStructure = new LinkedList();
