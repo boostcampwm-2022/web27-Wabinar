@@ -22,7 +22,7 @@ describe('Exceptions', () => {
     expect(() => 도훈.localInsert(100, '.')).toThrow();
   });
 
-  it('존재하지 않는 인덱스에 remoteInsert', () => {
+  it('존재하지 않는 노드 뒤에 remoteInsert', () => {
     const 도훈remotes = [
       도훈.localInsert(1, '.'),
       도훈.localInsert(2, '.'),
