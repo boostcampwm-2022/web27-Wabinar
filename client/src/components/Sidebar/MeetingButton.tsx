@@ -16,9 +16,6 @@ function MeetingButton() {
     if (isOnGoing) {
       socket.emit('bye');
     }
-    if (isOnGoing) {
-      socket.emit('bye');
-    }
     setIsOnGoing(!isOnGoing);
   };
 
