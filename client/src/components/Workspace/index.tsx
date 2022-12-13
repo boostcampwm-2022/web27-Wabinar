@@ -1,7 +1,7 @@
 import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import Mom from 'components/Mom';
 import Sidebar from 'components/Sidebar';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getWorkspaceInfo } from 'src/apis/workspace';
 import MeetingMediaBar from 'src/components/MeetingMediaBar';
@@ -56,11 +56,21 @@ function Workspace() {
     };
   }, [workspaceSocket]);
 
+  const memoizedSocketValue = useMemo(
+    () => ({ momSocket, workspaceSocket }),
+    [momSocket, workspaceSocket],
+  );
+
+  const memoizedOnGoingValue = useMemo(
+    () => ({ isOnGoing, setIsOnGoing }),
+    [isOnGoing],
+  );
+
   if (!momSocket || !workspaceSocket) return <></>;
 
   return (
-    <SocketContext.Provider value={{ momSocket, workspaceSocket }}>
-      <MeetingContext.Provider value={{ isOnGoing, setIsOnGoing }}>
+    <SocketContext.Provider value={memoizedSocketValue}>
+      <MeetingContext.Provider value={memoizedOnGoingValue}>
         {workspace && (
           <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
             <Sidebar workspace={workspace} />
