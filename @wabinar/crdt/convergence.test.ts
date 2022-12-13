@@ -31,6 +31,7 @@ const convergenceCheck = () => {
 
 /**
  * 테스트용 site들
+ * 인스턴스를 재사용하기 때문에 테스트 케이스 간 의존성 존재
  */
 const 원희 = new CRDT(1, new LinkedList());
 const 주영 = new CRDT(2, new LinkedList());
