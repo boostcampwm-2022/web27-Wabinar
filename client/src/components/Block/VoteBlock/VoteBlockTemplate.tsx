@@ -30,8 +30,9 @@ function VoteBlockTemplate({
   options,
   setOptions,
 }: VoteBlockProps) {
-  const [isCreateMode, isRegisteredMode, isEndMode] = [
+  const [isCreateMode, isRegisteringMode, isRegisteredMode, isEndMode] = [
     mode === VoteMode.CREATE,
+    mode === VoteMode.REGISTERING,
     mode === VoteMode.REGISTERED,
     mode === VoteMode.END,
   ];
@@ -67,7 +68,7 @@ function VoteBlockTemplate({
     setOptions(validOptions);
     setVoteMode(VoteMode.REGISTERED);
 
-    socket.emit(BLOCK_EVENT.CREATE_VOTE, validOptions);
+    socket.emit(BLOCK_EVENT.REGISTER_VOTE, id, validOptions);
 
     toast('투표 등록 완료 ^^', { type: 'info' });
   };
@@ -87,7 +88,7 @@ function VoteBlockTemplate({
   };
 
   const onEnd = () => {
-    socket.emit(BLOCK_EVENT.END_VOTE);
+    socket.emit(BLOCK_EVENT.END_VOTE, id);
   };
 
   const onChange: ChangeEventHandler<HTMLInputElement> = ({ target }) => {
@@ -109,20 +110,23 @@ function VoteBlockTemplate({
 
     setSelectedOptionId(targetId);
 
-    socket.emit(BLOCK_EVENT.UPDATE_VOTE, targetId, user?.id);
+    socket.emit(BLOCK_EVENT.UPDATE_VOTE, id, targetId, user?.id);
   };
 
   useEffect(() => {
-    socket.on(BLOCK_EVENT.UPDATE_VOTE, (participantCount) => {
+    socket.on(`${BLOCK_EVENT.UPDATE_VOTE}-${id}`, (participantCount) => {
       setParticipantCount(participantCount);
     });
 
-    socket.on(BLOCK_EVENT.END_VOTE, ({ options, participantCount }) => {
-      setVoteMode(VoteMode.END);
-      setOptions(options);
-      setParticipantCount(participantCount);
-      toast('투표가 종료되었어요 ^^');
-    });
+    socket.on(
+      `${BLOCK_EVENT.END_VOTE}-${id}`,
+      ({ options, participantCount }) => {
+        setVoteMode(VoteMode.END);
+        setOptions(options);
+        setParticipantCount(participantCount);
+        toast('투표가 종료되었어요 ^^');
+      },
+    );
 
     return () => {
       socket.off(BLOCK_EVENT.UPDATE_VOTE);
@@ -140,63 +144,70 @@ function VoteBlockTemplate({
 
   return (
     <div className={style['vote-container']}>
-      <h3 className={style.title}>투표</h3>
+      <h3 className={style.title}>{'투표'}</h3>
       {(isRegisteredMode || isEndMode) && (
         <span className={style['participant-cnt']}>
           {participantCount}명 참여
         </span>
       )}
+      {
+        <ul>
+          {isCreateMode ? (
+            <li className={style['option-item']}>
+              <div className={style['box-fill']}>{'^^'}</div>
+              <div>등록될 때까지 기다려주세요</div>
+            </li>
+          ) : (
+            options.map(({ id, text, count }, index) => (
+              <li
+                className={cx('option-item', {
+                  'selected-item':
+                    (isRegisteredMode || isEndMode) && id === selectedOptionId,
+                })}
+                key={id}
+                onClick={() => onSelect(id)}
+              >
+                {isEndMode && (
+                  <div
+                    className={style['vote-result-bar']}
+                    style={{
+                      width: `${getPercent(count)}%`,
+                      backgroundColor: color.highlight100,
+                    }}
+                  ></div>
+                )}
 
-      <ul>
-        {options.map(({ id, text, count }, index) => (
-          <li
-            className={cx('option-item', {
-              'selected-item':
-                (isRegisteredMode || isEndMode) && id === selectedOptionId,
-            })}
-            key={id}
-            onClick={() => onSelect(id)}
-          >
-            {isEndMode && (
-              <div
-                className={style['vote-result-bar']}
-                style={{
-                  width: `${getPercent(count)}%`,
-                  backgroundColor: color.highlight100,
-                }}
-              ></div>
-            )}
-
-            <div className={style['box-fill']}>{index + 1}</div>
-            <input
-              type="text"
-              className={cx('option-input', {
-                selected: isRegisteredMode,
-              })}
-              placeholder="항목을 입력해주세요"
-              onChange={onChange}
-              data-id={id}
-              readOnly={isRegisteredMode || isEndMode}
-              defaultValue={text}
-            />
-            {isCreateMode && (
-              <Button
-                icon={<BiX size="20" color="white" />}
-                ariaLabel="항목 삭제"
-                onClick={() => onDelete(id)}
-              />
-            )}
-            {isEndMode && (
-              <div className={style['vote-result-text']}>
-                {getVoteResultText(count)}
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-
+                <div className={style['box-fill']}>{index + 1}</div>
+                <input
+                  type="text"
+                  className={cx('option-input', {
+                    selected: isRegisteredMode,
+                  })}
+                  placeholder="항목을 입력해주세요"
+                  onChange={onChange}
+                  data-id={id}
+                  readOnly={isRegisteredMode || isEndMode}
+                  defaultValue={text}
+                />
+                {isRegisteringMode && (
+                  <Button
+                    icon={<BiX size="20" color="white" />}
+                    ariaLabel="항목 삭제"
+                    onClick={() => onDelete(id)}
+                  />
+                )}
+                {isEndMode && (
+                  <div className={style['vote-result-text']}>
+                    {getVoteResultText(count)}
+                  </div>
+                )}
+              </li>
+            ))
+          )}
+        </ul>
+      }
       <div className={style['vote-buttons']}>
-        {isCreateMode && (
+        {isRegisteringMode && (
           <>
             <Button onClick={onAdd} text="항목 추가" />
             <Button onClick={onRegister} text="투표 등록" />
