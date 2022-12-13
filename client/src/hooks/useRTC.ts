@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { peerConnectionConfig } from 'src/config/rtc';
+import { STUN_SERVER } from 'src/constants/rtc';
 import { RTC_MESSAGE } from 'src/constants/socket-message';
 
 interface IPeerConnection {
@@ -39,6 +39,14 @@ function useRTC({ socket }: RTCProps): Map<string, MediaStream> {
    * @returns 새로 생성한 peerConnection 객체
    */
   const setPeerConnection = (peerId: string) => {
+    const peerConnectionConfig = {
+      iceServers: [
+        {
+          urls: STUN_SERVER,
+        },
+      ],
+    };
+
     const peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
     /* 이벤트 핸들러: Peer에게 candidate를 전달 할 필요가 있을때 마다 발생 */
