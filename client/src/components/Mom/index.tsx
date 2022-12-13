@@ -15,6 +15,11 @@ function Mom() {
   const { selectedMom } = useSelectedMom();
   const { momSocket: socket } = useSocketContext();
 
+  const initMom = () => {
+    if (!selectedMom) return;
+    socket.emit(MOM_EVENT.INIT, selectedMom._id);
+  };
+
   const {
     syncCRDT,
     spreadCRDT,
@@ -27,7 +32,7 @@ function Mom() {
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
-    (e) => {
+    () => {
       if (!titleRef.current) return;
 
       const title = titleRef.current.innerText;
@@ -46,13 +51,13 @@ function Mom() {
     focusIndex.current = idx;
   };
 
-  const setBlockFocus = () => {
+  const setBlockFocus = (index: number) => {
     if (!blockRefs.current || focusIndex.current === undefined) return;
 
     const idx = focusIndex.current;
+    if (index === undefined || index !== idx) return;
 
     const targetBlock = blockRefs.current[idx];
-
     if (!targetBlock || !targetBlock.current) return;
 
     targetBlock.current.focus();
@@ -71,7 +76,7 @@ function Mom() {
     range.collapse();
   };
 
-  const onKeyDown: React.KeyboardEventHandler = (e) => {
+  const onHandleBlock: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
 
     const { index: indexString } = target.dataset;
@@ -82,11 +87,18 @@ function Mom() {
 
       const blockId = uuid();
 
-      const remoteInsertion = localInsertCRDT(index, blockId);
+      let remoteInsertion;
+
+      try {
+        remoteInsertion = localInsertCRDT(index, blockId);
+      } catch {
+        initMom();
+      }
 
       updateBlockFocus(index + 1);
 
       socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
+
       return;
     }
 
@@ -99,12 +111,21 @@ function Mom() {
 
       if (index === 0) return;
 
-      const remoteDeletion = localDeleteCRDT(index);
+      let remoteDeletion;
+
+      try {
+        remoteDeletion = localDeleteCRDT(index);
+      } catch {
+        initMom();
+      }
 
       updateBlockFocus(index - 1);
 
       setBlocks(spreadCRDT());
-      setBlockFocus();
+
+      if (focusIndex.current === undefined) return;
+      setBlockFocus(focusIndex.current);
+
       setCaretToEnd();
 
       socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
@@ -112,13 +133,7 @@ function Mom() {
   };
 
   useEffect(() => {
-    setBlockFocus();
-  }, [blocks]);
-
-  useEffect(() => {
-    if (!selectedMom) return;
-
-    socket.emit(MOM_EVENT.INIT, selectedMom._id);
+    initMom();
 
     socket.on(MOM_EVENT.INIT, (crdt) => {
       syncCRDT(crdt);
@@ -136,21 +151,31 @@ function Mom() {
     });
 
     socket.on(MOM_EVENT.INSERT_BLOCK, (op) => {
-      remoteInsertCRDT(op);
+      try {
+        remoteInsertCRDT(op);
+      } catch {
+        initMom();
+        return;
+      }
 
       updateBlockFocus(undefined);
       setBlocks(spreadCRDT());
     });
 
     socket.on(MOM_EVENT.DELETE_BLOCK, (op) => {
-      remoteDeleteCRDT(op);
+      try {
+        remoteDeleteCRDT(op);
+      } catch {
+        initMom();
+        return;
+      }
 
       updateBlockFocus(undefined);
       setBlocks(spreadCRDT());
     });
 
-    socket.on(BLOCK_EVENT.INIT, (id, crdt) => {
-      ee.emit(`${BLOCK_EVENT.INIT}-${id}`, crdt);
+    socket.on(BLOCK_EVENT.INIT_TEXT, (id, crdt) => {
+      ee.emit(`${BLOCK_EVENT.INIT_TEXT}-${id}`, crdt);
     });
 
     socket.on(BLOCK_EVENT.INSERT_TEXT, (id, op) => {
@@ -176,13 +201,19 @@ function Mom() {
         MOM_EVENT.UPDATED,
         MOM_EVENT.INSERT_BLOCK,
         MOM_EVENT.DELETE_BLOCK,
-        BLOCK_EVENT.INIT,
+        BLOCK_EVENT.INIT_TEXT,
         BLOCK_EVENT.INSERT_TEXT,
         BLOCK_EVENT.DELETE_TEXT,
         BLOCK_EVENT.UPDATE_TYPE,
       ].forEach((event) => socket.off(event));
     };
   }, [selectedMom]);
+
+  const registerRef =
+    (index: number) => (ref: React.RefObject<HTMLElement>) => {
+      blockRefs.current[index] = ref;
+      setBlockFocus(index);
+    };
 
   return selectedMom ? (
     <div className={style['mom-container']}>
@@ -205,10 +236,8 @@ function Mom() {
               key={id}
               id={id}
               index={index}
-              onKeyDown={onKeyDown}
-              registerRef={(ref: React.RefObject<HTMLElement>) => {
-                blockRefs.current[index] = ref;
-              }}
+              onHandleBlock={onHandleBlock}
+              registerRef={registerRef(index)}
             />
           ))}
         </div>
