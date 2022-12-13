@@ -90,6 +90,8 @@ function TextBlock({
     if (!blockRef.current) return;
 
     blockRef.current.innerText = readCRDT();
+
+    updateCaretPosition();
   };
 
   const onInsert = (op: RemoteInsertOperation) => {
@@ -261,12 +263,17 @@ function TextBlock({
     onHandleBlock(e);
   };
 
+  const onClick: React.MouseEventHandler<HTMLElement> = (e) => {
+    setOffset();
+  };
+
   const commonHandlers = {
     onInput,
     onCompositionEnd,
     ...offsetHandlers,
     onKeyDown,
     onPaste,
+    onClick,
   };
 
   const BLOCK_TYPES = Object.values(BlockType)
