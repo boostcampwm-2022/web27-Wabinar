@@ -4,7 +4,7 @@ import { peerConnectionConfig } from 'src/config/rtc';
 import { RTC_MESSAGE } from 'src/constants/socket-message';
 
 interface IPeerConnection {
-  [id: string]: RTCPeerConnection; // key: 각 클라이언트의 socketId, value: RTCPeerConnection 객체
+  [id: string]: RTCPeerConnection;
 }
 
 interface RTCProps {
@@ -13,22 +13,25 @@ interface RTCProps {
 
 function useRTC({ socket }: RTCProps): Map<string, MediaStream> {
   const myStreamRef = useRef<MediaStream | null>(null);
-  const myVideoRef = useRef<HTMLVideoElement | null>(null);
+  const peerConnectionRef = useRef<IPeerConnection | null>(null);
   const [participants, setParticipants] = useState<Map<string, MediaStream>>(
     new Map(),
   );
-  const peerConnectionRef = useRef<IPeerConnection | null>(null);
 
   const setMyStream = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
     });
     myStreamRef.current = stream;
-
-    if (myVideoRef.current) {
-      myVideoRef.current.srcObject = myStreamRef.current;
-    }
   };
+
+  useEffect(() => {
+    try {
+      setMyStream();
+    } catch (err) {
+      console.debug(err);
+    }
+  }, []);
 
   /**
    * Peer와 연결하기
@@ -37,14 +40,6 @@ function useRTC({ socket }: RTCProps): Map<string, MediaStream> {
    */
   const setPeerConnection = (peerId: string) => {
     const peerConnection = new RTCPeerConnection(peerConnectionConfig);
-
-    myStreamRef.current?.getTracks().forEach((track) => {
-      if (!myStreamRef.current) return;
-
-      // 다른 유저에게 전달해주기 위해 내 미디어를 peerConnection 에 추가한다.
-      // track이 myStreamRef.current(내 스트림)에 추가됨
-      peerConnection.addTrack(track, myStreamRef.current);
-    });
 
     /* 이벤트 핸들러: Peer에게 candidate를 전달 할 필요가 있을때 마다 발생 */
     peerConnection.onicecandidate = (e) => {
@@ -58,10 +53,7 @@ function useRTC({ socket }: RTCProps): Map<string, MediaStream> {
       }
     };
 
-    /* 이벤트 핸들러: peerConnection에 새로운 트랙이 추가됐을 경우 호출됨
-      -> 누군가 내 offer를 remoteDescription에 설정했을 때?
-      -> 아니면 내가 누군가의 offer를 remoteDescription에 추가했을 때?
-    */
+    /* 이벤트 핸들러: peerConnection에 새로운 트랙이 추가됐을 경우 호출됨 -> 누군가 내 offer를 remoteDescription에 설정했을 때 */
     peerConnection.ontrack = (e) => {
       // 새로운 peer를 참여자에 추가
       setParticipants((prev) => {
@@ -71,13 +63,20 @@ function useRTC({ socket }: RTCProps): Map<string, MediaStream> {
       });
     };
 
+    myStreamRef.current?.getTracks().forEach((track) => {
+      if (!myStreamRef.current) return;
+
+      // 다른 유저에게 전달해주기 위해 내 미디어를 peerConnection 에 추가한다.
+      // track이 myStreamRef.current(내 스트림)에 추가됨
+      peerConnection.addTrack(track, myStreamRef.current);
+    });
+
     return peerConnection;
   };
 
   useEffect(() => {
     if (!socket) return;
-
-    setMyStream();
+    if (!myStreamRef.current) return;
 
     /* 유저 join */
     socket.emit(RTC_MESSAGE.JOIN);
