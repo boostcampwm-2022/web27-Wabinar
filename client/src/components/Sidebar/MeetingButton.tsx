@@ -1,5 +1,6 @@
 import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import { memo } from 'react';
+import { MeetingMode } from 'src/constants/rtc';
 import { useMeetingContext } from 'src/hooks/useMeetingContext';
 import useSocketContext from 'src/hooks/useSocketContext';
 import color from 'styles/color.module.scss';
@@ -10,12 +11,19 @@ function MeetingButton() {
   const { workspaceSocket: socket } = useSocketContext();
 
   const MeetingContext = useMeetingContext();
-  const { isOnGoing, setIsOnGoing } = MeetingContext;
+  const { meetingMode, setMeetingMode } = MeetingContext;
 
   const onClick = () => {
-    setIsOnGoing(!isOnGoing);
+    const newMeetingMode =
+      meetingMode === MeetingMode.GOING
+        ? MeetingMode.NOT_GOING
+        : MeetingMode.READY;
+    setMeetingMode(newMeetingMode);
+
     socket.emit(
-      isOnGoing ? WORKSPACE_EVENT.END_MEETING : WORKSPACE_EVENT.START_MEETING,
+      meetingMode === MeetingMode.GOING
+        ? WORKSPACE_EVENT.END_MEETING
+        : WORKSPACE_EVENT.START_MEETING,
     );
   };
 
@@ -23,9 +31,12 @@ function MeetingButton() {
     <button
       className={style['meeting-button']}
       onClick={onClick}
-      style={{ backgroundColor: isOnGoing ? color.red : color.green }}
+      style={{
+        backgroundColor:
+          meetingMode === MeetingMode.GOING ? color.red : color.green,
+      }}
     >
-      {isOnGoing ? '회의종료' : '회의시작'}
+      {meetingMode === MeetingMode.GOING ? '회의종료' : '회의시작'}
     </button>
   );
 }

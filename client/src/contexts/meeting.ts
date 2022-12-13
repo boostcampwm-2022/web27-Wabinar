@@ -1,8 +1,9 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
+import { MeetingMode } from 'src/constants/rtc';
 
 interface IMeetingContext {
-  isOnGoing: boolean;
-  setIsOnGoing: Dispatch<SetStateAction<boolean>>;
+  meetingMode: MeetingMode;
+  setMeetingMode: Dispatch<SetStateAction<MeetingMode>>;
 }
 
 const MeetingContext = createContext<IMeetingContext | null>(null);
