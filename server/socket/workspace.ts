@@ -44,8 +44,8 @@ function workspaceSocketServer(io: Server) {
     });
 
     // TODO: 소켓 이벤트 메시지 상수화
-    socket.on('audio_state_changed', (videoOn) => {
-      namespace.emit('audio_state_changed', socket.id, videoOn);
+    socket.on('audio_state_changed', (audioOn) => {
+      namespace.emit('audio_state_changed', socket.id, audioOn);
     });
 
     socket.on('video_state_changed', (videoOn) => {
