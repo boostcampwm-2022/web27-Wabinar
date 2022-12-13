@@ -1,5 +1,5 @@
 import LinkedList from '@wabinar/crdt/linked-list';
-import { BlockType } from '@wabinar/api-types/block';
+import { BlockType } from '@wabinar/constants/block';
 import blockModel from './model';
 import { Question } from './question/service';
 import { Vote } from './vote/service';

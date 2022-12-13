@@ -1,3 +1,3 @@
-export interface PostLoginParams {
+export interface PostLoginBody {
   code: string;
 }
