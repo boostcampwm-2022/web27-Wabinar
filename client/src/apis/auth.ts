@@ -1,4 +1,4 @@
-import { PostLoginParams } from '@wabinar/api-types/auth';
+import { PostLoginBody } from '@wabinar/api-types/auth';
 import { User } from 'src/types/user';
 import { Workspace } from 'src/types/workspace';
 
@@ -21,7 +21,7 @@ export const getAuth = async (): Promise<GetUserInfo> => {
 
 export const postAuthLogin = async ({
   code,
-}: PostLoginParams): Promise<GetUserInfo> => {
+}: PostLoginBody): Promise<GetUserInfo> => {
   const res = await http.post(`/auth/login`, { code });
 
   if (res.status !== CREATED) throw new Error();

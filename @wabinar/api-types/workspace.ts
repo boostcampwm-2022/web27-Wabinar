@@ -4,11 +4,11 @@ export interface Workspace {
   code: string;
 }
 
-export interface PostParams {
+export interface PostBody {
   name: string;
 }
 
-export interface PostJoinParams {
+export interface PostJoinBody {
   code: string;
 }
 
