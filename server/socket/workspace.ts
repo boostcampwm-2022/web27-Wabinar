@@ -43,6 +43,20 @@ function workspaceSocketServer(io: Server) {
       socket.to(receiverId).emit(WORKSPACE_EVENT.RECEIVE_ICE, ice, senderId);
     });
 
+    // TODO: 소켓 이벤트 메시지 상수화
+    socket.on('audio_state_changed', (audioOn) => {
+      namespace.emit('audio_state_changed', socket.id, audioOn);
+    });
+
+    socket.on('video_state_changed', (videoOn) => {
+      namespace.emit('video_state_changed', socket.id, videoOn);
+    });
+
+    socket.on('bye', () => {
+      const senderId = socket.id;
+      socket.broadcast.emit(WORKSPACE_EVENT.RECEIVE_BYE, senderId);
+    });
+
     socket.on('disconnecting', () => {
       const senderId = socket.id;
       socket.broadcast.emit(WORKSPACE_EVENT.RECEIVE_BYE, senderId);

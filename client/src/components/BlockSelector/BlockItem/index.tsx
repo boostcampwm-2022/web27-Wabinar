@@ -1,4 +1,4 @@
-import { BlockType } from '@wabinar/api-types/block';
+import { BlockType } from '@wabinar/constants/block';
 
 import style from './style.module.scss';
 interface BlockItemProps {

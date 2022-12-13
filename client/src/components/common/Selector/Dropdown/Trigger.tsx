@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDropdownContext } from 'src/hooks/useDropdownContext';
+import useDropdownContext from 'src/hooks/context/useDropdownContext';
 
 interface TriggerProps {
   TriggerElement: React.ElementType;

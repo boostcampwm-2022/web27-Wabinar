@@ -1,19 +1,23 @@
 import Workspace from 'components/Workspace';
 import { useEffect, useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import { getWorkspaces } from 'src/apis/user';
 import DefaultWorkspace from 'src/components/Workspace/DefaultWorkspace';
 import WorkspacesContext from 'src/contexts/workspaces';
-import { useUserContext } from 'src/hooks/useUserContext';
+import useUserContext from 'src/hooks/context/useUserContext';
+import LoadingPage from 'src/pages/Loading';
 import { Workspace as TWorkspace } from 'src/types/workspace';
 
 import Layout from './Layout';
 
 function WorkspacePage() {
   const { user } = useUserContext();
+
+  const params = useParams();
   const navigate = useNavigate();
 
   const [workspaces, setWorkspaces] = useState<TWorkspace[]>([]);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const loadWorkspaces = async () => {
     if (!user) {
@@ -27,12 +31,16 @@ function WorkspacePage() {
       id: userId,
     });
 
+    setIsLoaded(true);
+
     setWorkspaces(userWorkspaces);
 
     if (!userWorkspaces.length) {
       navigate('/workspace');
       return;
     }
+
+    if (params['*']?.length) return;
 
     const defaultWorkspace = userWorkspaces[0];
     const { id: workspaceId } = defaultWorkspace;
@@ -46,12 +54,16 @@ function WorkspacePage() {
 
   return (
     <WorkspacesContext.Provider value={{ workspaces, setWorkspaces }}>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<DefaultWorkspace />} />
-          <Route path="/:id" element={<Workspace />} />
-        </Route>
-      </Routes>
+      {isLoaded ? (
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<DefaultWorkspace />} />
+            <Route path="/:id" element={<Workspace />} />
+          </Route>
+        </Routes>
+      ) : (
+        <LoadingPage />
+      )}
     </WorkspacesContext.Provider>
   );
 }

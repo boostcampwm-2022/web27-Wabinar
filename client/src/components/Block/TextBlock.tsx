@@ -1,4 +1,4 @@
-import { BlockType } from '@wabinar/api-types/block';
+import { BlockType } from '@wabinar/constants/block';
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import {
   RemoteDeleteOperation,
@@ -6,9 +6,9 @@ import {
 } from '@wabinar/crdt/linked-list';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import BlockSelector from 'src/components/BlockSelector';
+import useSocketContext from 'src/hooks/context/useSocketContext';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
-import useSocketContext from 'src/hooks/useSocketContext';
 
 import ee from '../Mom/EventEmitter';
 
@@ -32,6 +32,10 @@ function TextBlock({
   registerRef,
 }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
+
+  const initBlock = () => {
+    socket.emit(BLOCK_EVENT.INIT_TEXT, id);
+  };
 
   const {
     syncCRDT,
@@ -89,7 +93,14 @@ function TextBlock({
   };
 
   const onInsert = (op: RemoteInsertOperation) => {
-    const prevIndex = remoteInsertCRDT(op);
+    let prevIndex;
+
+    try {
+      prevIndex = remoteInsertCRDT(op);
+    } catch {
+      initBlock();
+      return;
+    }
 
     if (!blockRef.current) return;
 
@@ -101,7 +112,14 @@ function TextBlock({
   };
 
   const onDelete = (op: RemoteDeleteOperation) => {
-    const targetIndex = remoteDeleteCRDT(op);
+    let targetIndex;
+
+    try {
+      targetIndex = remoteDeleteCRDT(op);
+    } catch {
+      initBlock();
+      return;
+    }
 
     if (!blockRef.current) return;
 
@@ -114,7 +132,7 @@ function TextBlock({
 
   // crdt의 초기화와 소켓을 통해 전달받는 리모트 연산 처리
   useEffect(() => {
-    socket.emit(BLOCK_EVENT.INIT_TEXT, id);
+    initBlock();
 
     ee.on(`${BLOCK_EVENT.INIT_TEXT}-${id}`, onInitialize);
     ee.on(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, onInitialize);
@@ -168,14 +186,29 @@ function TextBlock({
     if (event.isComposing) return; // 한글 입력 무시
 
     if (event.inputType === 'deleteContentBackward') {
-      const remoteDeletion = localDeleteCRDT(offsetRef.current);
+      let remoteDeletion;
+
+      try {
+        remoteDeletion = localDeleteCRDT(offsetRef.current);
+      } catch {
+        initBlock();
+        return;
+      }
+
       socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
       return;
     }
 
     const letter = event.data as string;
     const previousLetterIndex = offsetRef.current - 2;
-    const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
+
+    let remoteInsertion;
+
+    try {
+      remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
+    } catch {
+      initBlock();
+    }
 
     socket.emit(BLOCK_EVENT.INSERT_TEXT, id, remoteInsertion);
   };

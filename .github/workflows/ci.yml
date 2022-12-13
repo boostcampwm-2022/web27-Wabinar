@@ -17,6 +17,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
       - name: Use node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -25,10 +26,10 @@ jobs:
       - name: Cache dependencies
         id: cache
         uses: actions/cache@v3
-        if: runner.os != 'Windows'
+        if: runner.os != 'Windows' # 윈도우는 이슈가 있어 캐싱 건너 뜀 (#325 참고)
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'

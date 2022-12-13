@@ -1,6 +1,6 @@
 import { CREATED, OK } from '@constants/http-status';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
-import { PostLoginParams } from '@wabinar/api-types/auth';
+import { PostLoginBody } from '@wabinar/api-types/auth';
 import asyncWrapper from '@utils/async-wrapper';
 import express, { Request, Response } from 'express';
 import * as userService from '../user/service';
@@ -41,7 +41,7 @@ router.get(
 router.post(
   '/login',
   jwtAuthenticator,
-  asyncWrapper(async (req: Request<PostLoginParams>, res: Response) => {
+  asyncWrapper(async (req: Request<{}, {}, PostLoginBody>, res: Response) => {
     const { code } = req.body;
 
     const { user, loginToken, refreshToken } = await authService.login(code);
@@ -56,9 +56,6 @@ router.post(
     };
     res.cookie('accessToken', loginToken, cookieOptions);
     res.cookie('refreshToken', refreshToken, cookieOptions);
-
-    console.log(loginToken);
-    console.log(refreshToken);
 
     res.status(CREATED).send({ user, workspaces });
   }),

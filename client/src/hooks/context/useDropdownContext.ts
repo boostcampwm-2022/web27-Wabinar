@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import DropdownContext from 'src/contexts/dropdown';
 
-export function useDropdownContext() {
+export default function useDropdownContext() {
   const context = useContext(DropdownContext);
 
   if (!context)

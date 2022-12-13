@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Noto Sans KR';
+  src: url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+}
+
 html,
 body,
 div,
@@ -79,13 +84,13 @@ time,
 mark,
 audio,
 video {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
   border: 0;
-  font-size: 100%;
   font: inherit;
+  font-size: 100%;
   vertical-align: baseline;
-  box-sizing: border-box;
 }
 
 article,
@@ -104,9 +109,9 @@ section {
 }
 
 body {
-  line-height: normal;
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 400;
+  line-height: normal;
 }
 ol,
 ul {
@@ -124,8 +129,8 @@ q:after {
   content: none;
 }
 table {
-  border-collapse: collapse;
   border-spacing: 0;
+  border-collapse: collapse;
 }
 
 input,
@@ -149,7 +154,7 @@ textarea {
 
 button {
   padding: 0;
-  background-color: transparent;
   border: none;
+  background-color: transparent;
   cursor: pointer;
 }
