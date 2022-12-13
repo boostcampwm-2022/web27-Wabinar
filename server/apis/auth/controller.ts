@@ -57,9 +57,6 @@ router.post(
     res.cookie('accessToken', loginToken, cookieOptions);
     res.cookie('refreshToken', refreshToken, cookieOptions);
 
-    console.log(loginToken);
-    console.log(refreshToken);
-
     res.status(CREATED).send({ user, workspaces });
   }),
 );
