@@ -171,9 +171,8 @@ export default class LinkedList {
 
       return prevIndex + 1;
     } catch (e) {
-      console.log(`insertById 실패 ^^\n${e}`);
-
-      return null;
+      // console.log(`insertById 실패 ^^\n${e}`);
+      throw e;
     }
   }
 
@@ -197,9 +196,8 @@ export default class LinkedList {
 
       return targetIndex;
     } catch (e) {
-      console.log(`deleteById 실패 ^^\n${e}`);
-
-      return null;
+      // console.log(`deleteById 실패 ^^\n${e}`);
+      throw e;
     }
   }
 

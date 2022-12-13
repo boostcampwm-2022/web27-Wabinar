@@ -1,16 +1,14 @@
 import {
   GetInfoParams,
-  PostJoinParams,
-  PostParams,
+  PostJoinBody,
+  PostBody,
 } from '@wabinar/api-types/workspace';
 import { Workspace, WorkspaceInfo } from 'src/types/workspace';
 
 import { http } from './http';
 import { CREATED, OK } from './http-status';
 
-export const postWorkspace = async ({
-  name,
-}: PostParams): Promise<Workspace> => {
+export const postWorkspace = async ({ name }: PostBody): Promise<Workspace> => {
   const res = await http.post(`/workspace`, { name });
 
   if (res.status !== CREATED) throw new Error();
@@ -20,7 +18,7 @@ export const postWorkspace = async ({
 
 export const postWorkspaceJoin = async ({
   code,
-}: PostJoinParams): Promise<Workspace> => {
+}: PostJoinBody): Promise<Workspace> => {
   const res = await http.post(`/workspace/join`, { code });
 
   if (res.status !== CREATED) throw new Error();

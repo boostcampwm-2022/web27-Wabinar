@@ -1,7 +1,8 @@
 import LinkedList from '@wabinar/crdt/linked-list';
-import { BlockType } from '@wabinar/api-types/block';
+import { BlockType } from '@wabinar/constants/block';
 import blockModel from './model';
 import { Question } from './question/service';
+import { Vote } from './vote/service';
 
 export const getBlock = async (id: string) => {
   const block = await blockModel.findOne({ id });
@@ -27,7 +28,7 @@ export const putBlockType = async (id: string, type: BlockType) => {
 export const putBlock = async (
   id: string,
   type: BlockType,
-  data: LinkedList | Question[],
+  data: LinkedList | Question[] | Vote,
 ) => {
   switch (type) {
     case BlockType.H1:
@@ -37,6 +38,7 @@ export const putBlock = async (
       await putTextBlock(id, data as LinkedList);
       break;
     case BlockType.VOTE:
+      await putVoteBlock(id, data as Vote);
       break;
     case BlockType.QUESTION:
       await putQuestionBlock(id, data as Question[]);
@@ -51,6 +53,20 @@ const putTextBlock = async (id: string, data: LinkedList) => {
     { id },
     { head: (data as LinkedList).head, nodeMap: data.nodeMap },
   );
+};
+
+const putVoteBlock = async (id: string, vote: Vote) => {
+  await blockModel.updateOne({ id }, { voteProperties: vote });
+};
+
+export const putVoteBlockStatus = async (id: string, isDoing: boolean) => {
+  const block = await blockModel.findOneAndUpdate(
+    { id },
+    { $set: { 'voteProperties.isDoing': isDoing } },
+    { new: true },
+  );
+
+  return block;
 };
 
 const putQuestionBlock = async (id: string, questions: Question[]) => {
