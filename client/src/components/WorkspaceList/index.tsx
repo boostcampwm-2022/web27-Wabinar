@@ -3,7 +3,7 @@ import WorkspaceModal from 'components/WorkspaceModal';
 import WorkspaceThumbnaliList from 'components/WorkspaceThumbnailList';
 import { memo, useState } from 'react';
 import { MENUS } from 'src/constants/workspace';
-import useWorkspacesContext from 'src/hooks/useWorkspacesContext';
+import useWorkspacesContext from 'src/hooks/context/useWorkspacesContext';
 import { SelectorStyle } from 'src/types/selector';
 
 import AddButton from './AddButton';

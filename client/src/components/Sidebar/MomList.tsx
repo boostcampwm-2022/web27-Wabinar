@@ -1,7 +1,7 @@
 import { RiFileAddLine } from '@react-icons/all-files/ri/RiFileAddLine';
 import { MOM_EVENT } from '@wabinar/constants/socket-message';
 import { memo, useEffect, useState } from 'react';
-import useSocketContext from 'src/hooks/useSocketContext';
+import useSocketContext from 'src/hooks/context/useSocketContext';
 import { TMom } from 'src/types/mom';
 
 import style from './style.module.scss';

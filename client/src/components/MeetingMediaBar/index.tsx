@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
+import useSocketContext from 'src/hooks/context/useSocketContext';
 import {
-  useMeetingMediaStreamsV2,
   MeetingMediaStream,
+  useMeetingMediaStreamsV2,
 } from 'src/hooks/useMeetingMediaStreamsV2';
-import useSocketContext from 'src/hooks/useSocketContext';
 
 import MeetingMedia from './MeetingMedia';
 import StreamButton from './StreamButton';
