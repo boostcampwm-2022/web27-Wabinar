@@ -19,11 +19,11 @@ export enum BlockType {
 interface BlockProps {
   id: string;
   index: number;
-  onHandleBlock: React.KeyboardEventHandler;
+  onHandleBlocks: React.KeyboardEventHandler;
   registerRef: (arg: React.RefObject<HTMLElement>) => void;
 }
 
-function Block({ id, index, onHandleBlock, registerRef }: BlockProps) {
+function Block({ id, index, onHandleBlocks, registerRef }: BlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const [type, setType] = useState<BlockType>();
@@ -58,7 +58,7 @@ function Block({ id, index, onHandleBlock, registerRef }: BlockProps) {
         <TextBlock
           id={id}
           index={index}
-          onHandleBlock={onHandleBlock}
+          onHandleBlocks={onHandleBlocks}
           type={type}
           setType={setBlockType}
           isLocalTypeUpdate={localUpdateFlagRef.current}
