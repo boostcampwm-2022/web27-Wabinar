@@ -3,7 +3,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { postWorkspaceJoin } from 'src/apis/workspace';
-import useWorkspacesContext from 'src/hooks/useWorkspacesContext';
+import useWorkspacesContext from 'src/hooks/context/useWorkspacesContext';
 
 import FormModal, { ModalContents } from './FormModal';
 

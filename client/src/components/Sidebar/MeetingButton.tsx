@@ -1,7 +1,7 @@
 import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import { memo } from 'react';
-import { useMeetingContext } from 'src/hooks/useMeetingContext';
-import useSocketContext from 'src/hooks/useSocketContext';
+import useMeetingContext from 'src/hooks/context/useMeetingContext';
+import useSocketContext from 'src/hooks/context/useSocketContext';
 import color from 'styles/color.module.scss';
 
 import style from './style.module.scss';
