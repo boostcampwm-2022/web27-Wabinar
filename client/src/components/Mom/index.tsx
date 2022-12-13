@@ -87,15 +87,17 @@ function Mom() {
 
       const blockId = uuid();
 
+      let remoteInsertion;
+
       try {
-        const remoteInsertion = localInsertCRDT(index, blockId);
-
-        updateBlockFocus(index + 1);
-
-        socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
+        remoteInsertion = localInsertCRDT(index, blockId);
       } catch {
         initMom();
       }
+
+      updateBlockFocus(index + 1);
+
+      socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
 
       return;
     }
@@ -109,22 +111,24 @@ function Mom() {
 
       if (index === 0) return;
 
+      let remoteDeletion;
+
       try {
-        const remoteDeletion = localDeleteCRDT(index);
-
-        updateBlockFocus(index - 1);
-
-        setBlocks(spreadCRDT());
-
-        if (focusIndex.current === undefined) return;
-        setBlockFocus(focusIndex.current);
-
-        setCaretToEnd();
-
-        socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
+        remoteDeletion = localDeleteCRDT(index);
       } catch {
         initMom();
       }
+
+      updateBlockFocus(index - 1);
+
+      setBlocks(spreadCRDT());
+
+      if (focusIndex.current === undefined) return;
+      setBlockFocus(focusIndex.current);
+
+      setCaretToEnd();
+
+      socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
     }
   };
 
@@ -149,23 +153,25 @@ function Mom() {
     socket.on(MOM_EVENT.INSERT_BLOCK, (op) => {
       try {
         remoteInsertCRDT(op);
-
-        updateBlockFocus(undefined);
-        setBlocks(spreadCRDT());
       } catch {
         initMom();
+        return;
       }
+
+      updateBlockFocus(undefined);
+      setBlocks(spreadCRDT());
     });
 
     socket.on(MOM_EVENT.DELETE_BLOCK, (op) => {
       try {
         remoteDeleteCRDT(op);
-
-        updateBlockFocus(undefined);
-        setBlocks(spreadCRDT());
       } catch {
         initMom();
+        return;
       }
+
+      updateBlockFocus(undefined);
+      setBlocks(spreadCRDT());
     });
 
     socket.on(BLOCK_EVENT.INIT_TEXT, (id, crdt) => {
