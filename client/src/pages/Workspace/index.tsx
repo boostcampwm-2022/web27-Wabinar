@@ -5,6 +5,7 @@ import { getWorkspaces } from 'src/apis/user';
 import DefaultWorkspace from 'src/components/Workspace/DefaultWorkspace';
 import WorkspacesContext from 'src/contexts/workspaces';
 import { useUserContext } from 'src/hooks/useUserContext';
+import LoadingPage from 'src/pages/Loading';
 import { Workspace as TWorkspace } from 'src/types/workspace';
 
 import Layout from './Layout';
@@ -14,6 +15,7 @@ function WorkspacePage() {
   const navigate = useNavigate();
 
   const [workspaces, setWorkspaces] = useState<TWorkspace[]>([]);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const loadWorkspaces = async () => {
     if (!user) {
@@ -26,6 +28,8 @@ function WorkspacePage() {
     const { workspaces: userWorkspaces } = await getWorkspaces({
       id: userId,
     });
+
+    setIsLoaded(true);
 
     setWorkspaces(userWorkspaces);
 
@@ -46,12 +50,16 @@ function WorkspacePage() {
 
   return (
     <WorkspacesContext.Provider value={{ workspaces, setWorkspaces }}>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<DefaultWorkspace />} />
-          <Route path="/:id" element={<Workspace />} />
-        </Route>
-      </Routes>
+      {isLoaded ? (
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<DefaultWorkspace />} />
+            <Route path="/:id" element={<Workspace />} />
+          </Route>
+        </Routes>
+      ) : (
+        <LoadingPage />
+      )}
     </WorkspacesContext.Provider>
   );
 }
