@@ -53,8 +53,12 @@ export function useOffset(blockRef: React.RefObject<HTMLParagraphElement>) {
     }
   };
 
+  const onClick = () => {
+    setOffset();
+  };
+
   const offsetHandlers = {
-    onClick: setOffset,
+    onClick,
     onBlur: clearOffset,
     onKeyUp: onArrowKeyup,
   };

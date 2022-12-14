@@ -263,17 +263,12 @@ function TextBlock({
     onHandleBlock(e);
   };
 
-  const onClick: React.MouseEventHandler<HTMLElement> = (e) => {
-    setOffset();
-  };
-
   const commonHandlers = {
     onInput,
     onCompositionEnd,
     ...offsetHandlers,
     onKeyDown,
     onPaste,
-    onClick,
   };
 
   const BLOCK_TYPES = Object.values(BlockType)
