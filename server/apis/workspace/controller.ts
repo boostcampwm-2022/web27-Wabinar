@@ -43,7 +43,10 @@ router.get(
   asyncWrapper(async (req: Request<GetInfoParams>, res: Response) => {
     const { id: workspaceId } = req.params;
 
-    const workspaceInfo = await workspaceService.info(Number(workspaceId));
+    const workspaceInfo = await workspaceService.info(
+      req.user.id,
+      Number(workspaceId),
+    );
 
     res.status(OK).send(workspaceInfo);
   }),
