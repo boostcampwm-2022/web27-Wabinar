@@ -15,7 +15,7 @@ import ee from '../Mom/EventEmitter';
 interface BlockProps {
   id: string;
   index: number;
-  onHandleBlock: React.KeyboardEventHandler;
+  onHandleBlocks: React.KeyboardEventHandler;
   type: BlockType;
   setType: (arg: BlockType) => void;
   isLocalTypeUpdate: boolean;
@@ -25,7 +25,7 @@ interface BlockProps {
 function TextBlock({
   id,
   index,
-  onHandleBlock,
+  onHandleBlocks,
   type,
   setType,
   isLocalTypeUpdate,
@@ -260,7 +260,7 @@ function TextBlock({
 
   const onKeyDown: React.KeyboardEventHandler<HTMLParagraphElement> = (e) => {
     onArrowKeyDown(e);
-    onHandleBlock(e);
+    onHandleBlocks(e);
   };
 
   const commonHandlers = {
