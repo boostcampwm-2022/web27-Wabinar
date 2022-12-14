@@ -90,6 +90,8 @@ function TextBlock({
     if (!blockRef.current) return;
 
     blockRef.current.innerText = readCRDT();
+
+    updateCaretPosition();
   };
 
   const onInsert = (op: RemoteInsertOperation) => {
