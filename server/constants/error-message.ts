@@ -2,6 +2,7 @@ const ERROR_MESSAGE = {
   UNAUTHORIZED: '유저 인증 실패',
   UNAUTHORIZED_OAUTH: 'OAuth 유저 인증 실패',
   ACCESS_TOKEN_REQUEST_FAILED: 'access 토큰 요청 실패',
+  FORBIDDEN: '접근 권한이 없으세요 ^^',
 
   FORBIDDEN_WORKSPACES: '요청하신 유저 정보가 로그인 정보와 달라요 ^^',
   ALREADY_JOINED_WORKSPACE: '이미 참여한 워크스페이스',
