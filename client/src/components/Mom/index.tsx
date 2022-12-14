@@ -76,7 +76,33 @@ function Mom() {
     range.collapse();
   };
 
-  const onHandleBlock: React.KeyboardEventHandler = (e) => {
+  const createBlock = (index: number) => {
+    const blockId = uuid();
+
+    let remoteInsertion;
+
+    try {
+      remoteInsertion = localInsertCRDT(index, blockId);
+    } catch {
+      initMom();
+    }
+
+    socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
+  };
+
+  const deleteBlock = (id: string, index: number) => {
+    let remoteDeletion;
+
+    try {
+      remoteDeletion = localDeleteCRDT(index);
+    } catch {
+      initMom();
+    }
+
+    socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
+  };
+
+  const onHandleBlocks: React.KeyboardEventHandler = (e) => {
     const target = e.target as HTMLParagraphElement;
 
     const { index: indexString } = target.dataset;
@@ -85,50 +111,29 @@ function Mom() {
     if (e.key === 'Enter') {
       e.preventDefault();
 
-      const blockId = uuid();
-
-      let remoteInsertion;
-
-      try {
-        remoteInsertion = localInsertCRDT(index, blockId);
-      } catch {
-        initMom();
-      }
-
+      createBlock(index);
       updateBlockFocus(index + 1);
-
-      socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
-
       return;
     }
 
     if (e.key === 'Backspace') {
       if (target.innerText.length) return;
 
-      const { id } = target.dataset;
-
       e.preventDefault();
 
-      if (index === 0) return;
+      const { id } = target.dataset;
 
-      let remoteDeletion;
+      if (!id || index === 0) return;
 
-      try {
-        remoteDeletion = localDeleteCRDT(index);
-      } catch {
-        initMom();
-      }
+      deleteBlock(id, index);
 
       updateBlockFocus(index - 1);
-
       setBlocks(spreadCRDT());
 
-      if (focusIndex.current === undefined) return;
-      setBlockFocus(focusIndex.current);
-
-      setCaretToEnd();
-
-      socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
+      if (focusIndex.current !== undefined) {
+        setBlockFocus(focusIndex.current);
+        setCaretToEnd();
+      }
     }
   };
 
@@ -236,7 +241,8 @@ function Mom() {
               key={id}
               id={id}
               index={index}
-              onHandleBlock={onHandleBlock}
+              createBlock={createBlock}
+              onHandleBlocks={onHandleBlocks}
               registerRef={registerRef(index)}
             />
           ))}
