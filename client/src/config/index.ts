@@ -3,4 +3,5 @@ export default {
   GITHUB_CLIENT_SECRET: import.meta.env.VITE_GITHUB_CLIENT_SECRET,
   SERVER_PATH: import.meta.env.VITE_SERVER_PATH,
   SERVER_URL: import.meta.env.VITE_SERVER_URL,
+  WEBRTC_VIDEO_BITRATE: import.meta.env.VITE_WEBRTC_VIDEO_BITRATE,
 };
