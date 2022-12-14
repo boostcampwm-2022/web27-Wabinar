@@ -1,11 +1,12 @@
 import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
+import env from 'config';
 import { Socket } from 'socket.io-client';
 
 type onMediaConnectedCb = (socketId: string, remoteStream: MediaStream) => void;
 type onMediaDisconnectedCb = (socketId: string) => void;
 
 class RTC {
-  static BITRATE = 30000;
+  static BITRATE = Number(env.WEBRTC_VIDEO_BITRATE);
   private socket: Socket;
   private iceServerUrls: string[];
   private userMediaStream: MediaStream;
@@ -72,9 +73,13 @@ class RTC {
 
   async #setVideoBitrate(pc: RTCPeerConnection, bitrate: number) {
     // fetch video sender
-    const [videoSender] = pc
+    const videoSender = pc
       .getSenders()
-      .filter((sender) => sender!.track!.kind === 'video');
+      .find((sender) => sender!.track!.kind === 'video');
+
+    if (!videoSender) {
+      return;
+    }
 
     // set bitrate
     const params = videoSender.getParameters();
@@ -108,6 +113,8 @@ class RTC {
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
 
+        this.#setVideoBitrate(pc, RTC.BITRATE);
+
         this.socket.emit(WORKSPACE_EVENT.SEND_ANSWER, answer, remoteSocketId);
       },
     );
@@ -121,6 +128,8 @@ class RTC {
         }
 
         await pc.setRemoteDescription(answer);
+
+        this.#setVideoBitrate(pc, RTC.BITRATE);
       },
     );
 
