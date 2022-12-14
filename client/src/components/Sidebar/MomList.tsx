@@ -46,8 +46,10 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
 
   useEffect(() => {
     ee.on(MOM_EVENT.UPDATE_TITLE, (title) => {
+      if (!selectedMom) return;
+
       const updatedMomList = momList.map((mom) => {
-        if (mom._id === selectedMom?._id) {
+        if (mom._id === selectedMom._id) {
           return { ...mom, title };
         }
         return mom;
@@ -59,7 +61,7 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
     return () => {
       ee.off(MOM_EVENT.UPDATE_TITLE);
     };
-  });
+  }, []);
 
   return (
     <div className={style['mom-list-container']}>
