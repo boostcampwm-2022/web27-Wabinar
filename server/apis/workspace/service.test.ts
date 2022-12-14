@@ -131,7 +131,7 @@ describe('info', () => {
       id: WORKSPACE_ID,
       name: WORKSPACE_NAME,
       code: VALID_CODE,
-      users: [1],
+      users: [USER_ID],
       moms: [],
     });
 
