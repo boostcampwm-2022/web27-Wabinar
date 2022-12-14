@@ -25,6 +25,9 @@
     "server/**/*.ts": [
       "prettier --write",
       "eslint --config ./server/.eslintrc --fix"
+    ],
+    "@wabinar/**/*.ts": [
+      "prettier --write"
     ]
   },
   "workspaces": [
