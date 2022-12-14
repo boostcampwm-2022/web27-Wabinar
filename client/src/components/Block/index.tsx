@@ -86,7 +86,7 @@ function Block({
       case BlockType.QUESTION:
         return <QuestionBlock id={id} />;
       default:
-        return <p />;
+        return <></>;
     }
   };
 
