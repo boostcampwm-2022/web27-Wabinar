@@ -1,4 +1,5 @@
 import { BiPlus } from '@react-icons/all-files/bi/BiPlus';
+import * as BlockMessage from '@wabinar/api-types/block';
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import ee from 'components/Mom/EventEmitter';
 import { memo, useEffect, useRef, useState } from 'react';
@@ -39,7 +40,10 @@ function Block({
   const localUpdateFlagRef = useRef<boolean>(false);
 
   useEffect(() => {
-    socket.emit(BLOCK_EVENT.LOAD_TYPE, id, (type: BlockType) => setType(type));
+    const message: BlockMessage.LoadType = { id };
+    const callback = ({ type }: BlockMessage.LoadedType) => setType(type);
+
+    socket.emit(BLOCK_EVENT.LOAD_TYPE, message, callback);
 
     ee.on(`${BLOCK_EVENT.UPDATE_TYPE}-${id}`, (type) => {
       setType(type);
@@ -48,8 +52,9 @@ function Block({
   }, []);
 
   useEffect(() => {
-    if (localUpdateFlagRef.current) {
-      socket.emit(BLOCK_EVENT.UPDATE_TYPE, id, type);
+    if (localUpdateFlagRef.current && type) {
+      const message: BlockMessage.UpdateType = { id, type };
+      socket.emit(BLOCK_EVENT.UPDATE_TYPE, message);
     }
   }, [type]);
 
