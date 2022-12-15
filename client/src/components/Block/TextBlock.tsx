@@ -12,7 +12,7 @@ import { useOffset } from 'src/hooks/useOffset';
 
 import ee from '../Mom/EventEmitter';
 
-interface BlockProps {
+interface TextBlockProps {
   id: string;
   index: number;
   onHandleBlocks: React.KeyboardEventHandler;
@@ -30,7 +30,7 @@ function TextBlock({
   setType,
   isLocalTypeUpdate,
   registerRef,
-}: BlockProps) {
+}: TextBlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const initBlock = () => {
