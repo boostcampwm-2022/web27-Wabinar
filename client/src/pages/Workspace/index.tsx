@@ -1,23 +1,22 @@
-import Workspace from 'components/Workspace';
-import { useEffect, useState } from 'react';
+import DefaultWorkspace from 'components/Workspace/DefaultWorkspace';
+import WorkspaceSkeleton from 'components/Workspace/Skeleton';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import { getWorkspaces } from 'src/apis/user';
-import DefaultWorkspace from 'src/components/Workspace/DefaultWorkspace';
 import WorkspacesContext from 'src/contexts/workspaces';
 import useUserContext from 'src/hooks/context/useUserContext';
-import LoadingPage from 'src/pages/Loading';
 import { Workspace as TWorkspace } from 'src/types/workspace';
 
-import Layout from './Layout';
-
 function WorkspacePage() {
+  const Layout = lazy(() => import('./Layout'));
+  const Workspace = lazy(() => import('components/Workspace'));
+
   const { user } = useUserContext();
 
   const params = useParams();
   const navigate = useNavigate();
 
   const [workspaces, setWorkspaces] = useState<TWorkspace[]>([]);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const loadWorkspaces = async () => {
     if (!user) {
@@ -30,8 +29,6 @@ function WorkspacePage() {
     const { workspaces: userWorkspaces } = await getWorkspaces({
       id: userId,
     });
-
-    setIsLoaded(true);
 
     setWorkspaces(userWorkspaces);
 
@@ -53,18 +50,16 @@ function WorkspacePage() {
   }, []);
 
   return (
-    <WorkspacesContext.Provider value={{ workspaces, setWorkspaces }}>
-      {isLoaded ? (
+    <Suspense fallback={<WorkspaceSkeleton />}>
+      <WorkspacesContext.Provider value={{ workspaces, setWorkspaces }}>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<DefaultWorkspace />} />
             <Route path="/:id" element={<Workspace />} />
           </Route>
         </Routes>
-      ) : (
-        <LoadingPage />
-      )}
-    </WorkspacesContext.Provider>
+      </WorkspacesContext.Provider>
+    </Suspense>
   );
 }
 

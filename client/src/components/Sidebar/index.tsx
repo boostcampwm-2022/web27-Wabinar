@@ -12,14 +12,18 @@ interface SidebarProps {
 }
 
 function Sidebar({ workspace }: SidebarProps) {
-  const { setSelectedMom } = useSelectedMomContext();
+  const { selectedMom, setSelectedMom } = useSelectedMomContext();
 
   return (
     <div className={style['sidebar-container']}>
       <Header name={workspace.name} />
       <div className={style['sidebar-container__scrollable']}>
         <MemberList members={workspace.members} />
-        <MomList moms={workspace.moms} setSelectedMom={setSelectedMom} />
+        <MomList
+          moms={workspace.moms}
+          selectedMom={selectedMom}
+          setSelectedMom={setSelectedMom}
+        />
       </div>
       <MeetingButton />
     </div>

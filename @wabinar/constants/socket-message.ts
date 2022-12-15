@@ -9,7 +9,10 @@ export const WORKSPACE_EVENT = {
   RECEIVE_ANSWER: 'receive-answer',
   SEND_ICE: 'send-ice',
   RECEIVE_ICE: 'receive-ice',
-  RECEIVE_BYE: 'receive_bye',
+  AUDIO_STATE_CHANGED: 'audio-state-changed',
+  VIDEO_STATE_CHANGED: 'video-state-changed',
+  SEND_BYE: 'send-bye',
+  RECEIVE_BYE: 'receive-bye',
   EXISTING_ROOM_USERS: 'existing-room-users',
 };
 
@@ -21,6 +24,8 @@ export const MOM_EVENT = {
   INSERT_BLOCK: 'insert-block',
   DELETE_BLOCK: 'delete-block',
   UPDATED: 'updated-mom',
+  LOADED: 'loaded-mom',
+  REQUEST_LOADED: 'request-loaded',
 };
 
 export const BLOCK_EVENT = {
