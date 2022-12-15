@@ -20,6 +20,8 @@ export const MOM_EVENT = {
   INSERT_BLOCK: 'insert-block',
   DELETE_BLOCK: 'delete-block',
   UPDATED: 'updated-mom',
+  LOADED: 'loaded-mom',
+  REQUEST_LOADED: 'request-loaded',
 };
 
 export const BLOCK_EVENT = {
