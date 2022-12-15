@@ -1,4 +1,4 @@
-import { useDropdownContext } from 'src/hooks/useDropdownContext';
+import useDropdownContext from 'src/hooks/context/useDropdownContext';
 import { SelectorStyle } from 'src/types/selector';
 
 interface MenuProps {

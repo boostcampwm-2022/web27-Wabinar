@@ -6,16 +6,16 @@ import {
 } from '@wabinar/crdt/linked-list';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import BlockSelector from 'src/components/BlockSelector';
+import useSocketContext from 'src/hooks/context/useSocketContext';
 import { useCRDT } from 'src/hooks/useCRDT';
 import { useOffset } from 'src/hooks/useOffset';
-import useSocketContext from 'src/hooks/useSocketContext';
 
 import ee from '../Mom/EventEmitter';
 
 interface BlockProps {
   id: string;
   index: number;
-  onHandleBlock: React.KeyboardEventHandler;
+  onHandleBlocks: React.KeyboardEventHandler;
   type: BlockType;
   setType: (arg: BlockType) => void;
   isLocalTypeUpdate: boolean;
@@ -25,7 +25,7 @@ interface BlockProps {
 function TextBlock({
   id,
   index,
-  onHandleBlock,
+  onHandleBlocks,
   type,
   setType,
   isLocalTypeUpdate,
@@ -90,6 +90,8 @@ function TextBlock({
     if (!blockRef.current) return;
 
     blockRef.current.innerText = readCRDT();
+
+    updateCaretPosition();
   };
 
   const onInsert = (op: RemoteInsertOperation) => {
@@ -258,7 +260,7 @@ function TextBlock({
 
   const onKeyDown: React.KeyboardEventHandler<HTMLParagraphElement> = (e) => {
     onArrowKeyDown(e);
-    onHandleBlock(e);
+    onHandleBlocks(e);
   };
 
   const commonHandlers = {

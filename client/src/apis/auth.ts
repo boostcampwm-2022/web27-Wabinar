@@ -1,17 +1,9 @@
-import { PostLoginBody } from '@wabinar/api-types/auth';
-import { User } from 'src/types/user';
-import { Workspace } from 'src/types/workspace';
+import { LoginResBody, PostLoginBody } from '@wabinar/api-types/auth';
 
 import { http } from './http';
 import { CREATED, OK } from './http-status';
 
-// TODO: BE API 변경할 때 제거
-type GetUserInfo = {
-  user: User;
-  workspaces: Workspace[];
-};
-
-export const getAuth = async (): Promise<GetUserInfo> => {
+export const getAuth = async (): Promise<LoginResBody> => {
   const res = await http.get(`/auth`);
 
   if (res.status !== OK) throw new Error();
@@ -21,7 +13,7 @@ export const getAuth = async (): Promise<GetUserInfo> => {
 
 export const postAuthLogin = async ({
   code,
-}: PostLoginBody): Promise<GetUserInfo> => {
+}: PostLoginBody): Promise<LoginResBody> => {
   const res = await http.post(`/auth/login`, { code });
 
   if (res.status !== CREATED) throw new Error();

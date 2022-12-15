@@ -2,6 +2,7 @@ import momModel from '@apis/mom/model';
 import userModel, { User } from '@apis/user/model';
 import ERROR_MESSAGE from '@constants/error-message';
 import AuthorizationError from '@errors/authorization-error';
+import ForbiddenError from '@errors/forbidden-error';
 import InvalidJoinError from '@errors/invalid-join-error';
 import InvalidWorkspaceError from '@errors/invalid-workspace-error';
 import { v4 as uuidv4 } from 'uuid';
@@ -43,7 +44,9 @@ export const join = async (userId: number, code: string) => {
   return { id, name, code };
 };
 
-export const info = async (workspaceId: number) => {
+export const info = async (userId: number, workspaceId: number) => {
+  if (!userId) throw new AuthorizationError(ERROR_MESSAGE.UNAUTHORIZED);
+
   if (!workspaceId) throw new InvalidWorkspaceError(ERROR_MESSAGE.BAD_REQUEST);
 
   const workspace = await workspaceModel.findOne({ id: workspaceId });
@@ -60,6 +63,9 @@ export const info = async (workspaceId: number) => {
       },
       { id: 1, name: 1, avatarUrl: 1, _id: 0 },
     )) || [];
+
+  if (!members.filter((member) => member.id === userId).length)
+    throw new ForbiddenError(ERROR_MESSAGE.FORBIDDEN);
 
   const moms: string[] = momsIds.length
     ? await momModel.find({ id: { $in: momsIds } }, { title: 1 })
