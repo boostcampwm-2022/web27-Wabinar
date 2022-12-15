@@ -1,3 +1,4 @@
+import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import { useEffect, useState } from 'react';
 import { Socket, io } from 'socket.io-client';
 import { STUN_SERVER } from 'src/constants/rtc';
@@ -68,7 +69,7 @@ export function useMeetingMediaStreams(
       return;
     }
     setTrack(localStream, 'audio', audioOn);
-    socket.emit('audio_state_changed', audioOn);
+    socket.emit(WORKSPACE_EVENT.AUDIO_STATE_CHANGED, audioOn);
   };
 
   const setLocalVideo: SetLocalVideo = async (videoOn) => {
@@ -76,7 +77,7 @@ export function useMeetingMediaStreams(
       return;
     }
     setTrack(localStream, 'video', videoOn);
-    socket.emit('video_state_changed', videoOn);
+    socket.emit(WORKSPACE_EVENT.VIDEO_STATE_CHANGED, videoOn);
   };
 
   socket.on('audio_state_changed', (socketId, audioOn) => {
