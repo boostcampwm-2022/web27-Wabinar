@@ -98,4 +98,8 @@ function Block({
   );
 }
 
-export default memo(Block);
+function isMemoized(prev: BlockProps, next: BlockProps) {
+  return prev.id === next.id;
+}
+
+export default memo(Block, isMemoized);
