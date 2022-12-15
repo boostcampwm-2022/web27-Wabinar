@@ -1,21 +1,19 @@
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { getAuth } from 'src/apis/auth';
 import UserContext from 'src/contexts/user';
-import {
-  LoadingPage,
-  LoginPage,
-  NotFoundPage,
-  OAuthPage,
-  WorkspacePage,
-} from 'src/pages';
 import { User } from 'src/types/user';
 
 import 'styles/reset.scss';
 
+const LoginPage = lazy(() => import('src/pages/Login'));
+const OAuthPage = lazy(() => import('src/pages/OAuth'));
+const WorkspacePage = lazy(() => import('src/pages/Workspace'));
+const NotFoundPage = lazy(() => import('src/pages/404'));
+const LoadingPage = lazy(() => import('src/pages/Loading'));
+
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,11 +21,9 @@ function App() {
   const autoLogin = async () => {
     const { user } = await getAuth();
 
-    setIsLoaded(true);
-
     setUser(user);
 
-    if (user && !/^\/workspace(\/\d)?$/.test(location.pathname)) {
+    if (user && !/^\/workspace(\/\d+)?$/.test(location.pathname)) {
       navigate('/workspace');
     }
   };
@@ -36,17 +32,17 @@ function App() {
     autoLogin();
   }, []);
 
-  return isLoaded ? (
-    <UserContext.Provider value={{ user, setUser }}>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/oauth" element={<OAuthPage />} />
-        <Route path="/workspace/*" element={<WorkspacePage />} />
-        <Route path="/404" element={<NotFoundPage />} />
-      </Routes>
-    </UserContext.Provider>
-  ) : (
-    <LoadingPage />
+  return (
+    <Suspense fallback={<LoadingPage />}>
+      <UserContext.Provider value={{ user, setUser }}>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/oauth" element={<OAuthPage />} />
+          <Route path="/workspace/*" element={<WorkspacePage />} />
+          <Route path="/404" element={<NotFoundPage />} />
+        </Routes>
+      </UserContext.Provider>
+    </Suspense>
   );
 }
 
