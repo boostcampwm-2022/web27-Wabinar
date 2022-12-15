@@ -1,3 +1,5 @@
+import * as BlockMessage from '@wabinar/api-types/block';
+import * as MomMessage from '@wabinar/api-types/mom';
 import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
 import Block from 'components/Block';
 import { useEffect, useRef, useState } from 'react';
@@ -17,7 +19,8 @@ function Mom() {
 
   const initMom = () => {
     if (!selectedMom) return;
-    socket.emit(MOM_EVENT.INIT, selectedMom._id);
+
+    socket.emit(MOM_EVENT.INIT);
   };
 
   const {
@@ -37,7 +40,9 @@ function Mom() {
 
       const title = titleRef.current.innerText;
 
-      socket.emit(MOM_EVENT.UPDATE_TITLE, title);
+      const message: MomMessage.UpdateTitle = { title };
+      socket.emit(MOM_EVENT.UPDATE_TITLE, message);
+
       ee.emit(MOM_EVENT.UPDATE_TITLE, title);
     },
     500,
@@ -86,9 +91,11 @@ function Mom() {
       remoteInsertion = localInsertCRDT(index, blockId);
     } catch {
       initMom();
+      return;
     }
 
-    socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
+    const message: MomMessage.InsertBlock = { blockId, op: remoteInsertion };
+    socket.emit(MOM_EVENT.INSERT_BLOCK, message);
   };
 
   const deleteBlock = (id: string, index: number) => {
@@ -98,9 +105,11 @@ function Mom() {
       remoteDeletion = localDeleteCRDT(index);
     } catch {
       initMom();
+      return;
     }
 
-    socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
+    const message: MomMessage.DeleteBlock = { blockId: id, op: remoteDeletion };
+    socket.emit(MOM_EVENT.DELETE_BLOCK, message);
   };
 
   const onHandleBlocks: React.KeyboardEventHandler = (e) => {
@@ -141,12 +150,12 @@ function Mom() {
   useEffect(() => {
     initMom();
 
-    socket.on(MOM_EVENT.INIT, (crdt) => {
+    socket.on(MOM_EVENT.INIT, ({ crdt }: MomMessage.Initialized) => {
       syncCRDT(crdt);
       setBlocks(spreadCRDT());
     });
 
-    socket.on(MOM_EVENT.UPDATE_TITLE, (title) => {
+    socket.on(MOM_EVENT.UPDATE_TITLE, ({ title }: MomMessage.UpdatedTitle) => {
       if (!titleRef.current) return;
 
       titleRef.current.innerText = title;
@@ -157,7 +166,7 @@ function Mom() {
       setBlocks(spreadCRDT());
     });
 
-    socket.on(MOM_EVENT.INSERT_BLOCK, (op) => {
+    socket.on(MOM_EVENT.INSERT_BLOCK, ({ op }: MomMessage.InsertedBlock) => {
       try {
         remoteInsertCRDT(op);
       } catch {
@@ -169,7 +178,7 @@ function Mom() {
       setBlocks(spreadCRDT());
     });
 
-    socket.on(MOM_EVENT.DELETE_BLOCK, (op) => {
+    socket.on(MOM_EVENT.DELETE_BLOCK, ({ op }: MomMessage.DeletedBlock) => {
       try {
         remoteDeleteCRDT(op);
       } catch {
@@ -197,9 +206,10 @@ function Mom() {
       ee.emit(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, crdt);
     });
 
-    socket.on(BLOCK_EVENT.UPDATE_TYPE, (id, type) => {
+    const onUpdatedType = ({ id, type }: BlockMessage.UpdatedType) => {
       ee.emit(`${BLOCK_EVENT.UPDATE_TYPE}-${id}`, type);
-    });
+    };
+    socket.on(BLOCK_EVENT.UPDATE_TYPE, onUpdatedType);
 
     return () => {
       [

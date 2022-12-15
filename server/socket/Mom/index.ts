@@ -4,6 +4,8 @@ import { getBlockType, putBlockType } from '@apis/mom/block/service';
 import { putMomTitle } from '@apis/mom/service';
 import CrdtManager from '@utils/crdt-manager';
 import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
+import * as MomMessage from '@wabinar/api-types/mom';
+import * as BlockMessage from '@wabinar/api-types/block';
 
 import handleQuestionBlock from './handleQuestionBlock';
 import handleTextBlock from './handleTextBlock';
@@ -27,11 +29,12 @@ async function momSocketServer(io: Server) {
     socket.on(MOM_EVENT.CREATE, async () => {
       const mom = await crdtManager.onCreateMom(workspaceId);
 
-      io.of(namespace).emit(MOM_EVENT.CREATE, mom);
+      const message: MomMessage.Created = { mom };
+      io.of(namespace).emit(MOM_EVENT.CREATE, message);
     });
 
     /* 회의록 선택하기 */
-    socket.on(MOM_EVENT.SELECT, async (momId) => {
+    socket.on(MOM_EVENT.SELECT, async ({ id: momId }: MomMessage.Select) => {
       // 기존 join 되어있던 room은 leave
       const joinedRooms = [
         ...io.of(namespace).adapter.socketRooms(socket.id),
@@ -46,16 +49,21 @@ async function momSocketServer(io: Server) {
       const mom = await crdtManager.onSelectMom(momId);
 
       // 선택된 회의록의 정보 전달
-      socket.emit(MOM_EVENT.SELECT, mom);
+      const message: MomMessage.Selected = { mom };
+      socket.emit(MOM_EVENT.SELECT, message);
     });
 
-    socket.on(MOM_EVENT.UPDATE_TITLE, async (title: string) => {
-      const momId = socket.data.momId;
+    socket.on(
+      MOM_EVENT.UPDATE_TITLE,
+      async ({ title }: MomMessage.UpdateTitle) => {
+        const momId = socket.data.momId;
 
-      await putMomTitle(momId, title);
+        await putMomTitle(momId, title);
 
-      socket.to(momId).emit(MOM_EVENT.UPDATE_TITLE, title);
-    });
+        const message: MomMessage.UpdatedTitle = { title };
+        socket.to(momId).emit(MOM_EVENT.UPDATE_TITLE, message);
+      },
+    );
 
     /* crdt for Mom */
     socket.on(MOM_EVENT.INIT, async () => {
@@ -63,51 +71,71 @@ async function momSocketServer(io: Server) {
 
       const momCrdt = await crdtManager.getMomCRDT(momId);
 
-      socket.emit(MOM_EVENT.INIT, momCrdt.data);
+      const message: MomMessage.Initialized = { crdt: momCrdt.data };
+      socket.emit(MOM_EVENT.INIT, message);
     });
 
-    socket.on(MOM_EVENT.INSERT_BLOCK, async (blockId, op) => {
-      const momId = socket.data.momId;
+    socket.on(
+      MOM_EVENT.INSERT_BLOCK,
+      async ({ blockId, op }: MomMessage.InsertBlock) => {
+        const momId = socket.data.momId;
 
-      try {
-        await crdtManager.onInsertBlock(momId, blockId, op);
+        try {
+          await crdtManager.onInsertBlock(momId, blockId, op);
 
-        socket.emit(MOM_EVENT.UPDATED);
-        socket.to(momId).emit(MOM_EVENT.INSERT_BLOCK, op);
-      } catch {
-        const momCrdt = await crdtManager.getMomCRDT(momId);
+          socket.emit(MOM_EVENT.UPDATED);
 
-        socket.emit(MOM_EVENT.INIT, momCrdt.data);
-      }
-    });
+          const message: MomMessage.InsertedBlock = { op };
+          socket.to(momId).emit(MOM_EVENT.INSERT_BLOCK, message);
+        } catch {
+          const momCrdt = await crdtManager.getMomCRDT(momId);
 
-    socket.on(MOM_EVENT.DELETE_BLOCK, async (blockId, op) => {
-      const momId = socket.data.momId;
+          const message: MomMessage.Initialized = { crdt: momCrdt.data };
+          socket.emit(MOM_EVENT.INIT, message);
+        }
+      },
+    );
 
-      try {
-        await crdtManager.onDeleteBlock(momId, blockId, op);
+    socket.on(
+      MOM_EVENT.DELETE_BLOCK,
+      async ({ blockId, op }: MomMessage.DeleteBlock) => {
+        const momId = socket.data.momId;
 
-        socket.to(momId).emit(MOM_EVENT.DELETE_BLOCK, op);
-      } catch {
-        const momCrdt = await crdtManager.getMomCRDT(momId);
+        try {
+          await crdtManager.onDeleteBlock(momId, blockId, op);
 
-        socket.emit(MOM_EVENT.INIT, momCrdt.data);
-      }
-    });
+          const message: MomMessage.DeletedBlock = { op };
+          socket.to(momId).emit(MOM_EVENT.DELETE_BLOCK, message);
+        } catch {
+          const momCrdt = await crdtManager.getMomCRDT(momId);
 
-    socket.on(BLOCK_EVENT.LOAD_TYPE, async (blockId, callback) => {
-      const type = await getBlockType(blockId);
+          const message: MomMessage.Initialized = { crdt: momCrdt.data };
+          socket.emit(MOM_EVENT.INIT, message);
+        }
+      },
+    );
 
-      callback(type);
-    });
+    socket.on(
+      BLOCK_EVENT.LOAD_TYPE,
+      async ({ id: blockId }: BlockMessage.LoadType, callback) => {
+        const type = await getBlockType(blockId);
 
-    socket.on(BLOCK_EVENT.UPDATE_TYPE, async (blockId, type) => {
-      const momId = socket.data.momId;
+        const message: BlockMessage.LoadedType = { type };
+        callback(message);
+      },
+    );
 
-      await putBlockType(blockId, type);
+    socket.on(
+      BLOCK_EVENT.UPDATE_TYPE,
+      async ({ id: blockId, type }: BlockMessage.UpdateType) => {
+        const momId = socket.data.momId;
 
-      socket.to(momId).emit(BLOCK_EVENT.UPDATE_TYPE, blockId, type);
-    });
+        await putBlockType(blockId, type);
+
+        const message: BlockMessage.UpdatedType = { id: blockId, type };
+        socket.to(momId).emit(BLOCK_EVENT.UPDATE_TYPE, message);
+      },
+    );
 
     handleTextBlock(socket, crdtManager);
     handleVoteBlock(io, namespace, socket);
