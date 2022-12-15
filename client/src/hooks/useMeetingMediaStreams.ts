@@ -1,50 +1,59 @@
-// DEPRECATED.
-// use 'useMeetingMediaStreamsV2' instead
-
 import { useEffect, useState } from 'react';
-import { Socket } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import { STUN_SERVER } from 'src/constants/rtc';
 import RTC from 'src/utils/rtc';
-import { setTrack, TrackKind } from 'src/utils/trackSetter';
+import { setTrack } from 'src/utils/trackSetter';
+
+export interface MeetingMediaStream {
+  stream: MediaStream;
+  id: string;
+  type: 'local' | 'remote';
+  audioOn: boolean;
+  videoOn: boolean;
+}
+
+export type SetLocalAudio = (audioOn: boolean) => void;
+export type SetLocalVideo = (videoOn: boolean) => void;
 
 export function useMeetingMediaStreams(
   socket: Socket,
-): [Map<string, MediaStream>, (kind: TrackKind, turnOn: boolean) => void] {
-  const [mediaStreams, setMediaStreams] = useState<Map<string, MediaStream>>(
-    new Map(),
-  );
-  const [myStream, setMyStream] = useState<MediaStream>();
-
-  const setMyTrack = async (kind: TrackKind, turnOn: boolean) => {
-    if (!myStream) {
-      return;
-    }
-    setTrack(myStream, kind, turnOn);
-  };
+): [MeetingMediaStream[], SetLocalAudio, SetLocalVideo] {
+  const [meetingMediaStreams, setMeetingMediaStreams] = useState<
+    MeetingMediaStream[]
+  >([]);
+  const [localStream, setLocalStream] = useState<MediaStream>();
 
   const initRTC = async () => {
-    const userMedia = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-
-    setMyStream(userMedia);
-    setMediaStreams((prev) =>
-      copyMapWithOperation(prev, (map) => map.set('me', userMedia)),
+    const userMediaConstraints = { video: true, audio: true };
+    const userStream = await navigator.mediaDevices.getUserMedia(
+      userMediaConstraints,
     );
+    setLocalStream(userStream);
 
-    const rtc = new RTC(socket, STUN_SERVER, userMedia);
+    // note: local MeetingMediaStream has empty id
+    const localMeetingMediaStream: MeetingMediaStream = {
+      stream: userStream,
+      id: '',
+      type: 'local',
+      audioOn: true,
+      videoOn: true,
+    };
+    setMeetingMediaStreams((prev) => [...prev, localMeetingMediaStream]);
 
+    const rtc = new RTC(socket, STUN_SERVER, userStream);
     rtc.onMediaConnected((socketId, remoteStream) => {
-      setMediaStreams((prev) =>
-        copyMapWithOperation(prev, (map) => map.set(socketId, remoteStream)),
-      );
+      const remoteMeetingMediaStream: MeetingMediaStream = {
+        stream: remoteStream,
+        id: socketId,
+        type: 'remote',
+        audioOn: true,
+        videoOn: true,
+      };
+      setMeetingMediaStreams((prev) => [...prev, remoteMeetingMediaStream]);
     });
 
     rtc.onMediaDisconnected((socketId) => {
-      setMediaStreams((prev) =>
-        copyMapWithOperation(prev, (map) => map.delete(socketId)),
-      );
+      setMeetingMediaStreams((prev) => prev.filter((_) => _.id !== socketId));
     });
 
     rtc.connect();
@@ -54,15 +63,33 @@ export function useMeetingMediaStreams(
     initRTC();
   }, []);
 
-  return [mediaStreams, setMyTrack];
-}
+  const setLocalAudio: SetLocalAudio = async (audioOn) => {
+    if (!localStream) {
+      return;
+    }
+    setTrack(localStream, 'audio', audioOn);
+    socket.emit('audio_state_changed', audioOn);
+  };
 
-// TODO: 코드 반복때문에 만든 함수. 더 좋은 방법 있으면 고치기
-function copyMapWithOperation<K, V>(
-  prev: Map<K, V>,
-  operation: (cur: Map<K, V>) => void,
-) {
-  const cur = new Map(prev);
-  operation(cur);
-  return cur;
+  const setLocalVideo: SetLocalVideo = async (videoOn) => {
+    if (!localStream) {
+      return;
+    }
+    setTrack(localStream, 'video', videoOn);
+    socket.emit('video_state_changed', videoOn);
+  };
+
+  socket.on('audio_state_changed', (socketId, audioOn) => {
+    setMeetingMediaStreams((prev) =>
+      prev.map((_) => (_.id === socketId ? { ..._, audioOn } : _)),
+    );
+  });
+
+  socket.on('video_state_changed', (socketId, videoOn) => {
+    setMeetingMediaStreams((prev) =>
+      prev.map((_) => (_.id === socketId ? { ..._, videoOn } : _)),
+    );
+  });
+
+  return [meetingMediaStreams, setLocalAudio, setLocalVideo];
 }

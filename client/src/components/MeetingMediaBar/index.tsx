@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import useSocketContext from 'src/hooks/context/useSocketContext';
 import {
   MeetingMediaStream,
-  useMeetingMediaStreamsV2,
-} from 'src/hooks/useMeetingMediaStreamsV2';
+  useMeetingMediaStreams,
+} from 'src/hooks/useMeetingMediaStreams';
 
 import MeetingMedia from './MeetingMedia';
 import StreamButton from './StreamButton';
@@ -12,7 +12,7 @@ import style from './style.module.scss';
 function MeetingMediaBar() {
   const { workspaceSocket: socket } = useSocketContext();
   const [streams, setLocalAudio, setLocalVideo] =
-    useMeetingMediaStreamsV2(socket);
+    useMeetingMediaStreams(socket);
 
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCamOn, setIsCamOn] = useState(true);
