@@ -1,4 +1,5 @@
 import { RiFileAddLine } from '@react-icons/all-files/ri/RiFileAddLine';
+import * as MomMessage from '@wabinar/api-types/mom';
 import { MOM_EVENT } from '@wabinar/constants/socket-message';
 import { memo, useEffect, useState } from 'react';
 import useSocketContext from 'src/hooks/context/useSocketContext';
@@ -21,13 +22,15 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
     socket.emit(MOM_EVENT.CREATE);
   };
 
-  const onSelect = (targetId: string) => {
-    socket.emit(MOM_EVENT.SELECT, targetId);
+  const onSelect = (id: string) => {
+    const message: MomMessage.Select = { id };
+    socket.emit(MOM_EVENT.SELECT, message);
   };
 
   useEffect(() => {
     if (moms.length) {
-      socket.emit(MOM_EVENT.SELECT, moms[0]._id);
+      const message: MomMessage.Select = { id: moms[0]._id };
+      socket.emit(MOM_EVENT.SELECT, message);
     }
 
     setMomList(moms);
@@ -36,9 +39,11 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
       ee.emit(MOM_EVENT.LOADED, moms ? moms.length : 0);
     });
 
-    socket.on(MOM_EVENT.CREATE, (mom) => setMomList((prev) => [...prev, mom]));
+    socket.on(MOM_EVENT.CREATE, ({ mom }: MomMessage.Created) =>
+      setMomList((prev) => [...prev, mom]),
+    );
 
-    socket.on(MOM_EVENT.SELECT, (mom) => {
+    socket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
       setSelectedMom(mom);
     });
 
