@@ -11,4 +11,5 @@ module.exports = {
     '@errors/(.*)': '<rootDir>/errors/$1',
   },
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  collectCoverage: true,
 };
