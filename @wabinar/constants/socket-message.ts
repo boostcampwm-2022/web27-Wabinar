@@ -9,7 +9,10 @@ export const WORKSPACE_EVENT = {
   RECEIVE_ANSWER: 'receive-answer',
   SEND_ICE: 'send-ice',
   RECEIVE_ICE: 'receive-ice',
-  RECEIVE_BYE: 'receive_bye',
+  AUDIO_STATE_CHANGED: 'audio-state-changed',
+  VIDEO_STATE_CHANGED: 'video-state-changed',
+  SEND_BYE: 'send-bye',
+  RECEIVE_BYE: 'receive-bye',
 };
 
 export const MOM_EVENT = {

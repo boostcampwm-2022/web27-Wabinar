@@ -14,7 +14,7 @@ function MeetingButton() {
 
   const onClick = () => {
     if (isOnGoing) {
-      socket.emit('bye');
+      socket.emit(WORKSPACE_EVENT.SEND_BYE);
     }
     setIsOnGoing(!isOnGoing);
   };
