@@ -231,10 +231,10 @@
     </thead>
     <tbody>
         <tr>
-            <td><img width="200" height="200" src="https://avatars.githubusercontent.com/u/63814960?v=4" /> </td>
-            <td><img width="200" height="200" src="https://user-images.githubusercontent.com/65100540/200451888-3c0bde8c-48d0-493b-aabd-58155aa1f7a6.jpg" /></td>
-            <td><img width="200" height="200" src="https://user-images.githubusercontent.com/63364990/200451372-9a7e7eef-a2f7-45b7-b572-803053e56329.jpeg" /></td>
-            <td><img width="200" height="200" src="https://user-images.githubusercontent.com/89635107/200794102-63897e78-0fe8-40cc-b1c8-5492a6eae5ea.jpg" /></td>
+            <td><img width="200" src="https://avatars.githubusercontent.com/u/63814960?v=4" /> </td>
+            <td><img width="200" src="https://user-images.githubusercontent.com/65100540/200451888-3c0bde8c-48d0-493b-aabd-58155aa1f7a6.jpg" /></td>
+            <td><img width="200" src="https://user-images.githubusercontent.com/63364990/200451372-9a7e7eef-a2f7-45b7-b572-803053e56329.jpeg" /></td>
+            <td><img width="200" src="https://user-images.githubusercontent.com/89635107/200794102-63897e78-0fe8-40cc-b1c8-5492a6eae5ea.jpg" /></td>
         </tr>
         <tr>
             <td>퇴근도 좋지만..^^</td>
@@ -243,8 +243,8 @@
             <td>늦는 사람이 있네요..^^</td>
         </tr>
         <tr>
-            <td width="200">협업을 통해 뭔가를 완성하기<br/>과정에서 배운 것들 공유하기<br/>커뮤니케이션 잘 하는 팀원 되기</td>
-            <td width="200">문제가 생겼을 때 겁먹지 않고 충분히 시도 후 트러블 슈팅 과정 잘 기록하기<br/>웃음가득한 팀 만들기</td>
+            <td width="200">협업을 즐기면서 결과물 완성하기<br/>커뮤니케이션, 지식 공유 열심히 하기<br/>
+            <td width="200">문제가 생겼을 때 겁먹지 않고 충분히 시도 후 트러블 슈팅 과정 잘 기록하기, 공유하기<br/>웃음가득한 팀 만들기</td>
             <td width="200">사소한거라도 궁금해하기<br/>PR 리뷰 자세히 들여다보기</td>
             <td width="200">다른 사람들과 협업하기에 좋은 사람 되기</td>
         </tr>
