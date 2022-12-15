@@ -131,9 +131,11 @@
 
 ## 기술 스택
 
-<img src="https://user-images.githubusercontent.com/65100540/207056909-bbd7bb03-7397-4ac9-a605-03d4054736f3.png" width="500"/>
+<div align=center>
+  <img src="https://user-images.githubusercontent.com/65100540/207056909-bbd7bb03-7397-4ac9-a605-03d4054736f3.png" width="500"/>
+</div>
 
-<table>
+<table align=center>
     <thead>
         <tr>
             <th>category</th>
