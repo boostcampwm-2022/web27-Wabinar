@@ -67,10 +67,10 @@
 <table align=center>
 <tr>
   <td>
-<img src="https://user-images.githubusercontent.com/65100540/207751155-288bc23a-4138-4252-b158-fd3578f29be7.gif" width=400 />
+<img src="https://user-images.githubusercontent.com/65100540/207751155-288bc23a-4138-4252-b158-fd3578f29be7.gif" width=380 />
   </td>
   <td>
- <img src="https://user-images.githubusercontent.com/65100540/207755392-7a929720-80cf-4160-9f3e-5bc71e463750.gif" width=400 />
+ <img src="https://user-images.githubusercontent.com/65100540/207755392-7a929720-80cf-4160-9f3e-5bc71e463750.gif" width=380 />
   </td>
 </tr>
 <tr>
@@ -92,10 +92,10 @@
 <table align=center>
 <tr>
   <td>
-<img src="https://user-images.githubusercontent.com/65100540/207757480-972d2c7c-beaa-4cc4-89d0-7b2fc09ea7df.gif" width=400 />
+<img src="https://user-images.githubusercontent.com/65100540/207757480-972d2c7c-beaa-4cc4-89d0-7b2fc09ea7df.gif" width=380 />
   </td>
   <td>
-  <img src="https://user-images.githubusercontent.com/65100540/207752111-071f1502-1b33-4d71-802f-8bf0c38c1b57.gif" width=400 />
+  <img src="https://user-images.githubusercontent.com/65100540/207752111-071f1502-1b33-4d71-802f-8bf0c38c1b57.gif" width=380 />
   </td>
 </tr>
 <tr>
@@ -109,10 +109,10 @@
 
 <tr>
   <td>
-    <img src="https://user-images.githubusercontent.com/65100540/207753449-87abbc72-e7bb-491a-be3f-80ed0fc7a014.gif" width=400 />
+    <img src="https://user-images.githubusercontent.com/65100540/207753449-87abbc72-e7bb-491a-be3f-80ed0fc7a014.gif" width=380 />
   </td>
   <td>
-    <img src="https://user-images.githubusercontent.com/65100540/207753490-30abfc59-3107-4444-ade9-825138ece00b.gif" width=400 />
+    <img src="https://user-images.githubusercontent.com/65100540/207753490-30abfc59-3107-4444-ade9-825138ece00b.gif" width=380 />
   </td>
 </tr>
 
