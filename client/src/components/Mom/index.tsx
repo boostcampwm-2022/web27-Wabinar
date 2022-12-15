@@ -225,7 +225,6 @@ function Mom() {
     ee.emit(MOM_EVENT.REQUEST_LOADED);
 
     return () => {
-      ee.off(MOM_EVENT.REQUEST_LOADED);
       ee.off(MOM_EVENT.LOADED);
     };
   }, [socket]);
