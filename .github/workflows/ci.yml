@@ -3,47 +3,59 @@ name: ci
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ dev ]
+    branches: [dev]
 
 jobs:
   build:
     name: Build and test
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-        node-version: [ 16, 18 ]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [16, 18]
 
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    
-    - name: For client directory
-      run: |
-        cd client
-        npm run build --if-present
-        npm test --if-present
-        
-    - name: Install coreutils for macOS
-      shell: bash
-      if: runner.os == 'macOS'
-      run: |
-        brew install coreutils
-        alias timeout=gtimeout
-        
-    - name: For server directory
-      shell: bash
-      env:
-        BACKEND_LOGIN_KEY: ${{ secrets.DOTENV_VAULT_BACKEND_CI_LOGIN_KEY }}
-      run: |
-        cd server
-        npm run build --if-present
-        npm test --if-present
-        npx dotenv-vault login "$BACKEND_LOGIN_KEY" > /dev/null
-        npx dotenv-vault pull ci .env
-        timeout --verbose 10 npx ts-node index.ts || { if [ $? -eq 124 ]; then (exit 0); else (exit $?); fi }
+      - uses: actions/checkout@v3
+      
+      - name: Use node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        if: runner.os != 'Windows' # 윈도우는 이슈가 있어 캐싱 건너 뜀 (#325 참고)
+        with:
+          path: '**/node_modules'
+          key: ${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: For client directory
+        run: |
+          cd client
+          npm run build --if-present
+          npm test --if-present
+
+      - name: Install coreutils for macOS
+        shell: bash
+        if: runner.os == 'macOS'
+        run: |
+          brew install coreutils
+          alias timeout=gtimeout
+
+      - name: For server directory
+        shell: bash
+        env:
+          BACKEND_LOGIN_KEY: ${{ secrets.DOTENV_VAULT_BACKEND_CI_LOGIN_KEY }}
+        run: |
+          cd server
+          npm run build --if-present
+          npm test --if-present
+          npx dotenv-vault login "$BACKEND_LOGIN_KEY" > /dev/null
+          npx dotenv-vault pull ci .env
+          timeout --verbose 10 npx ts-node index.ts || { if [ $? -eq 124 ]; then (exit 0); else (exit $?); fi }

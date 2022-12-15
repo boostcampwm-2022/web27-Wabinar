@@ -1,3 +1,6 @@
+// DEPRECATED.
+// use 'useMeetingMediaStreamsV2' instead
+
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { STUN_SERVER } from 'src/constants/rtc';

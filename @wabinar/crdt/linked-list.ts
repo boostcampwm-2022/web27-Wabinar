@@ -111,11 +111,11 @@ export default class LinkedList {
 
       const prevNode = this.findByIndex(index - 1);
 
-      if (!prevNode.next) return null;
+      if (!prevNode.next) throw new Error();
 
       const targetNode = this.getNode(prevNode.next);
 
-      if (!targetNode) return null;
+      if (!targetNode) throw new Error();
 
       this.deleteNode(targetNode.id);
       prevNode.next = targetNode.next;
@@ -171,9 +171,8 @@ export default class LinkedList {
 
       return prevIndex + 1;
     } catch (e) {
-      console.log(`insertById 실패 ^^\n${e}`);
-
-      return null;
+      // console.log(`insertById 실패 ^^\n${e}`);
+      throw e;
     }
   }
 
@@ -197,9 +196,8 @@ export default class LinkedList {
 
       return targetIndex;
     } catch (e) {
-      console.log(`deleteById 실패 ^^\n${e}`);
-
-      return null;
+      // console.log(`deleteById 실패 ^^\n${e}`);
+      throw e;
     }
   }
 
@@ -217,7 +215,7 @@ export default class LinkedList {
 
   spread(): string[] {
     let node: Node | null = this.getHeadNode();
-    let result = [];
+    let result: string[] = [];
 
     while (node) {
       result.push(node.value);

@@ -2,8 +2,8 @@ import { CREATED, OK } from '@constants/http-status';
 import jwtAuthenticator from '@middlewares/jwt-authenticator';
 import {
   GetInfoParams,
-  PostJoinParams,
-  PostParams,
+  PostJoinBody,
+  PostBody,
 } from '@wabinar/api-types/workspace';
 import asyncWrapper from '@utils/async-wrapper';
 import express, { Request, Response } from 'express';
@@ -14,7 +14,7 @@ const router = express.Router();
 /* POST: 워크스페이스 생성 */
 router.post(
   '/',
-  asyncWrapper(async (req: Request<PostParams>, res: Response) => {
+  asyncWrapper(async (req: Request<{}, {}, PostBody>, res: Response) => {
     const { name } = req.body;
 
     const workspace = await workspaceService.create(name);
@@ -27,7 +27,7 @@ router.post(
 router.post(
   '/join',
   jwtAuthenticator,
-  asyncWrapper(async (req: Request<PostJoinParams>, res: Response) => {
+  asyncWrapper(async (req: Request<{}, {}, PostJoinBody>, res: Response) => {
     const { code } = req.body;
 
     const joinedWorkspace = await workspaceService.join(req.user.id, code);
@@ -43,7 +43,10 @@ router.get(
   asyncWrapper(async (req: Request<GetInfoParams>, res: Response) => {
     const { id: workspaceId } = req.params;
 
-    const workspaceInfo = await workspaceService.info(Number(workspaceId));
+    const workspaceInfo = await workspaceService.info(
+      req.user.id,
+      Number(workspaceId),
+    );
 
     res.status(OK).send(workspaceInfo);
   }),

@@ -1,11 +1,11 @@
 import CRDT from '@wabinar/crdt';
 import LinkedList, {
-  RemoteInsertOperation,
   RemoteDeleteOperation,
+  RemoteInsertOperation,
 } from '@wabinar/crdt/linked-list';
 import { useRef } from 'react';
 import ERROR_MESSAGE from 'src/constants/error-message';
-import { useUserContext } from 'src/hooks/useUserContext';
+import useUserContext from 'src/hooks/context/useUserContext';
 
 enum OPERATION_TYPE {
   INSERT,
@@ -26,8 +26,8 @@ export function useCRDT() {
 
   const crdtRef = useRef<CRDT>(new CRDT(clientId, new LinkedList()));
 
-  const initializedRef = useRef<boolean>(false);
-  const operationSet: RemoteOperation[] = [];
+  const isCRDTInitializedRef = useRef<boolean>(false);
+  let operationSet: RemoteOperation[] = [];
 
   const syncCRDT = (structure: unknown) => {
     crdtRef.current = new CRDT(
@@ -35,7 +35,8 @@ export function useCRDT() {
       new LinkedList(structure as LinkedList),
     );
 
-    initializedRef.current = true;
+    isCRDTInitializedRef.current = true;
+
     operationSet.forEach(({ type, op }) => {
       switch (type) {
         case OPERATION_TYPE.INSERT:
@@ -48,15 +49,16 @@ export function useCRDT() {
           break;
       }
     });
+    operationSet = [];
   };
 
   const readCRDT = (): string => {
-    if (!initializedRef.current) return '';
+    if (!isCRDTInitializedRef.current) return '';
     return crdtRef.current.read();
   };
 
   const spreadCRDT = (): string[] => {
-    if (!initializedRef.current) return [];
+    if (!isCRDTInitializedRef.current) return [];
     return crdtRef.current.spread();
   };
 
@@ -73,7 +75,7 @@ export function useCRDT() {
   };
 
   const remoteInsertCRDT = (op: RemoteInsertOperation) => {
-    if (!initializedRef.current) {
+    if (!isCRDTInitializedRef.current) {
       operationSet.push({ type: OPERATION_TYPE.INSERT, op });
       return null;
     }
@@ -84,7 +86,7 @@ export function useCRDT() {
   };
 
   const remoteDeleteCRDT = (op: RemoteDeleteOperation) => {
-    if (!initializedRef.current) {
+    if (!isCRDTInitializedRef.current) {
       operationSet.push({ type: OPERATION_TYPE.DELETE, op });
       return null;
     }

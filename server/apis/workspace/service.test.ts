@@ -1,5 +1,6 @@
 const workspaceModel = require('./model');
 const workspaceService = require('./service');
+const userModel = require('@apis/user/model');
 const { default: InvalidJoinError } = require('@errors/invalid-join-error');
 const {
   default: InvalidWorkspaceError,
@@ -118,29 +119,33 @@ describe('join', () => {
 });
 
 describe('info', () => {
+  const USER_ID = 1;
   const WORKSPACE_ID = 1;
   const INVALID_WORKSPACE_ID = -1;
 
   it('워크스페이스 ID가 DB에 존재할 경우 조회에 성공한다.', async () => {
     const WORKSPACE_NAME = 'Wab';
+    const USER = { id: 1, name: 'name', avatarUrl: 'avatarUrl' };
 
     workspaceModel.findOne.mockResolvedValueOnce({
       id: WORKSPACE_ID,
       name: WORKSPACE_NAME,
       code: VALID_CODE,
-      users: [],
+      users: [USER_ID],
       moms: [],
     });
 
-    expect(workspaceService.info(WORKSPACE_ID)).resolves.toEqual({
+    userModel.find.mockResolvedValueOnce([USER]);
+
+    expect(workspaceService.info(USER_ID, WORKSPACE_ID)).resolves.toEqual({
       name: WORKSPACE_NAME,
-      members: [],
+      members: [USER],
       moms: [],
     });
   });
 
   it('워크스페이스 Id가 없는 경우 실패한다.', async () => {
-    expect(() => workspaceService.info()).rejects.toThrow(
+    expect(() => workspaceService.info(USER_ID)).rejects.toThrow(
       InvalidWorkspaceError,
     );
   });
@@ -148,9 +153,9 @@ describe('info', () => {
   it('워크스페이스 Id가 DB에 존재하지 않는 경우 실패한다.', async () => {
     workspaceModel.findOne.mockResolvedValueOnce(null);
 
-    expect(() => workspaceService.info(INVALID_WORKSPACE_ID)).rejects.toThrow(
-      InvalidWorkspaceError,
-    );
+    expect(() =>
+      workspaceService.info(USER_ID, INVALID_WORKSPACE_ID),
+    ).rejects.toThrow(InvalidWorkspaceError);
   });
 
   it('워크스페이스 정보 획득 실패 시 에러를 던진다.', async () => {
@@ -158,7 +163,9 @@ describe('info', () => {
       new Error('Some error in database operation'),
     );
 
-    expect(() => workspaceService.info(WORKSPACE_ID)).rejects.toThrow();
+    expect(() =>
+      workspaceService.info(USER_ID, WORKSPACE_ID),
+    ).rejects.toThrow();
   });
 });
 

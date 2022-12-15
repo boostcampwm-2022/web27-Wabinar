@@ -1,12 +1,6 @@
 {
   "name": "@wabinar/constants",
   "version": "1.0.0",
-  "description": "CRDT for wabinar",
-  "license": "MIT",
-  "scripts": {
-    "test": "jest"
-  },
-  "devDependencies": {
-    "jest": "^29.3.1"
-  }
+  "description": "Constants for wabinar",
+  "license": "MIT"
 }

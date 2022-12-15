@@ -3,7 +3,7 @@ import { BiCheckboxChecked } from '@react-icons/all-files/bi/BiCheckboxChecked';
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import classNames from 'classnames/bind';
 import React, { useEffect, useState } from 'react';
-import useSocketContext from 'src/hooks/useSocketContext';
+import useSocketContext from 'src/hooks/context/useSocketContext';
 
 import style from './style.module.scss';
 
