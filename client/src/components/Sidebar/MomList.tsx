@@ -35,9 +35,11 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
 
     setMomList(moms);
 
-    socket.on(MOM_EVENT.CREATE, (mom) => setMomList((prev) => [...prev, mom]));
+    socket.on(MOM_EVENT.CREATE, ({ mom }: MomMessage.Created) =>
+      setMomList((prev) => [...prev, mom]),
+    );
 
-    socket.on(MOM_EVENT.SELECT, (mom) => {
+    socket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
       setSelectedMom(mom);
     });
 

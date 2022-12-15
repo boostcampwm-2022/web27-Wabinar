@@ -3,8 +3,14 @@ import LinkedList, {
   RemoteInsertOperation,
 } from '@wabinar/crdt/linked-list';
 
+export type Mom = {
+  _id: string;
+  title: string;
+  createdAt: Date;
+};
+
 export interface Created {
-  mom: unknown;
+  mom: Mom;
 }
 
 export interface Select {
@@ -12,7 +18,7 @@ export interface Select {
 }
 
 export interface Selected {
-  mom: unknown;
+  mom: Mom;
 }
 
 export interface UpdateTitle {
