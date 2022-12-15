@@ -5,14 +5,6 @@ function workspaceSocketServer(io: Server) {
   const namespace = io.of(/^\/workspace\/\d+$/);
 
   namespace.on('connection', (socket) => {
-    socket.on(WORKSPACE_EVENT.START_MEETING, () => {
-      namespace.emit(WORKSPACE_EVENT.START_MEETING);
-    });
-
-    socket.on(WORKSPACE_EVENT.END_MEETING, () => {
-      namespace.emit(WORKSPACE_EVENT.END_MEETING);
-    });
-
     socket.on(WORKSPACE_EVENT.SEND_HELLO, () => {
       const senderId = socket.id;
 
@@ -43,16 +35,15 @@ function workspaceSocketServer(io: Server) {
       socket.to(receiverId).emit(WORKSPACE_EVENT.RECEIVE_ICE, ice, senderId);
     });
 
-    // TODO: 소켓 이벤트 메시지 상수화
-    socket.on('audio_state_changed', (audioOn) => {
-      namespace.emit('audio_state_changed', socket.id, audioOn);
+    socket.on(WORKSPACE_EVENT.AUDIO_STATE_CHANGED, (audioOn) => {
+      namespace.emit(WORKSPACE_EVENT.AUDIO_STATE_CHANGED, socket.id, audioOn);
     });
 
-    socket.on('video_state_changed', (videoOn) => {
-      namespace.emit('video_state_changed', socket.id, videoOn);
+    socket.on(WORKSPACE_EVENT.VIDEO_STATE_CHANGED, (videoOn) => {
+      namespace.emit(WORKSPACE_EVENT.VIDEO_STATE_CHANGED, socket.id, videoOn);
     });
 
-    socket.on('bye', () => {
+    socket.on(WORKSPACE_EVENT.SEND_BYE, () => {
       const senderId = socket.id;
       socket.broadcast.emit(WORKSPACE_EVENT.RECEIVE_BYE, senderId);
     });
