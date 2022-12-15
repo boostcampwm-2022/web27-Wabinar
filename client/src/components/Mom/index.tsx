@@ -190,25 +190,30 @@ function Mom() {
       setBlocks(spreadCRDT());
     });
 
-    socket.on(BLOCK_EVENT.INIT_TEXT, (id, crdt) => {
+    const onInitializedText = ({ id, crdt }: BlockMessage.InitializedText) => {
       ee.emit(`${BLOCK_EVENT.INIT_TEXT}-${id}`, crdt);
-    });
+    };
 
-    socket.on(BLOCK_EVENT.INSERT_TEXT, (id, op) => {
+    const onInsertedText = ({ id, op }: BlockMessage.InsertedText) => {
       ee.emit(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, op);
-    });
+    };
 
-    socket.on(BLOCK_EVENT.DELETE_TEXT, (id, op) => {
+    const onDeletedText = ({ id, op }: BlockMessage.DeletedText) => {
       ee.emit(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, op);
-    });
+    };
 
-    socket.on(BLOCK_EVENT.UPDATE_TEXT, (id, crdt) => {
+    const onUpdatedText = ({ id, crdt }: BlockMessage.UpdatedText) => {
       ee.emit(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, crdt);
-    });
+    };
 
     const onUpdatedType = ({ id, type }: BlockMessage.UpdatedType) => {
       ee.emit(`${BLOCK_EVENT.UPDATE_TYPE}-${id}`, type);
     };
+
+    socket.on(BLOCK_EVENT.INIT_TEXT, onInitializedText);
+    socket.on(BLOCK_EVENT.INSERT_TEXT, onInsertedText);
+    socket.on(BLOCK_EVENT.DELETE_TEXT, onDeletedText);
+    socket.on(BLOCK_EVENT.UPDATE_TEXT, onUpdatedText);
     socket.on(BLOCK_EVENT.UPDATE_TYPE, onUpdatedType);
 
     return () => {

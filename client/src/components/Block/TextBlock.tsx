@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* TextBlock 마운트 이후 항상 존재하는 blockRef.current 존재 여부 확인하는 불필요한 가드를 제거하기 위함 */
 
+import * as BlockMessage from '@wabinar/api-types/block';
 import { BlockType } from '@wabinar/constants/block';
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
 import {
@@ -37,7 +38,8 @@ function TextBlock({
   const { momSocket: socket } = useSocketContext();
 
   const initBlock = () => {
-    socket.emit(BLOCK_EVENT.INIT_TEXT, id);
+    const message: BlockMessage.InitText = { id };
+    socket.emit(BLOCK_EVENT.INIT_TEXT, message);
   };
 
   const {
@@ -158,7 +160,9 @@ function TextBlock({
   useEffect(() => {
     if (isLocalTypeUpdate && readCRDT().length) {
       const remoteDeletion = localDeleteCRDT(0);
-      socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
+
+      const message: BlockMessage.DeleteText = { id, op: remoteDeletion };
+      socket.emit(BLOCK_EVENT.DELETE_TEXT, message);
 
       blockRef.current!.innerText = readCRDT();
       blockRef.current!.focus();
@@ -191,7 +195,8 @@ function TextBlock({
         return;
       }
 
-      socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
+      const message: BlockMessage.DeleteText = { id, op: remoteDeletion };
+      socket.emit(BLOCK_EVENT.DELETE_TEXT, message);
       return;
     }
 
@@ -204,9 +209,11 @@ function TextBlock({
       remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
     } catch {
       initBlock();
+      return;
     }
 
-    socket.emit(BLOCK_EVENT.INSERT_TEXT, id, remoteInsertion);
+    const message: BlockMessage.InsertText = { id, op: remoteInsertion };
+    socket.emit(BLOCK_EVENT.INSERT_TEXT, message);
   };
 
   // 한글 입력 핸들링
@@ -224,7 +231,8 @@ function TextBlock({
 
       const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-      socket.emit(BLOCK_EVENT.INSERT_TEXT, id, remoteInsertion);
+      const message: BlockMessage.InsertText = { id, op: remoteInsertion };
+      socket.emit(BLOCK_EVENT.INSERT_TEXT, message);
     });
   };
 
@@ -246,7 +254,8 @@ function TextBlock({
       .split('')
       .map((letter) => localInsertCRDT(previousLetterIndex++, letter));
 
-    socket.emit(BLOCK_EVENT.UPDATE_TEXT, id, remoteInsertions);
+    const message: BlockMessage.UpdateText = { id, ops: remoteInsertions };
+    socket.emit(BLOCK_EVENT.UPDATE_TEXT, message);
 
     blockRef.current!.innerText = previousText + pastedText + nextText;
     updateCaretPosition(pastedText.length);
