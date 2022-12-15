@@ -12,7 +12,7 @@ import handleTextBlock from './handleTextBlock';
 import handleVoteBlock from './handleVoteBlock';
 
 async function momSocketServer(io: Server) {
-  const workspace = io.of(/^\/sc-workspace\/\d+$/);
+  const workspace = io.of(/^\/workspace-mom\/\d+$/);
 
   const crdtManager = new CrdtManager();
 

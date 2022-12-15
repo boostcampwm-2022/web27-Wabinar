@@ -19,7 +19,7 @@ function Workspace() {
   const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
 
-  const momSocket = useSocket(`/sc-workspace/${id}`);
+  const momSocket = useSocket(`/workspace-mom/${id}`);
   const workspaceSocket = useSocket(`/workspace/${id}`);
 
   const loadWorkspaceInfo = async () => {
