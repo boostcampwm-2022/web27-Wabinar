@@ -7,59 +7,45 @@ export default function handleTextBlock(
   socket: Socket,
   crdtManager: CrdtManager,
 ) {
-  socket.on(
-    BLOCK_EVENT.INIT_TEXT,
-    async ({ id: blockId }: BlockMessage.InitText) => {
-      const blockCrdt = await crdtManager.getBlockCRDT(blockId);
+  const initBlock = async (id: string) => {
+    const blockCrdt = await crdtManager.getBlockCRDT(id);
 
-      const message: BlockMessage.InitializedText = {
-        id: blockId,
-        crdt: blockCrdt.data,
-      };
-      socket.emit(BLOCK_EVENT.INIT_TEXT, message);
-    },
-  );
+    const message: BlockMessage.InitializedText = { id, crdt: blockCrdt.data };
+    socket.emit(BLOCK_EVENT.INIT_TEXT, message);
+  };
+
+  socket.on(BLOCK_EVENT.INIT_TEXT, async ({ id }: BlockMessage.InitText) => {
+    initBlock(id);
+  });
 
   socket.on(
     BLOCK_EVENT.INSERT_TEXT,
-    async ({ id: blockId, op }: BlockMessage.InsertText) => {
+    async ({ id, op }: BlockMessage.InsertText) => {
       const momId = socket.data.momId;
 
       try {
-        await crdtManager.onInsertText(blockId, op);
+        await crdtManager.onInsertText(id, op);
 
-        const message: BlockMessage.InsertedText = { id: blockId, op };
+        const message: BlockMessage.InsertedText = { id, op };
         socket.to(momId).emit(BLOCK_EVENT.INSERT_TEXT, message);
       } catch {
-        const blockCrdt = await crdtManager.getBlockCRDT(blockId);
-
-        const message: BlockMessage.InitializedText = {
-          id: blockId,
-          crdt: blockCrdt.data,
-        };
-        socket.emit(BLOCK_EVENT.INIT_TEXT, message);
+        initBlock(id);
       }
     },
   );
 
   socket.on(
     BLOCK_EVENT.DELETE_TEXT,
-    async ({ id: blockId, op }: BlockMessage.DeleteText) => {
+    async ({ id, op }: BlockMessage.DeleteText) => {
       const momId = socket.data.momId;
 
       try {
-        await crdtManager.onDeleteText(blockId, op);
+        await crdtManager.onDeleteText(id, op);
 
-        const message: BlockMessage.DeletedText = { id: blockId, op };
+        const message: BlockMessage.DeletedText = { id, op };
         socket.to(momId).emit(BLOCK_EVENT.DELETE_TEXT, message);
       } catch {
-        const blockCrdt = await crdtManager.getBlockCRDT(blockId);
-
-        const message: BlockMessage.InitializedText = {
-          id: blockId,
-          crdt: blockCrdt.data,
-        };
-        socket.emit(BLOCK_EVENT.INIT_TEXT, message);
+        initBlock(id);
       }
     },
   );

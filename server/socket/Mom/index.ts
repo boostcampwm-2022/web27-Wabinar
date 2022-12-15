@@ -65,14 +65,17 @@ async function momSocketServer(io: Server) {
       },
     );
 
-    /* crdt for Mom */
-    socket.on(MOM_EVENT.INIT, async () => {
-      const momId = socket.data.momId;
-
-      const momCrdt = await crdtManager.getMomCRDT(momId);
+    const initMom = async (id: string) => {
+      const momCrdt = await crdtManager.getMomCRDT(id);
 
       const message: MomMessage.Initialized = { crdt: momCrdt.data };
       socket.emit(MOM_EVENT.INIT, message);
+    };
+
+    socket.on(MOM_EVENT.INIT, async () => {
+      const momId = socket.data.momId;
+
+      initMom(momId);
     });
 
     socket.on(
@@ -88,10 +91,7 @@ async function momSocketServer(io: Server) {
           const message: MomMessage.InsertedBlock = { op };
           socket.to(momId).emit(MOM_EVENT.INSERT_BLOCK, message);
         } catch {
-          const momCrdt = await crdtManager.getMomCRDT(momId);
-
-          const message: MomMessage.Initialized = { crdt: momCrdt.data };
-          socket.emit(MOM_EVENT.INIT, message);
+          initMom(momId);
         }
       },
     );
@@ -107,10 +107,7 @@ async function momSocketServer(io: Server) {
           const message: MomMessage.DeletedBlock = { op };
           socket.to(momId).emit(MOM_EVENT.DELETE_BLOCK, message);
         } catch {
-          const momCrdt = await crdtManager.getMomCRDT(momId);
-
-          const message: MomMessage.Initialized = { crdt: momCrdt.data };
-          socket.emit(MOM_EVENT.INIT, message);
+          initMom(momId);
         }
       },
     );
