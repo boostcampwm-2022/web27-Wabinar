@@ -12,7 +12,7 @@ import morgan from 'morgan';
 import { Server } from 'socket.io';
 
 const app = express();
-app.use(morgan('dev'));
+app.use(env.NODE_ENV === 'production' ? morgan('combined') : morgan('dev'));
 app.use(express.json());
 app.use(cookieParser(env.COOKIE_SECRET_KEY));
 app.use(cors());
