@@ -51,15 +51,6 @@ export interface DeletedText {
   op: RemoteDeleteOperation;
 }
 
-export interface DeleteText {
-  id: string;
-}
-
-export interface DeletedText {
-  id: string;
-  op: RemoteDeleteOperation;
-}
-
 export interface UpdateText {
   id: string;
   ops: RemoteInsertOperation[];
