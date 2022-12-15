@@ -13,6 +13,7 @@ export const WORKSPACE_EVENT = {
   VIDEO_STATE_CHANGED: 'video-state-changed',
   SEND_BYE: 'send-bye',
   RECEIVE_BYE: 'receive-bye',
+  EXISTING_ROOM_USERS: 'existing-room-users',
 };
 
 export const MOM_EVENT = {
