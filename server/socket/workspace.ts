@@ -5,14 +5,6 @@ function workspaceSocketServer(io: Server) {
   const namespace = io.of(/^\/workspace\/\d+$/);
 
   namespace.on('connection', (socket) => {
-    socket.on(WORKSPACE_EVENT.START_MEETING, () => {
-      namespace.emit(WORKSPACE_EVENT.START_MEETING);
-    });
-
-    socket.on(WORKSPACE_EVENT.END_MEETING, () => {
-      namespace.emit(WORKSPACE_EVENT.END_MEETING);
-    });
-
     socket.on(WORKSPACE_EVENT.SEND_HELLO, () => {
       const senderId = socket.id;
 
