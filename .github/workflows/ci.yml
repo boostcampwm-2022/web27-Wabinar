@@ -34,6 +34,12 @@ jobs:
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
+        
+      - name: For CRDT package directory
+        shell: bash
+        run: |
+          cd @wabinar/crdt
+          npm test
 
       - name: For client directory
         run: |

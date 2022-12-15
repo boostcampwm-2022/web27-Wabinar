@@ -1,17 +1,20 @@
 import { RiFileAddLine } from '@react-icons/all-files/ri/RiFileAddLine';
+import * as MomMessage from '@wabinar/api-types/mom';
 import { MOM_EVENT } from '@wabinar/constants/socket-message';
 import { memo, useEffect, useState } from 'react';
 import useSocketContext from 'src/hooks/context/useSocketContext';
 import { TMom } from 'src/types/mom';
 
+import ee from '../Mom/EventEmitter';
 import style from './style.module.scss';
 
 interface MomListProps {
   moms: TMom[];
+  selectedMom: TMom | null;
   setSelectedMom: React.Dispatch<React.SetStateAction<TMom | null>>;
 }
 
-function MomList({ moms, setSelectedMom }: MomListProps) {
+function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
   const { momSocket: socket } = useSocketContext();
   const [momList, setMomList] = useState<TMom[]>(moms);
 
@@ -19,28 +22,56 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
     socket.emit(MOM_EVENT.CREATE);
   };
 
-  const onSelect = (targetId: string) => {
-    socket.emit(MOM_EVENT.SELECT, targetId);
+  const onSelect = (id: string) => {
+    const message: MomMessage.Select = { id };
+    socket.emit(MOM_EVENT.SELECT, message);
   };
 
   useEffect(() => {
     if (moms.length) {
-      socket.emit(MOM_EVENT.SELECT, moms[0]._id);
+      const message: MomMessage.Select = { id: moms[0]._id };
+      socket.emit(MOM_EVENT.SELECT, message);
     }
 
     setMomList(moms);
 
-    socket.on(MOM_EVENT.CREATE, (mom) => setMomList((prev) => [...prev, mom]));
+    ee.on(MOM_EVENT.REQUEST_LOADED, () => {
+      ee.emit(MOM_EVENT.LOADED, moms ? moms.length : 0);
+    });
 
-    socket.on(MOM_EVENT.SELECT, (mom) => {
+    socket.on(MOM_EVENT.CREATE, ({ mom }: MomMessage.Created) =>
+      setMomList((prev) => [...prev, mom]),
+    );
+
+    socket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
       setSelectedMom(mom);
     });
 
     return () => {
       socket.off(MOM_EVENT.CREATE);
       socket.off(MOM_EVENT.SELECT);
+      ee.off(MOM_EVENT.REQUEST_LOADED);
     };
   }, [moms]);
+
+  useEffect(() => {
+    ee.on(MOM_EVENT.UPDATE_TITLE, (title) => {
+      if (!selectedMom) return;
+
+      const updatedMomList = momList.map((mom) => {
+        if (mom._id === selectedMom._id) {
+          return { ...mom, title };
+        }
+        return mom;
+      });
+
+      setMomList(updatedMomList);
+    });
+
+    return () => {
+      ee.off(MOM_EVENT.UPDATE_TITLE);
+    };
+  }, []);
 
   return (
     <div className={style['mom-list-container']}>
@@ -67,4 +98,8 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
   );
 }
 
-export default memo(MomList);
+const isMemoized = (prevProps: MomListProps, nextProps: MomListProps) => {
+  return prevProps.moms === nextProps.moms;
+};
+
+export default memo(MomList, isMemoized);

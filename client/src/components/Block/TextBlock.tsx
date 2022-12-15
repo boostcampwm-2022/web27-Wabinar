@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* TextBlock 마운트 이후 항상 존재하는 blockRef.current 존재 여부 확인하는 불필요한 가드를 제거하기 위함 */
+
+import * as BlockMessage from '@wabinar/api-types/block';
 import { BlockType } from '@wabinar/constants/block';
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
-import {
+import LinkedList, {
   RemoteDeleteOperation,
   RemoteInsertOperation,
 } from '@wabinar/crdt/linked-list';
@@ -12,7 +16,7 @@ import { useOffset } from 'src/hooks/useOffset';
 
 import ee from '../Mom/EventEmitter';
 
-interface BlockProps {
+interface TextBlockProps {
   id: string;
   index: number;
   onHandleBlocks: React.KeyboardEventHandler;
@@ -30,11 +34,12 @@ function TextBlock({
   setType,
   isLocalTypeUpdate,
   registerRef,
-}: BlockProps) {
+}: TextBlockProps) {
   const { momSocket: socket } = useSocketContext();
 
   const initBlock = () => {
-    socket.emit(BLOCK_EVENT.INIT_TEXT, id);
+    const message: BlockMessage.InitText = { id };
+    socket.emit(BLOCK_EVENT.INIT_TEXT, message);
   };
 
   const {
@@ -56,7 +61,7 @@ function TextBlock({
 
   // 리모트 연산 수행결과로 innerText 변경 시 커서의 위치 조정
   const updateCaretPosition = (updateOffset = 0) => {
-    if (!blockRef.current || offsetRef.current === null) return;
+    if (offsetRef.current === null) return;
 
     const selection = window.getSelection();
 
@@ -67,14 +72,14 @@ function TextBlock({
     const range = new Range();
 
     // 우선 블럭의 첫번째 text node로 고정, text node가 없는 경우 clearOffset()
-    if (!blockRef.current.firstChild) {
+    if (!blockRef.current!.firstChild) {
       clearOffset();
       return;
     }
 
     // range start와 range end가 같은 경우만 가정
     range.setStart(
-      blockRef.current.firstChild,
+      blockRef.current!.firstChild,
       offsetRef.current + updateOffset,
     );
     range.collapse();
@@ -84,12 +89,10 @@ function TextBlock({
     setOffset();
   };
 
-  const onInitialize = (crdt: unknown) => {
+  const onInitialize = (crdt: LinkedList) => {
     syncCRDT(crdt);
 
-    if (!blockRef.current) return;
-
-    blockRef.current.innerText = readCRDT();
+    blockRef.current!.innerText = readCRDT();
 
     updateCaretPosition();
   };
@@ -104,9 +107,7 @@ function TextBlock({
       return;
     }
 
-    if (!blockRef.current) return;
-
-    blockRef.current.innerText = readCRDT();
+    blockRef.current!.innerText = readCRDT();
 
     if (prevIndex === null || offsetRef.current === null) return;
 
@@ -123,9 +124,7 @@ function TextBlock({
       return;
     }
 
-    if (!blockRef.current) return;
-
-    blockRef.current.innerText = readCRDT();
+    blockRef.current!.innerText = readCRDT();
 
     if (targetIndex === null || offsetRef.current === null) return;
 
@@ -151,6 +150,7 @@ function TextBlock({
 
   useEffect(() => {
     registerRef(blockRef);
+    blockRef.current!.setAttribute('data-index', index.toString());
   }, [index]);
 
   useEffect(() => {
@@ -160,12 +160,12 @@ function TextBlock({
   useEffect(() => {
     if (isLocalTypeUpdate && readCRDT().length) {
       const remoteDeletion = localDeleteCRDT(0);
-      socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
 
-      if (!blockRef.current) return;
+      const message: BlockMessage.DeleteText = { id, op: remoteDeletion };
+      socket.emit(BLOCK_EVENT.DELETE_TEXT, message);
 
-      blockRef.current.innerText = readCRDT();
-      blockRef.current.focus();
+      blockRef.current!.innerText = readCRDT();
+      blockRef.current!.focus();
     }
   }, [type]);
 
@@ -173,9 +173,7 @@ function TextBlock({
   const onInput: React.FormEventHandler = (e) => {
     setOffset();
 
-    if (!blockRef.current) return;
-
-    if (blockRef.current.innerText === '/') {
+    if (blockRef.current!.innerText === '/') {
       setIsOpen(true);
     } else if (isOpen) {
       setIsOpen(false);
@@ -197,7 +195,8 @@ function TextBlock({
         return;
       }
 
-      socket.emit(BLOCK_EVENT.DELETE_TEXT, id, remoteDeletion);
+      const message: BlockMessage.DeleteText = { id, op: remoteDeletion };
+      socket.emit(BLOCK_EVENT.DELETE_TEXT, message);
       return;
     }
 
@@ -210,9 +209,11 @@ function TextBlock({
       remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
     } catch {
       initBlock();
+      return;
     }
 
-    socket.emit(BLOCK_EVENT.INSERT_TEXT, id, remoteInsertion);
+    const message: BlockMessage.InsertText = { id, op: remoteInsertion };
+    socket.emit(BLOCK_EVENT.INSERT_TEXT, message);
   };
 
   // 한글 입력 핸들링
@@ -230,7 +231,8 @@ function TextBlock({
 
       const remoteInsertion = localInsertCRDT(previousLetterIndex, letter);
 
-      socket.emit(BLOCK_EVENT.INSERT_TEXT, id, remoteInsertion);
+      const message: BlockMessage.InsertText = { id, op: remoteInsertion };
+      socket.emit(BLOCK_EVENT.INSERT_TEXT, message);
     });
   };
 
@@ -238,23 +240,24 @@ function TextBlock({
     e.preventDefault();
 
     setOffset();
-    if (offsetRef.current === null || !blockRef.current) return;
+    if (offsetRef.current === null) return;
 
     let previousLetterIndex = offsetRef.current - 1;
-    const previousText = blockRef.current.innerText.slice(
+    const previousText = blockRef.current!.innerText.slice(
       0,
       previousLetterIndex + 1,
     );
-    const nextText = blockRef.current.innerText.slice(previousLetterIndex + 1);
+    const nextText = blockRef.current!.innerText.slice(previousLetterIndex + 1);
 
     const pastedText = e.clipboardData.getData('text/plain').replace('\n', '');
     const remoteInsertions = pastedText
       .split('')
       .map((letter) => localInsertCRDT(previousLetterIndex++, letter));
 
-    socket.emit(BLOCK_EVENT.UPDATE_TEXT, id, remoteInsertions);
+    const message: BlockMessage.UpdateText = { id, ops: remoteInsertions };
+    socket.emit(BLOCK_EVENT.UPDATE_TEXT, message);
 
-    blockRef.current.innerText = previousText + pastedText + nextText;
+    blockRef.current!.innerText = previousText + pastedText + nextText;
     updateCaretPosition(pastedText.length);
   };
 

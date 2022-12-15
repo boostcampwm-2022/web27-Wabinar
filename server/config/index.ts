@@ -15,4 +15,5 @@ export default {
   CLIENT_PATH: process.env.CLIENT_PATH,
   PORT: process.env.PORT,
   SOCKET_PATH: process.env.WEBSOCKET_PATH,
+  NODE_ENV: process.env.NODE_ENV,
 };

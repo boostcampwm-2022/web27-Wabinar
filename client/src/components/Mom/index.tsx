@@ -1,3 +1,5 @@
+import * as BlockMessage from '@wabinar/api-types/block';
+import * as MomMessage from '@wabinar/api-types/mom';
 import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
 import Block from 'components/Block';
 import { useEffect, useRef, useState } from 'react';
@@ -17,7 +19,8 @@ function Mom() {
 
   const initMom = () => {
     if (!selectedMom) return;
-    socket.emit(MOM_EVENT.INIT, selectedMom._id);
+
+    socket.emit(MOM_EVENT.INIT);
   };
 
   const {
@@ -30,6 +33,12 @@ function Mom() {
   } = useCRDT();
 
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
+  const focusIndex = useRef<number>();
+
+  const [blocks, setBlocks] = useState<string[]>([]);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isMomsEmpty, setIsMomsEmpty] = useState(false);
 
   const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
     () => {
@@ -37,15 +46,13 @@ function Mom() {
 
       const title = titleRef.current.innerText;
 
-      socket.emit(MOM_EVENT.UPDATE_TITLE, title);
+      const message: MomMessage.UpdateTitle = { title };
+      socket.emit(MOM_EVENT.UPDATE_TITLE, message);
+
+      ee.emit(MOM_EVENT.UPDATE_TITLE, title);
     },
     500,
   );
-
-  const [blocks, setBlocks] = useState<string[]>([]);
-
-  const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
-  const focusIndex = useRef<number>();
 
   const updateBlockFocus = (idx: number | undefined) => {
     focusIndex.current = idx;
@@ -85,9 +92,11 @@ function Mom() {
       remoteInsertion = localInsertCRDT(index, blockId);
     } catch {
       initMom();
+      return;
     }
 
-    socket.emit(MOM_EVENT.INSERT_BLOCK, blockId, remoteInsertion);
+    const message: MomMessage.InsertBlock = { blockId, op: remoteInsertion };
+    socket.emit(MOM_EVENT.INSERT_BLOCK, message);
   };
 
   const deleteBlock = (id: string, index: number) => {
@@ -97,9 +106,11 @@ function Mom() {
       remoteDeletion = localDeleteCRDT(index);
     } catch {
       initMom();
+      return;
     }
 
-    socket.emit(MOM_EVENT.DELETE_BLOCK, id, remoteDeletion);
+    const message: MomMessage.DeleteBlock = { blockId: id, op: remoteDeletion };
+    socket.emit(MOM_EVENT.DELETE_BLOCK, message);
   };
 
   const onHandleBlocks: React.KeyboardEventHandler = (e) => {
@@ -140,22 +151,23 @@ function Mom() {
   useEffect(() => {
     initMom();
 
-    socket.on(MOM_EVENT.INIT, (crdt) => {
+    socket.on(MOM_EVENT.INIT, ({ crdt }: MomMessage.Initialized) => {
       syncCRDT(crdt);
       setBlocks(spreadCRDT());
     });
 
-    socket.on(MOM_EVENT.UPDATE_TITLE, (title) => {
+    socket.on(MOM_EVENT.UPDATE_TITLE, ({ title }: MomMessage.UpdatedTitle) => {
       if (!titleRef.current) return;
 
       titleRef.current.innerText = title;
+      ee.emit(MOM_EVENT.UPDATE_TITLE, title);
     });
 
     socket.on(MOM_EVENT.UPDATED, () => {
       setBlocks(spreadCRDT());
     });
 
-    socket.on(MOM_EVENT.INSERT_BLOCK, (op) => {
+    socket.on(MOM_EVENT.INSERT_BLOCK, ({ op }: MomMessage.InsertedBlock) => {
       try {
         remoteInsertCRDT(op);
       } catch {
@@ -167,7 +179,7 @@ function Mom() {
       setBlocks(spreadCRDT());
     });
 
-    socket.on(MOM_EVENT.DELETE_BLOCK, (op) => {
+    socket.on(MOM_EVENT.DELETE_BLOCK, ({ op }: MomMessage.DeletedBlock) => {
       try {
         remoteDeleteCRDT(op);
       } catch {
@@ -179,25 +191,31 @@ function Mom() {
       setBlocks(spreadCRDT());
     });
 
-    socket.on(BLOCK_EVENT.INIT_TEXT, (id, crdt) => {
+    const onInitializedText = ({ id, crdt }: BlockMessage.InitializedText) => {
       ee.emit(`${BLOCK_EVENT.INIT_TEXT}-${id}`, crdt);
-    });
+    };
 
-    socket.on(BLOCK_EVENT.INSERT_TEXT, (id, op) => {
+    const onInsertedText = ({ id, op }: BlockMessage.InsertedText) => {
       ee.emit(`${BLOCK_EVENT.INSERT_TEXT}-${id}`, op);
-    });
+    };
 
-    socket.on(BLOCK_EVENT.DELETE_TEXT, (id, op) => {
+    const onDeletedText = ({ id, op }: BlockMessage.DeletedText) => {
       ee.emit(`${BLOCK_EVENT.DELETE_TEXT}-${id}`, op);
-    });
+    };
 
-    socket.on(BLOCK_EVENT.UPDATE_TEXT, (id, crdt) => {
+    const onUpdatedText = ({ id, crdt }: BlockMessage.UpdatedText) => {
       ee.emit(`${BLOCK_EVENT.UPDATE_TEXT}-${id}`, crdt);
-    });
+    };
 
-    socket.on(BLOCK_EVENT.UPDATE_TYPE, (id, type) => {
+    const onUpdatedType = ({ id, type }: BlockMessage.UpdatedType) => {
       ee.emit(`${BLOCK_EVENT.UPDATE_TYPE}-${id}`, type);
-    });
+    };
+
+    socket.on(BLOCK_EVENT.INIT_TEXT, onInitializedText);
+    socket.on(BLOCK_EVENT.INSERT_TEXT, onInsertedText);
+    socket.on(BLOCK_EVENT.DELETE_TEXT, onDeletedText);
+    socket.on(BLOCK_EVENT.UPDATE_TEXT, onUpdatedText);
+    socket.on(BLOCK_EVENT.UPDATE_TYPE, onUpdatedType);
 
     return () => {
       [
@@ -214,43 +232,63 @@ function Mom() {
     };
   }, [selectedMom]);
 
+  useEffect(() => {
+    ee.on(MOM_EVENT.LOADED, (momsLength: number) => {
+      setIsLoaded(true);
+      setIsMomsEmpty(momsLength === 0);
+    });
+
+    ee.emit(MOM_EVENT.REQUEST_LOADED);
+
+    return () => {
+      ee.off(MOM_EVENT.LOADED);
+    };
+  }, [socket]);
+
   const registerRef =
     (index: number) => (ref: React.RefObject<HTMLElement>) => {
       blockRefs.current[index] = ref;
       setBlockFocus(index);
     };
 
-  return selectedMom ? (
-    <div className={style['mom-container']}>
-      <div className={style['mom']}>
-        <div className={style['mom-header']}>
-          <h1
-            ref={titleRef}
-            contentEditable={true}
-            suppressContentEditableWarning={true}
-            onInput={onTitleUpdate}
-          >
-            {selectedMom.title}
-          </h1>
-          <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
-        </div>
+  if (!isLoaded) {
+    return <div className={style['mom-container']}></div>;
+  }
 
-        <div className={style['mom-body']}>
-          {blocks.map((id, index) => (
-            <Block
-              key={id}
-              id={id}
-              index={index}
-              createBlock={createBlock}
-              onHandleBlocks={onHandleBlocks}
-              registerRef={registerRef(index)}
-            />
-          ))}
+  if (isMomsEmpty) {
+    return <DefaultMom />;
+  }
+
+  return (
+    <div className={style['mom-container']}>
+      {selectedMom && (
+        <div className={style['mom']}>
+          <div className={style['mom-header']}>
+            <h1
+              ref={titleRef}
+              contentEditable={true}
+              suppressContentEditableWarning={true}
+              onInput={onTitleUpdate}
+            >
+              {selectedMom.title}
+            </h1>
+            <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
+          </div>
+          <div className={style['mom-body']}>
+            {blocks.map((id, index) => (
+              <Block
+                key={id}
+                id={id}
+                index={index}
+                createBlock={createBlock}
+                onHandleBlocks={onHandleBlocks}
+                registerRef={registerRef(index)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
-  ) : (
-    <DefaultMom />
   );
 }
 
