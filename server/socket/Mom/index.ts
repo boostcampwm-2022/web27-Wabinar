@@ -29,8 +29,8 @@ async function momSocketServer(io: Server) {
     socket.on(MOM_EVENT.CREATE, async () => {
       const mom = await crdtManager.onCreateMom(workspaceId);
 
-      const message: MomMessage.Created = { mom };
-      io.of(namespace).emit(MOM_EVENT.CREATE, message);
+      // TODO: 메세지 인터페이스 추가, 클라이언트 Mom 타입 정의 반영
+      io.of(namespace).emit(MOM_EVENT.CREATE, { mom });
     });
 
     /* 회의록 선택하기 */
@@ -49,8 +49,8 @@ async function momSocketServer(io: Server) {
       const mom = await crdtManager.onSelectMom(momId);
 
       // 선택된 회의록의 정보 전달
-      const message: MomMessage.Selected = { mom };
-      socket.emit(MOM_EVENT.SELECT, message);
+      // TODO: 메세지 인터페이스 추가
+      socket.emit(MOM_EVENT.SELECT, { mom });
     });
 
     socket.on(
