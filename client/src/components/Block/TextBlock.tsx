@@ -150,7 +150,10 @@ function TextBlock({
   }, []);
 
   useEffect(() => {
+    if (!blockRef.current) return;
+
     registerRef(blockRef);
+    blockRef.current.setAttribute('data-index', index.toString());
   }, [index]);
 
   useEffect(() => {
