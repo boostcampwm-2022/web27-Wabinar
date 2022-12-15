@@ -33,6 +33,12 @@ function Mom() {
   } = useCRDT();
 
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
+  const focusIndex = useRef<number>();
+
+  const [blocks, setBlocks] = useState<string[]>([]);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isMomsEmpty, setIsMomsEmpty] = useState(false);
 
   const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
     () => {
@@ -47,11 +53,6 @@ function Mom() {
     },
     500,
   );
-
-  const [blocks, setBlocks] = useState<string[]>([]);
-
-  const blockRefs = useRef<React.RefObject<HTMLElement>[]>([]);
-  const focusIndex = useRef<number>();
 
   const updateBlockFocus = (idx: number | undefined) => {
     focusIndex.current = idx;
@@ -231,43 +232,63 @@ function Mom() {
     };
   }, [selectedMom]);
 
+  useEffect(() => {
+    ee.on(MOM_EVENT.LOADED, (momsLength: number) => {
+      setIsLoaded(true);
+      setIsMomsEmpty(momsLength === 0);
+    });
+
+    ee.emit(MOM_EVENT.REQUEST_LOADED);
+
+    return () => {
+      ee.off(MOM_EVENT.LOADED);
+    };
+  }, [socket]);
+
   const registerRef =
     (index: number) => (ref: React.RefObject<HTMLElement>) => {
       blockRefs.current[index] = ref;
       setBlockFocus(index);
     };
 
-  return selectedMom ? (
-    <div className={style['mom-container']}>
-      <div className={style['mom']}>
-        <div className={style['mom-header']}>
-          <h1
-            ref={titleRef}
-            contentEditable={true}
-            suppressContentEditableWarning={true}
-            onInput={onTitleUpdate}
-          >
-            {selectedMom.title}
-          </h1>
-          <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
-        </div>
+  if (!isLoaded) {
+    return <div className={style['mom-container']}></div>;
+  }
 
-        <div className={style['mom-body']}>
-          {blocks.map((id, index) => (
-            <Block
-              key={id}
-              id={id}
-              index={index}
-              createBlock={createBlock}
-              onHandleBlocks={onHandleBlocks}
-              registerRef={registerRef(index)}
-            />
-          ))}
+  if (isMomsEmpty) {
+    return <DefaultMom />;
+  }
+
+  return (
+    <div className={style['mom-container']}>
+      {selectedMom && (
+        <div className={style['mom']}>
+          <div className={style['mom-header']}>
+            <h1
+              ref={titleRef}
+              contentEditable={true}
+              suppressContentEditableWarning={true}
+              onInput={onTitleUpdate}
+            >
+              {selectedMom.title}
+            </h1>
+            <span>{new Date(selectedMom.createdAt).toLocaleString()}</span>
+          </div>
+          <div className={style['mom-body']}>
+            {blocks.map((id, index) => (
+              <Block
+                key={id}
+                id={id}
+                index={index}
+                createBlock={createBlock}
+                onHandleBlocks={onHandleBlocks}
+                registerRef={registerRef(index)}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
-  ) : (
-    <DefaultMom />
   );
 }
 

@@ -35,6 +35,10 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
 
     setMomList(moms);
 
+    ee.on(MOM_EVENT.REQUEST_LOADED, () => {
+      ee.emit(MOM_EVENT.LOADED, moms ? moms.length : 0);
+    });
+
     socket.on(MOM_EVENT.CREATE, ({ mom }: MomMessage.Created) =>
       setMomList((prev) => [...prev, mom]),
     );
@@ -46,6 +50,7 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
     return () => {
       socket.off(MOM_EVENT.CREATE);
       socket.off(MOM_EVENT.SELECT);
+      ee.off(MOM_EVENT.REQUEST_LOADED);
     };
   }, [moms]);
 
