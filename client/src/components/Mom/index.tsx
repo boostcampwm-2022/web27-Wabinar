@@ -220,7 +220,6 @@ function Mom() {
     ee.on(MOM_EVENT.LOADED, (momsLength: number) => {
       setIsLoaded(true);
       setIsMomsEmpty(momsLength === 0);
-      console.log(momsLength);
     });
 
     ee.emit(MOM_EVENT.REQUEST_LOADED);
