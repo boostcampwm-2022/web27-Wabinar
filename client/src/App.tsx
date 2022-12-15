@@ -15,6 +15,7 @@ const LoadingPage = lazy(() => import('src/pages/Loading'));
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ function App() {
   const autoLogin = async () => {
     const { user } = await getAuth();
 
+    setIsLoaded(true);
     setUser(user);
 
     if (user && !/^\/workspace(\/\d+)?$/.test(location.pathname)) {
@@ -37,14 +39,18 @@ function App() {
     <>
       <MetaHelmet title="화상회의와 회의록 작성을 한번에, Wabinar" />
       <Suspense fallback={<LoadingPage />}>
-        <UserContext.Provider value={{ user, setUser }}>
-          <Routes>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/oauth" element={<OAuthPage />} />
-            <Route path="/workspace/*" element={<WorkspacePage />} />
-            <Route path="/404" element={<NotFoundPage />} />
-          </Routes>
-        </UserContext.Provider>
+        {isLoaded ? (
+          <UserContext.Provider value={{ user, setUser }}>
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/oauth" element={<OAuthPage />} />
+              <Route path="/workspace/*" element={<WorkspacePage />} />
+              <Route path="/404" element={<NotFoundPage />} />
+            </Routes>
+          </UserContext.Provider>
+        ) : (
+          <LoadingPage />
+        )}
       </Suspense>
     </>
   );
