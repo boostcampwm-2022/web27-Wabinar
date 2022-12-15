@@ -1,12 +1,15 @@
 import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import env from 'config';
 import { Socket } from 'socket.io-client';
+import { setRTCVideoEncoding } from 'src/utils/rtcVideoEncoding';
 
 type onMediaConnectedCb = (socketId: string, remoteStream: MediaStream) => void;
 type onMediaDisconnectedCb = (socketId: string) => void;
 
 class RTC {
-  static BITRATE = Number(env.WEBRTC_VIDEO_BITRATE);
+  static MAX_BITRATE = Number(env.WEBRTC_VIDEO_MAX_BITRATE);
+  static MAX_FRAME = Number(env.WEBRTC_VIDEO_MAX_FRAME);
+  static RESOLUTION_SCALE_FACTOR = Number(env.WEBRTC_RESOLUTION_SCALE_FACTOR);
 
   private socket: Socket;
   private iceServerUrls: string[];
@@ -79,7 +82,11 @@ class RTC {
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
 
-    this.setVideoBitrate(pc, RTC.BITRATE);
+    setRTCVideoEncoding(pc, {
+      maxBitrate: RTC.MAX_BITRATE,
+      maxFrame: RTC.MAX_FRAME,
+      resolutionScaleFactor: RTC.RESOLUTION_SCALE_FACTOR,
+    });
 
     this.socket.emit(WORKSPACE_EVENT.SEND_ANSWER, answer, remoteSocketId);
   }
@@ -95,7 +102,11 @@ class RTC {
 
     await pc.setRemoteDescription(answer);
 
-    this.setVideoBitrate(pc, RTC.BITRATE);
+    setRTCVideoEncoding(pc, {
+      maxBitrate: RTC.MAX_BITRATE,
+      maxFrame: RTC.MAX_FRAME,
+      resolutionScaleFactor: RTC.RESOLUTION_SCALE_FACTOR,
+    });
   }
 
   private addIce(ice: RTCIceCandidateInit, remoteSocketId: string) {
@@ -161,22 +172,6 @@ class RTC {
 
     this.streams.set(remoteSocketId, remoteStream);
     this.onMediaConnectedCallback(remoteSocketId, remoteStream);
-  }
-
-  private async setVideoBitrate(pc: RTCPeerConnection, bitrate: number) {
-    // fetch video sender
-    const videoSender = pc
-      .getSenders()
-      .find((sender) => sender!.track!.kind === 'video');
-
-    if (!videoSender) {
-      return;
-    }
-
-    // set bitrate
-    const params = videoSender.getParameters();
-    params.encodings[0].maxBitrate = bitrate;
-    await videoSender.setParameters(params);
   }
 }
 
