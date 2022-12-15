@@ -93,4 +93,8 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
   );
 }
 
-export default memo(MomList);
+const isMemoized = (prevProps: MomListProps, nextProps: MomListProps) => {
+  return prevProps.moms === nextProps.moms;
+};
+
+export default memo(MomList, isMemoized);
