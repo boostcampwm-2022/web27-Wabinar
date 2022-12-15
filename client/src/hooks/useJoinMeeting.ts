@@ -1,10 +1,11 @@
 import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import { useEffect } from 'react';
-import { useUserContext } from 'src/hooks/useUserContext';
-import useUserStreamContext, { TConnectedUser } from 'src/hooks/useUserStreams';
+import { TConnectedUser } from 'src/contexts/rtc';
 
-import useMyMediaStreamContext from './useMyMediaStream';
-import useSocketContext from './useSocketContext';
+import useMyMediaStreamContext from './context/useMyMediaStreamContext';
+import useSocketContext from './context/useSocketContext';
+import useUserContext from './context/useUserContext';
+import useUserStreamContext from './context/useUserStreamsContext';
 
 export default function useJoinMeeting() {
   const { workspaceSocket } = useSocketContext();
@@ -44,8 +45,6 @@ export default function useJoinMeeting() {
       setConnectedUsers([]);
       setMyMediaStream(new MediaStream());
       myStreamRef.current = undefined;
-
-      workspaceSocket.emit(WORKSPACE_EVENT.SEND_BYE);
     };
   }, []);
 }

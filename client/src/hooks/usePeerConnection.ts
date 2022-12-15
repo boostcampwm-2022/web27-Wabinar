@@ -2,10 +2,9 @@ import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import { useEffect, useRef } from 'react';
 
 import { User } from './../types/user.d';
-import useMyMediaStreamContext from './useMyMediaStream';
-import usePcsContext from './usePcsContext';
-import useSocketContext from './useSocketContext';
-import useUserStreamContext from './useUserStreams';
+import useMyMediaStreamContext from './context/useMyMediaStreamContext';
+import useSocketContext from './context/useSocketContext';
+import useUserStreamContext from './context/useUserStreamsContext';
 
 const usePeerConnection = () => {
   const { myMediaStream } = useMyMediaStreamContext();
@@ -13,7 +12,6 @@ const usePeerConnection = () => {
     useUserStreamContext();
   const pcsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
   const { workspaceSocket } = useSocketContext();
-  const { pcs, setPcs } = usePcsContext();
 
   useEffect(() => {
     const createPeerConnection = (sid: string) => {
@@ -78,10 +76,7 @@ const usePeerConnection = () => {
       const pc = createPeerConnection(sid);
       if (!pc) return;
 
-      setPcs((prev) => ({
-        ...prev,
-        [sid]: pc,
-      }));
+      pcsRef.current = { ...pcsRef.current, [sid]: pc };
 
       try {
         await pc.setRemoteDescription(offer);
@@ -98,7 +93,7 @@ const usePeerConnection = () => {
       answer: RTCSessionDescriptionInit,
       sid: string,
     ) => {
-      const pc = pcs?.[sid];
+      const pc = pcsRef.current?.[sid];
 
       if (!pc) return;
       await pc.setRemoteDescription(answer);
@@ -108,7 +103,7 @@ const usePeerConnection = () => {
       iceCandidate: RTCIceCandidateInit,
       sid: string,
     ) => {
-      const pc = pcs?.[sid];
+      const pc = pcsRef.current?.[sid];
 
       if (!pc) return;
       await pc.addIceCandidate(iceCandidate);
@@ -122,10 +117,7 @@ const usePeerConnection = () => {
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
 
-      setPcs((prev) => ({
-        ...prev,
-        [sid]: pc,
-      }));
+      pcsRef.current = { ...pcsRef.current, [sid]: pc };
 
       setConnectedUsers((prev) => [
         ...prev,
@@ -152,12 +144,12 @@ const usePeerConnection = () => {
 
       if (userStreams) {
         Object.keys(userStreams).forEach((sid) => {
-          pcs?.[sid].close();
+          pcsRef.current?.[sid].close();
           delete pcsRef.current[sid];
         });
       }
     };
-  }, [userStreams, pcs, myMediaStream]);
+  }, [userStreams, myMediaStream]);
 };
 
 export default usePeerConnection;

@@ -10,6 +10,7 @@ export const WORKSPACE_EVENT = {
   SEND_ICE: 'send-ice',
   RECEIVE_ICE: 'receive-ice',
   RECEIVE_BYE: 'receive_bye',
+  EXISTING_ROOM_USERS: 'existing-room-users',
 };
 
 export const MOM_EVENT = {

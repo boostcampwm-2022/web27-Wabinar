@@ -1,10 +1,8 @@
-import useMyMediaStreamContext from './useMyMediaStream';
-import usePcsContext from './usePcsContext';
+import useMyMediaStreamContext from './context/useMyMediaStreamContext';
 
 export const useCreateMediaStream = () => {
   const { myMediaStream, setMyMediaStream, setIsMyMicOn, setIsMyCamOn } =
     useMyMediaStreamContext();
-  const { pcs } = usePcsContext();
 
   const toggleAudioStream = (enabled: boolean) => {
     if (myMediaStream) {
@@ -25,17 +23,6 @@ export const useCreateMediaStream = () => {
     }
     setIsMyCamOn(enabled);
     setMyMediaStream(new MediaStream());
-
-    if (pcs) {
-      for (const pc of Object.values(pcs)) {
-        const senders = pc.getSenders();
-        const sender = senders.find((s) => s.track?.kind === 'video');
-
-        if (sender) {
-          pc.removeTrack(sender);
-        }
-      }
-    }
   };
 
   const createAudioStream = async () => {
@@ -60,14 +47,6 @@ export const useCreateMediaStream = () => {
       });
 
       myMediaStream.addTrack(videoStream.getVideoTracks()[0]);
-
-      if (pcs) {
-        for (const pc of Object.values(pcs)) {
-          myMediaStream.getTracks().forEach((track) => {
-            pc.addTrack(track, myMediaStream);
-          });
-        }
-      }
 
       setIsMyCamOn(true);
       setMyMediaStream(myMediaStream);
