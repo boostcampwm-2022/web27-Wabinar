@@ -4,7 +4,7 @@
 import * as BlockMessage from '@wabinar/api-types/block';
 import { BlockType } from '@wabinar/constants/block';
 import { BLOCK_EVENT } from '@wabinar/constants/socket-message';
-import {
+import LinkedList, {
   RemoteDeleteOperation,
   RemoteInsertOperation,
 } from '@wabinar/crdt/linked-list';
@@ -89,7 +89,7 @@ function TextBlock({
     setOffset();
   };
 
-  const onInitialize = (crdt: unknown) => {
+  const onInitialize = (crdt: LinkedList) => {
     syncCRDT(crdt);
 
     blockRef.current!.innerText = readCRDT();
