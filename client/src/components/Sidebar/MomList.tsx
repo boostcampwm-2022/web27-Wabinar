@@ -4,14 +4,16 @@ import { memo, useEffect, useState } from 'react';
 import useSocketContext from 'src/hooks/context/useSocketContext';
 import { TMom } from 'src/types/mom';
 
+import ee from '../Mom/EventEmitter';
 import style from './style.module.scss';
 
 interface MomListProps {
   moms: TMom[];
+  selectedMom: TMom | null;
   setSelectedMom: React.Dispatch<React.SetStateAction<TMom | null>>;
 }
 
-function MomList({ moms, setSelectedMom }: MomListProps) {
+function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
   const { momSocket: socket } = useSocketContext();
   const [momList, setMomList] = useState<TMom[]>(moms);
 
@@ -41,6 +43,25 @@ function MomList({ moms, setSelectedMom }: MomListProps) {
       socket.off(MOM_EVENT.SELECT);
     };
   }, [moms]);
+
+  useEffect(() => {
+    ee.on(MOM_EVENT.UPDATE_TITLE, (title) => {
+      if (!selectedMom) return;
+
+      const updatedMomList = momList.map((mom) => {
+        if (mom._id === selectedMom._id) {
+          return { ...mom, title };
+        }
+        return mom;
+      });
+
+      setMomList(updatedMomList);
+    });
+
+    return () => {
+      ee.off(MOM_EVENT.UPDATE_TITLE);
+    };
+  }, []);
 
   return (
     <div className={style['mom-list-container']}>

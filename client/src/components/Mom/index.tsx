@@ -38,6 +38,7 @@ function Mom() {
       const title = titleRef.current.innerText;
 
       socket.emit(MOM_EVENT.UPDATE_TITLE, title);
+      ee.emit(MOM_EVENT.UPDATE_TITLE, title);
     },
     500,
   );
@@ -149,6 +150,7 @@ function Mom() {
       if (!titleRef.current) return;
 
       titleRef.current.innerText = title;
+      ee.emit(MOM_EVENT.UPDATE_TITLE, title);
     });
 
     socket.on(MOM_EVENT.UPDATED, () => {
