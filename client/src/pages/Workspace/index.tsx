@@ -17,6 +17,7 @@ function WorkspacePage() {
   const navigate = useNavigate();
 
   const [workspaces, setWorkspaces] = useState<TWorkspace[]>([]);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const loadWorkspaces = async () => {
     if (!user) {
@@ -30,6 +31,7 @@ function WorkspacePage() {
       id: userId,
     });
 
+    setIsLoaded(true);
     setWorkspaces(userWorkspaces);
 
     if (!userWorkspaces.length) {
@@ -52,12 +54,16 @@ function WorkspacePage() {
   return (
     <Suspense fallback={<WorkspaceSkeleton />}>
       <WorkspacesContext.Provider value={{ workspaces, setWorkspaces }}>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<DefaultWorkspace />} />
-            <Route path="/:id" element={<Workspace />} />
-          </Route>
-        </Routes>
+        {isLoaded ? (
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<DefaultWorkspace />} />
+              <Route path="/:id" element={<Workspace />} />
+            </Route>
+          </Routes>
+        ) : (
+          <WorkspaceSkeleton />
+        )}
       </WorkspacesContext.Provider>
     </Suspense>
   );
