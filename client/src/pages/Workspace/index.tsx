@@ -7,10 +7,10 @@ import WorkspacesContext from 'src/contexts/workspaces';
 import useUserContext from 'src/hooks/context/useUserContext';
 import { Workspace as TWorkspace } from 'src/types/workspace';
 
-function WorkspacePage() {
-  const Layout = lazy(() => import('./Layout'));
-  const Workspace = lazy(() => import('components/Workspace'));
+const Layout = lazy(() => import('./Layout'));
+const Workspace = lazy(() => import('components/Workspace'));
 
+function WorkspacePage() {
   const { user } = useUserContext();
 
   const params = useParams();
