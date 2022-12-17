@@ -5,7 +5,6 @@ import UserContext from 'src/contexts/user';
 import { User } from 'src/types/user';
 
 import 'styles/reset.scss';
-import MetaHelmet from './components/MetaHelmet';
 
 const LoginPage = lazy(() => import('src/pages/Login'));
 const OAuthPage = lazy(() => import('src/pages/OAuth'));
@@ -36,23 +35,20 @@ function App() {
   }, []);
 
   return (
-    <>
-      <MetaHelmet title="화상회의와 회의록 작성을 한번에, Wabinar" />
-      <Suspense fallback={<LoadingPage />}>
-        {isLoaded ? (
-          <UserContext.Provider value={{ user, setUser }}>
-            <Routes>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/oauth" element={<OAuthPage />} />
-              <Route path="/workspace/*" element={<WorkspacePage />} />
-              <Route path="/404" element={<NotFoundPage />} />
-            </Routes>
-          </UserContext.Provider>
-        ) : (
-          <LoadingPage />
-        )}
-      </Suspense>
-    </>
+    <Suspense fallback={<LoadingPage />}>
+      {isLoaded ? (
+        <UserContext.Provider value={{ user, setUser }}>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/oauth" element={<OAuthPage />} />
+            <Route path="/workspace/*" element={<WorkspacePage />} />
+            <Route path="/404" element={<NotFoundPage />} />
+          </Routes>
+        </UserContext.Provider>
+      ) : (
+        <LoadingPage />
+      )}
+    </Suspense>
   );
 }
 
