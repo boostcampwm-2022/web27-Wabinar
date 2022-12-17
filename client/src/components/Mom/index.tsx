@@ -255,7 +255,7 @@ function Mom() {
     return <div className={style['mom-container']}></div>;
   }
 
-  if (isMomsEmpty) {
+  if (isMomsEmpty && !selectedMom) {
     return <DefaultMom />;
   }
 
