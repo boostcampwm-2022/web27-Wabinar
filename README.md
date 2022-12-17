@@ -239,6 +239,12 @@
             <td><img width="200" src="https://user-images.githubusercontent.com/89635107/200794102-63897e78-0fe8-40cc-b1c8-5492a6eae5ea.jpg" /></td>
         </tr>
         <tr>
+            <td><a href="https://github.com/se030">@se030</a></td>
+            <td><a href="https://github.com/dohun31">@dohun31</a></td>
+            <td><a href="https://github.com/juyeong-s">@juyeong-s</a></td>
+            <td><a href="https://github.com/wcho21">@wcho21</a></td>
+        </tr>
+        <tr>
             <td>퇴근도 좋지만..^^</td>
             <td>v2 만들거죠?</td>
             <td>🫵</td>
