@@ -2,6 +2,7 @@ import { RiFileAddLine } from '@react-icons/all-files/ri/RiFileAddLine';
 import * as MomMessage from '@wabinar/api-types/mom';
 import { MOM_EVENT } from '@wabinar/constants/socket-message';
 import { memo, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useSocketContext from 'src/hooks/context/useSocketContext';
 import { TMom } from 'src/types/mom';
 
@@ -17,6 +18,8 @@ interface MomListProps {
 function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
   const { momSocket: socket } = useSocketContext();
   const [momList, setMomList] = useState<TMom[]>(moms);
+
+  const navigate = useNavigate();
 
   const onCreateMom = () => {
     socket.emit(MOM_EVENT.CREATE);
@@ -44,6 +47,7 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
     );
 
     socket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
+      navigate(mom._id);
       setSelectedMom(mom);
     });
 

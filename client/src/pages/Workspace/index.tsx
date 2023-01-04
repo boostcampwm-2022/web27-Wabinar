@@ -58,7 +58,7 @@ function WorkspacePage() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<DefaultWorkspace />} />
-              <Route path="/:id" element={<Workspace />} />
+              <Route path="/:id/*" element={<Workspace />} />
             </Route>
           </Routes>
         ) : (
