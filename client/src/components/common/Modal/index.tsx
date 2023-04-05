@@ -18,14 +18,15 @@ function Modal({ title, isDark = false, children, onClose }: ModalProps) {
     <Portal>
       <div
         className={cx(style.modal, { 'dark-modal': isDark })}
-        role="alertdialog"
+        role="dialog"
         aria-modal
         aria-labelledby="modal"
+        tabIndex={0}
       >
-        <div className={style.dimmer} onClick={onClose} tabIndex={0} />
+        <div className={style.dimmer} onClick={onClose} />
 
         <div className={style['out-container']}>
-          <div className={style.header} id="modal-heading">
+          <div className={style.header} id="modal">
             <h2 className={style.title}>{title}</h2>
             <button
               className={style['close-modal']}
