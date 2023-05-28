@@ -2,7 +2,7 @@ import { RiFileAddLine } from '@react-icons/all-files/ri/RiFileAddLine';
 import * as MomMessage from '@wabinar/api-types/mom';
 import { MOM_EVENT } from '@wabinar/constants/socket-message';
 import { memo, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useSocketContext from 'src/hooks/context/useSocketContext';
 import { TMom } from 'src/types/mom';
 
@@ -20,6 +20,7 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
   const [momList, setMomList] = useState<TMom[]>(moms);
 
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const onCreateMom = () => {
     socket.emit(MOM_EVENT.CREATE);
@@ -32,7 +33,10 @@ function MomList({ moms, selectedMom, setSelectedMom }: MomListProps) {
 
   useEffect(() => {
     if (moms.length) {
-      const message: MomMessage.Select = { id: moms[0]._id };
+      const momId =
+        pathname.match(/\/workspace\/\d+\/(?<momId>.+)/)?.groups?.momId ??
+        moms[0]._id;
+      const message: MomMessage.Select = { id: momId };
       socket.emit(MOM_EVENT.SELECT, message);
     }
 

@@ -16,7 +16,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  const location = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const autoLogin = async () => {
@@ -25,7 +25,7 @@ function App() {
     setIsLoaded(true);
     setUser(user);
 
-    if (user && !/^\/workspace(\/\d+)?$/.test(location.pathname)) {
+    if (user && !/^\/workspace(\/\d+(\/.+)?)?$/.test(pathname)) {
       navigate('/workspace');
     }
   };
