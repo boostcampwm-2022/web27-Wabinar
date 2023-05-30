@@ -1,4 +1,3 @@
-import useSelectedMomContext from 'src/hooks/context/useSelectedMomContext';
 import { WorkspaceInfo } from 'src/types/workspace';
 
 import Header from './Header';
@@ -12,18 +11,12 @@ interface SidebarProps {
 }
 
 function Sidebar({ workspace }: SidebarProps) {
-  const { selectedMom, setSelectedMom } = useSelectedMomContext();
-
   return (
     <div className={style['sidebar-container']}>
       <Header name={workspace.name} />
       <div className={style['sidebar-container__scrollable']}>
         <MemberList members={workspace.members} />
-        <MomList
-          moms={workspace.moms}
-          selectedMom={selectedMom}
-          setSelectedMom={setSelectedMom}
-        />
+        <MomList moms={workspace.moms} />
       </div>
       <MeetingButton />
     </div>
