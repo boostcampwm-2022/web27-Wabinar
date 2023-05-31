@@ -7,7 +7,12 @@ interface AddButtonProps {
 }
 function AddButton({ onClick }: AddButtonProps) {
   return (
-    <button className={style.button} onClick={onClick} aria-label="추가">
+    <button
+      className={style.button}
+      onClick={onClick}
+      aria-label="추가"
+      aria-haspopup="true"
+    >
       <MdAdd size={20} color="white" />
     </button>
   );
