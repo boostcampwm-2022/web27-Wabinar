@@ -3,10 +3,12 @@ import * as MomMessage from '@wabinar/api-types/mom';
 import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
 import Block from 'components/Block';
 import { useEffect, useRef, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import useSelectedMomContext from 'src/hooks/context/useSelectedMomContext';
 import useSocketContext from 'src/hooks/context/useSocketContext';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
+import { workspaceState } from 'src/store/atom/workspace';
 import { v4 as uuid } from 'uuid';
 
 import DefaultMom from './DefaultMom';
@@ -14,6 +16,7 @@ import ee from './EventEmitter';
 import style from './style.module.scss';
 
 function Mom() {
+  const [workspace] = useRecoilState(workspaceState);
   const { selectedMom } = useSelectedMomContext();
   const { momSocket: socket } = useSocketContext();
 
@@ -37,8 +40,6 @@ function Mom() {
   const focusIndex = useRef<number>();
 
   const [blocks, setBlocks] = useState<string[]>([]);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [isMomsEmpty, setIsMomsEmpty] = useState(false);
 
   const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
     () => {
@@ -230,20 +231,7 @@ function Mom() {
         BLOCK_EVENT.UPDATE_TYPE,
       ].forEach((event) => socket.off(event));
     };
-  }, [selectedMom]);
-
-  useEffect(() => {
-    ee.on(MOM_EVENT.LOADED, (momsLength: number) => {
-      setIsLoaded(true);
-      setIsMomsEmpty(momsLength === 0);
-    });
-
-    ee.emit(MOM_EVENT.REQUEST_LOADED);
-
-    return () => {
-      ee.off(MOM_EVENT.LOADED);
-    };
-  }, [socket]);
+  }, [selectedMom, socket]);
 
   const registerRef =
     (index: number) => (ref: React.RefObject<HTMLElement>) => {
@@ -251,11 +239,11 @@ function Mom() {
       setBlockFocus(index);
     };
 
-  if (!isLoaded) {
+  if (!workspace) {
     return <div className={style['mom-container']}></div>;
   }
 
-  if (isMomsEmpty && !selectedMom) {
+  if (!workspace.moms.length) {
     return <DefaultMom />;
   }
 

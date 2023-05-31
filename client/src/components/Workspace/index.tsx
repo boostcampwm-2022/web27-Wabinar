@@ -4,22 +4,22 @@ import Mom from 'components/Mom';
 import Sidebar from 'components/Sidebar';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import { getWorkspaceInfo } from 'src/apis/workspace';
 import MeetingMediaBar from 'src/components/MeetingMediaBar';
-import ee from 'src/components/Mom/EventEmitter';
 import MeetingContext from 'src/contexts/meeting';
 import { SelectedMomContext } from 'src/contexts/selected-mom';
 import { SocketContext } from 'src/contexts/socket';
 import useSocket from 'src/hooks/useSocket';
+import { workspaceState } from 'src/store/atom/workspace';
 import { TMom } from 'src/types/mom';
-import { WorkspaceInfo } from 'src/types/workspace';
 
 function Workspace() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
+  const [workspace, setWorkspace] = useRecoilState(workspaceState);
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
   const [isOnGoing, setIsOnGoing] = useState(false);
 
@@ -56,22 +56,13 @@ function Workspace() {
   }, [momSocket]);
 
   useEffect(() => {
-    if (!workspace || !momSocket) return;
-
+    if (!workspace) return;
     const { moms } = workspace;
 
-    if (moms.length && !getCurrentMom(pathname)) {
+    if (!getCurrentMom(pathname) && moms.length) {
       navigate(moms[0]._id);
     }
-
-    ee.on(MOM_EVENT.REQUEST_LOADED, () => {
-      ee.emit(MOM_EVENT.LOADED, moms ? moms.length : 0);
-    });
-
-    return () => {
-      ee.off(MOM_EVENT.REQUEST_LOADED);
-    };
-  }, [workspace?.moms, momSocket]);
+  }, [workspace]);
 
   useEffect(() => {
     const momId = getCurrentMom(pathname);
