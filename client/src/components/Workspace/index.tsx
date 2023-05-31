@@ -44,6 +44,25 @@ function Workspace() {
   }, [id]);
 
   useEffect(() => {
+    if (!workspace) return;
+    const { moms } = workspace;
+
+    if (!getCurrentMom(pathname) && moms.length) {
+      navigate(moms[0]._id);
+    }
+  }, [workspace]);
+
+  // 선택된 회의록이 변경되면 서버에 emit SELECT
+  useEffect(() => {
+    const momId = getCurrentMom(pathname);
+    if (!momSocket || !momId) return;
+
+    const message: MomMessage.Select = { id: momId };
+    momSocket.emit(MOM_EVENT.SELECT, message);
+  }, [pathname, momSocket]);
+
+  // on SELECT 통해 전달된 회의록 정보 selectedMom 상태에 반영
+  useEffect(() => {
     if (!momSocket) return;
 
     momSocket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
@@ -54,23 +73,6 @@ function Workspace() {
       momSocket.off(MOM_EVENT.SELECT);
     };
   }, [momSocket]);
-
-  useEffect(() => {
-    if (!workspace) return;
-    const { moms } = workspace;
-
-    if (!getCurrentMom(pathname) && moms.length) {
-      navigate(moms[0]._id);
-    }
-  }, [workspace]);
-
-  useEffect(() => {
-    const momId = getCurrentMom(pathname);
-    if (!momSocket || !momId) return;
-
-    const message: MomMessage.Select = { id: momId };
-    momSocket.emit(MOM_EVENT.SELECT, message);
-  }, [pathname, momSocket]);
 
   useEffect(() => {
     if (!workspaceSocket) {
