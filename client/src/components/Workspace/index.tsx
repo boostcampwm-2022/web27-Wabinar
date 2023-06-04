@@ -55,13 +55,6 @@ function Workspace() {
   }, [workspace, momId]);
 
   useEffect(() => {
-    if (momId && !selectedMom && momSocket) {
-      const message: MomMessage.Select = { id: momId };
-      momSocket.emit(MOM_EVENT.SELECT, message);
-    }
-  }, [momId, selectedMom, momSocket]);
-
-  useEffect(() => {
     if (!workspaceSocket) {
       return;
     }
