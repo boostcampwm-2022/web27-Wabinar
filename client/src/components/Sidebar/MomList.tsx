@@ -15,7 +15,7 @@ interface MomListProps {
 }
 
 function MomList({ moms }: MomListProps) {
-  const { selectedMom } = useSelectedMomContext();
+  const { selectedMom, setSelectedMom } = useSelectedMomContext();
 
   const { momSocket: socket } = useSocketContext();
   const [momList, setMomList] = useState<TMom[]>(moms);
@@ -26,16 +26,29 @@ function MomList({ moms }: MomListProps) {
     socket.emit(MOM_EVENT.CREATE);
   };
 
+  const onSelect = (id: string) => {
+    const message: MomMessage.Select = { id };
+    socket.emit(MOM_EVENT.SELECT, message);
+
+    navigate(id);
+    setSelectedMom(null);
+  };
+
   useEffect(() => {
     setMomList(moms);
   }, [moms]);
 
   useEffect(() => {
+    socket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
+      setSelectedMom(mom);
+    });
+
     socket.on(MOM_EVENT.CREATE, ({ mom }: MomMessage.Created) =>
       setMomList((prev) => [...prev, mom]),
     );
 
     return () => {
+      socket.off(MOM_EVENT.SELECT);
       socket.off(MOM_EVENT.CREATE);
     };
   }, [socket]);
@@ -75,7 +88,7 @@ function MomList({ moms }: MomListProps) {
       </div>
       <ul className={style['mom-list']}>
         {momList.map(({ _id: id, title }) => (
-          <li key={id} onClick={() => navigate(id)} role="button">
+          <li key={id} onClick={() => onSelect(id)} role="button">
             {title}
           </li>
         ))}

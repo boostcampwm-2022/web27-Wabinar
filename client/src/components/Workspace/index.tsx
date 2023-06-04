@@ -17,7 +17,9 @@ import { TMom } from 'src/types/mom';
 function Workspace() {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const { pathname } = useLocation();
+  const momId = pathname.match(/\/workspace\/\d+\/(?<momId>.+)/)?.groups?.momId;
 
   const [workspace, setWorkspace] = useRecoilState(workspaceState);
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
@@ -47,32 +49,17 @@ function Workspace() {
     if (!workspace) return;
     const { moms } = workspace;
 
-    if (!getCurrentMom(pathname) && moms.length) {
+    if (!momId && moms.length) {
       navigate(moms[0]._id);
     }
-  }, [workspace]);
+  }, [workspace, momId]);
 
-  // 선택된 회의록이 변경되면 서버에 emit SELECT
   useEffect(() => {
-    const momId = getCurrentMom(pathname);
-    if (!momSocket || !momId) return;
-
-    const message: MomMessage.Select = { id: momId };
-    momSocket.emit(MOM_EVENT.SELECT, message);
-  }, [pathname, momSocket]);
-
-  // on SELECT 통해 전달된 회의록 정보 selectedMom 상태에 반영
-  useEffect(() => {
-    if (!momSocket) return;
-
-    momSocket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
-      setSelectedMom(mom);
-    });
-
-    return () => {
-      momSocket.off(MOM_EVENT.SELECT);
-    };
-  }, [momSocket]);
+    if (momId && !selectedMom && momSocket) {
+      const message: MomMessage.Select = { id: momId };
+      momSocket.emit(MOM_EVENT.SELECT, message);
+    }
+  }, [momId, selectedMom, momSocket]);
 
   useEffect(() => {
     if (!workspaceSocket) {
@@ -120,7 +107,3 @@ function Workspace() {
 }
 
 export default Workspace;
-
-const getCurrentMom = (pathname: string) => {
-  return pathname.match(/\/workspace\/\d+\/(?<momId>.+)/)?.groups?.momId;
-};
