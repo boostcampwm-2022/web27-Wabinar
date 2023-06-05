@@ -63,6 +63,18 @@ function Workspace() {
   }, [momId, momSocket]);
 
   useEffect(() => {
+    if (!momSocket) return;
+
+    momSocket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
+      setSelectedMom(mom);
+    });
+
+    return () => {
+      momSocket.off(MOM_EVENT.SELECT);
+    };
+  }, [momSocket]);
+
+  useEffect(() => {
     if (!workspaceSocket) {
       return;
     }

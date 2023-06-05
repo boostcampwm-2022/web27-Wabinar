@@ -36,16 +36,11 @@ function MomList({ moms }: MomListProps) {
   }, [moms]);
 
   useEffect(() => {
-    socket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
-      setSelectedMom(mom);
-    });
-
     socket.on(MOM_EVENT.CREATE, ({ mom }: MomMessage.Created) =>
       setMomList((prev) => [...prev, mom]),
     );
 
     return () => {
-      socket.off(MOM_EVENT.SELECT);
       socket.off(MOM_EVENT.CREATE);
     };
   }, [socket]);
