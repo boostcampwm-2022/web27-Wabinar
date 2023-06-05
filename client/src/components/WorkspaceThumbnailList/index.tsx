@@ -1,4 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { workspaceState } from 'src/store/atom/workspace';
 import { Workspace } from 'src/types/workspace';
 
 import style from './style.module.scss';
@@ -9,9 +11,14 @@ interface WorkspaceThumbnailListProps {
 }
 
 function WorkspaceThumbnailList({ workspaces }: WorkspaceThumbnailListProps) {
+  const { id: currentId } = useParams();
   const navigate = useNavigate();
+  const [, setWorkspace] = useRecoilState(workspaceState);
 
   const onClick = (targetId: number) => {
+    if (Number(currentId) === targetId) return;
+
+    setWorkspace(null);
     navigate(`/workspace/${targetId}`);
   };
 
