@@ -135,6 +135,11 @@
   }
 }
 
+.mom-list-item__selected {
+  color: $black;
+  font-weight: 500;
+}
+
 .meeting-button {
   position: absolute;
   bottom: 15px;

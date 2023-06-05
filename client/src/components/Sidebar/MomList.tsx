@@ -1,7 +1,7 @@
 import { RiFileAddLine } from '@react-icons/all-files/ri/RiFileAddLine';
 import * as MomMessage from '@wabinar/api-types/mom';
 import { MOM_EVENT } from '@wabinar/constants/socket-message';
-import { memo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ee from 'src/components/Mom/EventEmitter';
 import useSelectedMomContext from 'src/hooks/context/useSelectedMomContext';
@@ -88,7 +88,14 @@ function MomList({ moms }: MomListProps) {
       </div>
       <ul className={style['mom-list']}>
         {momList.map(({ _id: id, title }) => (
-          <li key={id} onClick={() => onSelect(id)} role="button">
+          <li
+            key={id}
+            className={
+              selectedMom?._id === id ? style['mom-list-item__selected'] : ''
+            }
+            onClick={() => onSelect(id)}
+            role="button"
+          >
             {title}
           </li>
         ))}
@@ -97,8 +104,4 @@ function MomList({ moms }: MomListProps) {
   );
 }
 
-const isMemoized = (prevProps: MomListProps, nextProps: MomListProps) => {
-  return prevProps.moms === nextProps.moms;
-};
-
-export default memo(MomList, isMemoized);
+export default MomList;
