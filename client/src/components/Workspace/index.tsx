@@ -89,7 +89,7 @@ function Workspace() {
       <MeetingContext.Provider value={memoizedOnGoingValue}>
         {workspace && (
           <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
-            <Sidebar workspace={workspace} />
+            <Sidebar />
             {workspace.moms.length ? <Mom /> : <DefaultMom />}
           </SelectedMomContext.Provider>
         )}
