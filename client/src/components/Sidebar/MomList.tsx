@@ -27,11 +27,8 @@ function MomList({ moms }: MomListProps) {
   };
 
   const onSelect = (id: string) => {
-    const message: MomMessage.Select = { id };
-    socket.emit(MOM_EVENT.SELECT, message);
-
-    navigate(id);
     setSelectedMom(null);
+    navigate(id);
   };
 
   useEffect(() => {

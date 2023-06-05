@@ -1,4 +1,5 @@
-import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
+import * as MomMessage from '@wabinar/api-types/mom';
+import { MOM_EVENT, WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import Mom from 'components/Mom';
 import DefaultMom from 'components/Mom/DefaultMom';
 import Sidebar from 'components/Sidebar';
@@ -53,6 +54,13 @@ function Workspace() {
       navigate(moms[0]._id);
     }
   }, [workspace, momId]);
+
+  useEffect(() => {
+    if (momId && momSocket) {
+      const message: MomMessage.Select = { id: momId };
+      momSocket.emit(MOM_EVENT.SELECT, message);
+    }
+  }, [momId, momSocket]);
 
   useEffect(() => {
     if (!workspaceSocket) {
