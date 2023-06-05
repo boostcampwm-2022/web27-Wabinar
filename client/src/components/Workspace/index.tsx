@@ -1,6 +1,6 @@
-import * as MomMessage from '@wabinar/api-types/mom';
-import { MOM_EVENT, WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
+import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import Mom from 'components/Mom';
+import DefaultMom from 'components/Mom/DefaultMom';
 import Sidebar from 'components/Sidebar';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -90,7 +90,7 @@ function Workspace() {
         {workspace && (
           <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
             <Sidebar workspace={workspace} />
-            <Mom />
+            {workspace.moms.length ? <Mom /> : <DefaultMom />}
           </SelectedMomContext.Provider>
         )}
         {isOnGoing && <MeetingMediaBar />}

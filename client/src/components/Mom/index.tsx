@@ -3,20 +3,16 @@ import * as MomMessage from '@wabinar/api-types/mom';
 import { BLOCK_EVENT, MOM_EVENT } from '@wabinar/constants/socket-message';
 import Block from 'components/Block';
 import { useEffect, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
 import useSelectedMomContext from 'src/hooks/context/useSelectedMomContext';
 import useSocketContext from 'src/hooks/context/useSocketContext';
 import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
-import { workspaceState } from 'src/store/atom/workspace';
 import { v4 as uuid } from 'uuid';
 
-import DefaultMom from './DefaultMom';
 import ee from './EventEmitter';
 import style from './style.module.scss';
 
 function Mom() {
-  const [workspace] = useRecoilState(workspaceState);
   const { selectedMom } = useSelectedMomContext();
   const { momSocket: socket } = useSocketContext();
 
@@ -238,14 +234,6 @@ function Mom() {
       blockRefs.current[index] = ref;
       setBlockFocus(index);
     };
-
-  if (!workspace) {
-    return <div className={style['mom-container']}></div>;
-  }
-
-  if (!workspace.moms.length) {
-    return <DefaultMom />;
-  }
 
   return (
     <div className={style['mom-container']}>
