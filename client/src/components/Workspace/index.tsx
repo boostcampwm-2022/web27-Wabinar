@@ -20,7 +20,11 @@ function Workspace() {
   const navigate = useNavigate();
 
   const { pathname } = useLocation();
-  const momId = pathname.match(/\/workspace\/\d+\/(?<momId>.+)/)?.groups?.momId;
+  const momId = pathname.match(
+    // /workspace/숫자/회의록id 패턴에서 회의록id를 추출하기 위한 정규식
+    // /workspace/숫자/ 까지는 상위 컴포넌트에서 보장되는 패턴
+    /\/workspace\/\d+\/(?<momId>.+)/,
+  )?.groups?.momId;
 
   const [workspace, setWorkspace] = useRecoilState(workspaceState);
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
