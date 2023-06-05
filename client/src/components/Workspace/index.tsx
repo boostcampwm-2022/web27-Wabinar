@@ -4,7 +4,7 @@ import Mom from 'components/Mom';
 import DefaultMom from 'components/Mom/DefaultMom';
 import Sidebar from 'components/Sidebar';
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { getWorkspaceInfo } from 'src/apis/workspace';
 import MeetingMediaBar from 'src/components/MeetingMediaBar';
@@ -19,12 +19,8 @@ function Workspace() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { pathname } = useLocation();
-  const momId = pathname.match(
-    // /workspace/숫자/회의록id 패턴에서 회의록id를 추출하기 위한 정규식
-    // /workspace/숫자/ 까지는 상위 컴포넌트에서 보장되는 패턴
-    /\/workspace\/\d+\/(?<momId>.+)/,
-  )?.groups?.momId;
+  const params = useParams();
+  const momId = params['*'];
 
   const [workspace, setWorkspace] = useRecoilState(workspaceState);
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
