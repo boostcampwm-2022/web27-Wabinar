@@ -9,7 +9,6 @@ import { useCRDT } from 'src/hooks/useCRDT';
 import useDebounce from 'src/hooks/useDebounce';
 import { v4 as uuid } from 'uuid';
 
-import DefaultMom from './DefaultMom';
 import ee from './EventEmitter';
 import style from './style.module.scss';
 
@@ -37,8 +36,6 @@ function Mom() {
   const focusIndex = useRef<number>();
 
   const [blocks, setBlocks] = useState<string[]>([]);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [isMomsEmpty, setIsMomsEmpty] = useState(false);
 
   const onTitleUpdate: React.FormEventHandler<HTMLHeadingElement> = useDebounce(
     () => {
@@ -230,34 +227,13 @@ function Mom() {
         BLOCK_EVENT.UPDATE_TYPE,
       ].forEach((event) => socket.off(event));
     };
-  }, [selectedMom]);
-
-  useEffect(() => {
-    ee.on(MOM_EVENT.LOADED, (momsLength: number) => {
-      setIsLoaded(true);
-      setIsMomsEmpty(momsLength === 0);
-    });
-
-    ee.emit(MOM_EVENT.REQUEST_LOADED);
-
-    return () => {
-      ee.off(MOM_EVENT.LOADED);
-    };
-  }, [socket]);
+  }, [selectedMom, socket]);
 
   const registerRef =
     (index: number) => (ref: React.RefObject<HTMLElement>) => {
       blockRefs.current[index] = ref;
       setBlockFocus(index);
     };
-
-  if (!isLoaded) {
-    return <div className={style['mom-container']}></div>;
-  }
-
-  if (isMomsEmpty && !selectedMom) {
-    return <DefaultMom />;
-  }
 
   return (
     <div className={style['mom-container']}>

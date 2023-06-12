@@ -28,7 +28,9 @@ export const postWorkspaceJoin = async ({
 
 export const getWorkspaceInfo = async ({
   id,
-}: GetInfoParams): Promise<WorkspaceInfo> => {
+}: Partial<GetInfoParams>): Promise<WorkspaceInfo | null> => {
+  if (!id) return null;
+
   const res = await http.get(`/workspace/${id}`);
 
   if (res.status !== OK) throw new Error();

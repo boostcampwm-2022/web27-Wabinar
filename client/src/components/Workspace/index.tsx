@@ -1,8 +1,11 @@
-import { WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
+import { useQuery } from '@tanstack/react-query';
+import * as MomMessage from '@wabinar/api-types/mom';
+import { MOM_EVENT, WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import Mom from 'components/Mom';
+import DefaultMom from 'components/Mom/DefaultMom';
 import Sidebar from 'components/Sidebar';
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getWorkspaceInfo } from 'src/apis/workspace';
 import MeetingMediaBar from 'src/components/MeetingMediaBar';
 import MeetingContext from 'src/contexts/meeting';
@@ -10,32 +13,60 @@ import { SelectedMomContext } from 'src/contexts/selected-mom';
 import { SocketContext } from 'src/contexts/socket';
 import useSocket from 'src/hooks/useSocket';
 import { TMom } from 'src/types/mom';
-import { WorkspaceInfo } from 'src/types/workspace';
 
 function Workspace() {
   const { id } = useParams();
-  const [isOnGoing, setIsOnGoing] = useState(false);
+  const navigate = useNavigate();
 
-  const [workspace, setWorkspace] = useState<WorkspaceInfo | null>(null);
+  const params = useParams();
+  const momId = params['*'];
+
+  const { data: workspace } = useQuery({
+    queryKey: ['workspace', id],
+    queryFn: () => getWorkspaceInfo({ id }),
+  });
+
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
+  const [isOnGoing, setIsOnGoing] = useState(false);
 
   const momSocket = useSocket(`/workspace-mom/${id}`);
   const workspaceSocket = useSocket(`/workspace/${id}`);
 
-  const loadWorkspaceInfo = async () => {
-    if (id) {
-      const workspaceInfo = await getWorkspaceInfo({ id });
-
-      setWorkspace(workspaceInfo);
-
-      if (!workspaceInfo.moms[0]) setSelectedMom(null);
-    }
-  };
-
   useEffect(() => {
-    loadWorkspaceInfo();
     setIsOnGoing(false);
   }, [id]);
+
+  useEffect(() => {
+    if (!workspace) return;
+    const { moms } = workspace;
+
+    if (!momId && moms.length) {
+      navigate(moms[0]._id);
+    }
+
+    if (!moms.length) {
+      setSelectedMom(null);
+    }
+  }, [workspace, momId]);
+
+  useEffect(() => {
+    if (momId && momSocket) {
+      const message: MomMessage.Select = { id: momId };
+      momSocket.emit(MOM_EVENT.SELECT, message);
+    }
+  }, [momId, momSocket]);
+
+  useEffect(() => {
+    if (!momSocket) return;
+
+    momSocket.on(MOM_EVENT.SELECT, ({ mom }: MomMessage.Selected) => {
+      setSelectedMom(mom);
+    });
+
+    return () => {
+      momSocket.off(MOM_EVENT.SELECT);
+    };
+  }, [momSocket]);
 
   useEffect(() => {
     if (!workspaceSocket) {
@@ -72,8 +103,8 @@ function Workspace() {
       <MeetingContext.Provider value={memoizedOnGoingValue}>
         {workspace && (
           <SelectedMomContext.Provider value={{ selectedMom, setSelectedMom }}>
-            <Sidebar workspace={workspace} />
-            <Mom />
+            <Sidebar />
+            {workspace.moms.length ? <Mom /> : <DefaultMom />}
           </SelectedMomContext.Provider>
         )}
         {isOnGoing && <MeetingMediaBar />}

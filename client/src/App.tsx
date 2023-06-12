@@ -16,7 +16,7 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  const location = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const autoLogin = async () => {
@@ -25,7 +25,8 @@ function App() {
     setIsLoaded(true);
     setUser(user);
 
-    if (user && !/^\/workspace(\/\d+)?$/.test(location.pathname)) {
+    const validPathPattern = /^\/workspace(\/\d+(\/.+)?)?$/; // /workspace(/숫자(/아무거나)) 와 처음부터 끝까지 일치하는 패턴
+    if (user && !validPathPattern.test(pathname)) {
       navigate('/workspace');
     }
   };
