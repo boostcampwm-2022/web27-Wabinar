@@ -1,6 +1,5 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
-import { workspaceState } from 'src/store/atom/workspace';
 import { Workspace } from 'src/types/workspace';
 
 import style from './style.module.scss';
@@ -11,14 +10,15 @@ interface WorkspaceThumbnailListProps {
 }
 
 function WorkspaceThumbnailList({ workspaces }: WorkspaceThumbnailListProps) {
+  const queryClient = useQueryClient();
+
   const { id: currentId } = useParams();
   const navigate = useNavigate();
-  const [, setWorkspace] = useRecoilState(workspaceState);
 
   const onClick = (targetId: number) => {
     if (Number(currentId) === targetId) return;
 
-    setWorkspace(null);
+    queryClient.invalidateQueries({ queryKey: ['workspace', currentId] });
     navigate(`/workspace/${targetId}`);
   };
 

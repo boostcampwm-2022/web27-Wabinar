@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import * as MomMessage from '@wabinar/api-types/mom';
 import { MOM_EVENT, WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import Mom from 'components/Mom';
@@ -5,14 +6,12 @@ import DefaultMom from 'components/Mom/DefaultMom';
 import Sidebar from 'components/Sidebar';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
 import { getWorkspaceInfo } from 'src/apis/workspace';
 import MeetingMediaBar from 'src/components/MeetingMediaBar';
 import MeetingContext from 'src/contexts/meeting';
 import { SelectedMomContext } from 'src/contexts/selected-mom';
 import { SocketContext } from 'src/contexts/socket';
 import useSocket from 'src/hooks/useSocket';
-import { workspaceState } from 'src/store/atom/workspace';
 import { TMom } from 'src/types/mom';
 
 function Workspace() {
@@ -22,27 +21,18 @@ function Workspace() {
   const params = useParams();
   const momId = params['*'];
 
-  const [workspace, setWorkspace] = useRecoilState(workspaceState);
+  const { data: workspace } = useQuery({
+    queryKey: ['workspace', id],
+    queryFn: () => getWorkspaceInfo({ id }),
+  });
+
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
   const [isOnGoing, setIsOnGoing] = useState(false);
 
   const momSocket = useSocket(`/workspace-mom/${id}`);
   const workspaceSocket = useSocket(`/workspace/${id}`);
 
-  const loadWorkspaceInfo = async () => {
-    if (id) {
-      const workspaceInfo = await getWorkspaceInfo({ id });
-
-      setWorkspace(workspaceInfo);
-
-      if (!workspaceInfo.moms.length) {
-        setSelectedMom(null);
-      }
-    }
-  };
-
   useEffect(() => {
-    loadWorkspaceInfo();
     setIsOnGoing(false);
   }, [id]);
 
@@ -52,6 +42,10 @@ function Workspace() {
 
     if (!momId && moms.length) {
       navigate(moms[0]._id);
+    }
+
+    if (!moms.length) {
+      setSelectedMom(null);
     }
   }, [workspace, momId]);
 
