@@ -1,6 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { getWorkspaceInfo } from 'src/apis/workspace';
+import { useWorkspaceQuery } from 'src/queries/useWorkspaceQuery';
 
 import Header from './Header';
 import MeetingButton from './MeetingButton';
@@ -10,10 +9,7 @@ import style from './style.module.scss';
 
 function Sidebar() {
   const { id } = useParams();
-  const { data: workspace } = useQuery({
-    queryKey: ['workspace', id],
-    queryFn: () => getWorkspaceInfo({ id }),
-  });
+  const { data: workspace } = useWorkspaceQuery(id);
 
   if (!workspace) {
     return <div className={style['sidebar-container']}></div>;

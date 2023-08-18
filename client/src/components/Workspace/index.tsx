@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import * as MomMessage from '@wabinar/api-types/mom';
 import { MOM_EVENT, WORKSPACE_EVENT } from '@wabinar/constants/socket-message';
 import Mom from 'components/Mom';
@@ -6,12 +5,12 @@ import DefaultMom from 'components/Mom/DefaultMom';
 import Sidebar from 'components/Sidebar';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getWorkspaceInfo } from 'src/apis/workspace';
 import MeetingMediaBar from 'src/components/MeetingMediaBar';
 import MeetingContext from 'src/contexts/meeting';
 import { SelectedMomContext } from 'src/contexts/selected-mom';
 import { SocketContext } from 'src/contexts/socket';
 import useSocket from 'src/hooks/useSocket';
+import { useWorkspaceQuery } from 'src/queries/useWorkspaceQuery';
 import { TMom } from 'src/types/mom';
 
 function Workspace() {
@@ -21,10 +20,7 @@ function Workspace() {
   const params = useParams();
   const momId = params['*'];
 
-  const { data: workspace } = useQuery({
-    queryKey: ['workspace', id],
-    queryFn: () => getWorkspaceInfo({ id }),
-  });
+  const { data: workspace } = useWorkspaceQuery(id);
 
   const [selectedMom, setSelectedMom] = useState<TMom | null>(null);
   const [isOnGoing, setIsOnGoing] = useState(false);
