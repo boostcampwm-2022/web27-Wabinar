@@ -10,7 +10,7 @@
 <br>
 
 <p align=center>
-<a href="https://www.wabinar.live">https://www.wabinar.live</a>
+<s><a href="https://www.wabinar.live">https://www.wabinar.live</a></s>
 </p>
 
 <div align=center>
